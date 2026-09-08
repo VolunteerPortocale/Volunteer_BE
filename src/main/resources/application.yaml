@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: voluntar
+  data:
+    mongodb:
+      uri: mongodb+srv://volunteer_be:taSudhu6K_VLw@cluster0.zgo27k9.mongodb.net/
+      auto-index-creation: true
