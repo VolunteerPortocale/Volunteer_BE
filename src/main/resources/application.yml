@@ -1,0 +1,16 @@
+spring:
+  profiles:
+    active: test
+  application:
+    name: voluntar
+  mongodb:
+    username: volunteer_be
+    password: taSudhu6K_VLw
+    database: volunteer_db_test
+    uri: mongodb+srv://${spring.mongodb.username}:${spring.mongodb.password}@cluster0.zgo27k9.mongodb.net/${spring.mongodb.database}?retryWrites=true
+
+server:
+  port: 8081
+
+
+
