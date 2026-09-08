@@ -1,3 +1,5 @@
 spring:
+  profile:
+    active: prod
   application:
     name: demo
