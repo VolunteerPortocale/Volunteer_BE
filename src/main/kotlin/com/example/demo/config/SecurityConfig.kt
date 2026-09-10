@@ -25,6 +25,8 @@ class SecurityConfig {
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf { csrf -> csrf.disable() }
+            .cors { cors -> cors.disable() }
+
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers(
