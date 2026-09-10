@@ -1,30 +1,32 @@
 package com.example.demo.config
+
+import org.springframework.boot.context.properties.bind.Bindable
+import org.springframework.boot.context.properties.bind.Binder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.env.Environment
 import org.springframework.security.config.Customizer
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
+import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 class SecurityConfig {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf { csrf -> csrf.disable() }
-            //disabled csrf cause we use header based auth, not browser cookies
-
             .authorizeHttpRequests { auth ->
                 auth
-                    //allow actuator and swagger
                     .requestMatchers(
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
@@ -32,32 +34,48 @@ class SecurityConfig {
                         "/actuator/**"
                     ).permitAll()
 
-                    //protect endpoints by role (same role that assigned in db)
-                    .requestMatchers("/api/v1/**").hasAnyRole("USER")
+                    // Secure endpoints by role or allow any authenticated user
+                    .requestMatchers("/api/v1/**").authenticated()
 
-                    //all other endpoints need auth
                     .anyRequest().authenticated()
             }
-
-            //enable basic auth (username/password)
             .httpBasic(Customizer.withDefaults())
 
         return http.build()
     }
 
     @Bean
-    //for hashing rhe passwords
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
     }
 
     @Bean
-    fun userDetailsService(passwordEncoder: PasswordEncoder): UserDetailsService {
-        val testUser: UserDetails = User.builder()
-            .username("admin")
-            .password(passwordEncoder.encode("password123"))
-            .roles("USER")
-            .build()
-        return InMemoryUserDetailsManager(testUser)
+    fun userDetailsService(
+        environment: Environment,
+        passwordEncoder: PasswordEncoder
+    ): UserDetailsService {
+
+        val credentials = Binder.get(environment)
+            .bind("users.credentials", Bindable.listOf(Map::class.java))
+            .orElse(emptyList()) ?: emptyList()
+
+        val userDetailsList = credentials.map { userMap ->
+            val username = userMap["username"] as? String ?: ""
+            val rawPassword = userMap["password"] as? String ?: ""
+
+            val roles = when (val rawRoles = userMap["roles"]) {
+                is List<*> -> rawRoles.mapNotNull { it?.toString() }
+                is String -> listOf(rawRoles)
+                else -> emptyList()
+            }
+
+            User.builder()
+                .username(username)
+                .password(passwordEncoder.encode(rawPassword))
+                .roles(*roles.toTypedArray())
+                .build()
+        }
+
+        return InMemoryUserDetailsManager(userDetailsList)
     }
 }
