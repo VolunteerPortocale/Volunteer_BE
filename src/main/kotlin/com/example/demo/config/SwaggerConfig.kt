@@ -49,4 +49,4 @@ class SwaggerConfig {
             .addSecurityItem(SecurityRequirement().addList(BEARER_AUTH))
             .addSecurityItem(SecurityRequirement().addList(BASIC_AUTH))
     }
-}
+}
