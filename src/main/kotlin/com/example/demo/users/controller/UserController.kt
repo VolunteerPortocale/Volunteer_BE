@@ -21,4 +21,4 @@ class UserController(
     fun getById(@PathVariable id: String): UserApi {
         return userService.getById(id)
     }
-}
+}

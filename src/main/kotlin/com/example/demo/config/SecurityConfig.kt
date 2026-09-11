@@ -80,4 +80,4 @@ class SecurityConfig {
 
         return InMemoryUserDetailsManager(userDetailsList)
     }
-}
+}

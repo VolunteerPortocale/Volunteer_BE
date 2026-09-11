@@ -8,6 +8,7 @@ class DemoApplicationTests {
 
 	@Test
 	fun contextLoads() {
+		// Verifies that the Spring application context loads successfully.
 	}
 
 }
