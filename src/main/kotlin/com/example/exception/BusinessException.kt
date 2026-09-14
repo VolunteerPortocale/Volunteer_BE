@@ -1,0 +1,19 @@
+package com.example.exception
+
+import org.springframework.http.HttpStatus
+
+/**
+ * Base open class for all custom domain / business logic exceptions.
+ *
+ * Why this design?
+ * - By having specific exceptions (like UserNotFoundException, ConflictException) inherit from
+ *   BusinessException, our [GlobalExceptionHandler] only needs ONE handler method for all of them.
+ * - Each subclass can specify its own [status] (HTTP 404, 409, 400, etc.) and [errorCode].
+ * - Inherits from [RuntimeException] so it does not require explicit method signatures (unchecked exception).
+ */
+open class BusinessException(
+    message: String,
+    val status: HttpStatus,          // HTTP response status to return (e.g. HttpStatus.NOT_FOUND)
+    val errorCode: String,           // String identifier for the error (e.g. "USER_NOT_FOUND")
+    cause: Throwable? = null         // Optional underlying cause if wrapping another exception
+) : RuntimeException(message, cause)
