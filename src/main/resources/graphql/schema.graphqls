@@ -1,0 +1,10 @@
+type Query {
+    getAllUsers: [User!]!
+    getUserById(id: ID!): User
+}
+
+type User {
+    id: ID
+    name: String!
+    age: Int!
+}

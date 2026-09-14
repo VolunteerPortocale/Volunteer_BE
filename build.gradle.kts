@@ -36,6 +36,10 @@ dependencies {
 	//spring security
 	implementation("org.springframework.boot:spring-boot-starter-security")
 
+	//graphql
+	implementation("org.springframework.boot:spring-boot-starter-graphql")
+	testImplementation("org.springframework.graphql:spring-graphql-test")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
