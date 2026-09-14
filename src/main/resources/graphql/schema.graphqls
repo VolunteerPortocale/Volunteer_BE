@@ -1,10 +1,10 @@
 type Query {
     getAllUsers: [User!]!
-    getUserById(id: ID!): User
+    getUserById(id: String!): User!
 }
 
 type User {
-    id: ID
+    id: String
     name: String!
     age: Int!
 }
