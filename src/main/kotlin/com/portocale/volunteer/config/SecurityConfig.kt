@@ -1,5 +1,6 @@
 package com.portocale.volunteer.config
 
+import com.portocale.volunteer.config.jwt.CustomJwtConverter
 import org.springframework.boot.context.properties.bind.Bindable
 import org.springframework.boot.context.properties.bind.Binder
 import org.springframework.context.annotation.Bean
@@ -16,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
@@ -44,6 +44,11 @@ class SecurityConfig {
                     .anyRequest().authenticated()
             }
             .httpBasic(Customizer.withDefaults())
+            .oauth2ResourceServer { oauth2 ->
+                oauth2.jwt { jwt ->
+                    jwt.jwtAuthenticationConverter(customJwtConverter())
+                }
+            }
 
         return http.build()
     }
@@ -59,6 +64,11 @@ class SecurityConfig {
         return UrlBasedCorsConfigurationSource().apply {
             registerCorsConfiguration("/**", configuration)
         }
+    }
+
+    @Bean
+    fun customJwtConverter(): CustomJwtConverter {
+        return CustomJwtConverter()
     }
 
     @Bean

@@ -8,14 +8,17 @@ spring:
   graphql:
     graphiql:
       enabled: true
-    path: /graphql
 
   mongodb:
     username: volunteer_be
     password: taSudhu6K_VLw
     database: volunteer_db_test
     uri: mongodb+srv://${spring.mongodb.username}:${spring.mongodb.password}@cluster0.zgo27k9.mongodb.net/${spring.mongodb.database}?retryWrites=true
-
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://volunteer-kc.duckdns.org/realms/volunteer
 server:
   port: 8081
 
