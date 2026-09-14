@@ -1,7 +1,8 @@
 package com.portocale.volunteer.users.controller
 
-import com.portocale.volunteer.users.UserApi
+import com.portocale.volunteer.graphql.model.UserGQL
 import com.portocale.volunteer.users.service.UserService
+import com.portocale.volunteer.users.toUserGQL
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
@@ -12,13 +13,14 @@ class UserGraphQlController(
 ) {
 
     @QueryMapping
-    fun getAllUsers(): List<UserApi> {
-        return userService.getAll()
+    fun getAllUsers(): List<UserGQL> {
+        return userService.getAll().map { it.toUserGQL() }
     }
 
     @QueryMapping
-    fun getUserById(@Argument id: String): UserApi {
-        return userService.getById(id)
+    fun getUserById(@Argument id: String): UserGQL {
+        return userService.getById(id).toUserGQL()
     }
 }
+
 
