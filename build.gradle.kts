@@ -4,6 +4,7 @@ plugins {
 	id("org.springframework.boot") version "4.1.1"
 	id("io.spring.dependency-management") version "1.1.7"
 	id("dev.detekt") version "2.0.0-alpha.3"
+	id("io.github.kobylynskyi.graphql.codegen") version "5.10.0"
 }
 
 group = "com.volunteerio"
@@ -36,6 +37,10 @@ dependencies {
 	//spring security
 	implementation("org.springframework.boot:spring-boot-starter-security")
 
+	//graphql
+	implementation("org.springframework.boot:spring-boot-starter-graphql")
+	testImplementation("org.springframework.graphql:spring-graphql-test")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -52,4 +57,6 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
+apply(from = "config/graphql/graphql-codegen.gradle")
 apply(from = "config/detekt/detekt.gradle")
+

@@ -1,8 +1,15 @@
 spring:
   application:
     name: voluntar
+
   profiles:
     active: test
+
+  graphql:
+    graphiql:
+      enabled: true
+    path: /graphql
+
   mongodb:
     username: volunteer_be
     password: taSudhu6K_VLw
