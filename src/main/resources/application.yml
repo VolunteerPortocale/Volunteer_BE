@@ -1,8 +1,8 @@
 spring:
-  profiles:
-    active: test
   application:
     name: voluntar
+  profiles:
+    active: test
   mongodb:
     username: volunteer_be
     password: taSudhu6K_VLw
