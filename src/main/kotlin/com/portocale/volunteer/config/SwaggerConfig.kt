@@ -3,11 +3,9 @@ package com.portocale.volunteer.config
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
-import io.swagger.v3.oas.models.responses.ApiResponse
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
 import jakarta.annotation.PostConstruct
-import org.springdoc.core.customizers.OpenApiCustomizer
 import org.springdoc.core.properties.SwaggerUiConfigProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
