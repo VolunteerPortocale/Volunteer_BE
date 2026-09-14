@@ -36,6 +36,7 @@ dependencies {
 
 	//spring security
 	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
 	//graphql
 	implementation("org.springframework.boot:spring-boot-starter-graphql")
