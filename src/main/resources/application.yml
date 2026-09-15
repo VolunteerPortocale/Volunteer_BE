@@ -20,13 +20,18 @@ spring:
         jwt:
           issuer-uri: https://volunteer-kc.duckdns.org/realms/volunteer
   mail:
-    host: ://gmail.com
+    host: smtp-relay.brevo.com
     port: 587
-    username: replace me
-    password: replace me
-  messages:
-    basename: i18n/messages
-    encoding: UTF-8
+    username: b97278001@smtp-brevo.com
+    password: ${BREVO_SMTP_KEY}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
 server:
   port: 8081
 

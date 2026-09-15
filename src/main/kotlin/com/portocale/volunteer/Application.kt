@@ -5,8 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.boot.web.server.context.WebServerApplicationContext
 import org.springframework.core.env.getProperty
+import org.springframework.scheduling.annotation.EnableAsync
 
 @SpringBootApplication(scanBasePackages = ["com.portocale"])
+@EnableAsync
 class Application
 
 private val log = LoggerFactory.getLogger(Application::class.java)
@@ -30,7 +32,7 @@ fun main(args: Array<String>) {
 
     log.info(
         """
-        
+
         ----------------------------------------------------------
         Application started successfully
         Active profiles: {}
