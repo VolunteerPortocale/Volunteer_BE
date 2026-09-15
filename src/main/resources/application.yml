@@ -30,8 +30,9 @@ spring:
           auth: true
           starttls:
             enable: true
-          connectiontimeout: 5000
-          timeout: 5000
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
 server:
   port: 8081
 
@@ -44,6 +45,3 @@ users:
     - username: notadmin
       password: password123
       roles: ADNIN
-
-
-
