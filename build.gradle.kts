@@ -41,6 +41,9 @@ dependencies {
     //graphql
     implementation("org.springframework.boot:spring-boot-starter-graphql")
 
+	  //qrcode - google zxing
+	  implementation("com.google.zxing:javase:3.5.3")
+
     //email/velocity
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.apache.velocity:velocity-engine-core:2.4.1")
