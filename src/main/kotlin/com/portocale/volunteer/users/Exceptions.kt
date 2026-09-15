@@ -1,40 +1,23 @@
-package com.example.demo.users
+package com.portocale.volunteer.users
 
-import com.example.exception.BusinessException
+import com.portocale.volunteer.BusinessException
 import org.springframework.http.HttpStatus
 
-class UserNotFoundException : BusinessException {
-
-    constructor(message: String) : super(
+class UserNotFoundException
+    (
+    message: String = "User not found",
+    status: HttpStatus = HttpStatus.NOT_FOUND
+) :    BusinessException(
         message = message,
-        status = HttpStatus.NOT_FOUND,
-        errorCode = "NOT_FOUND"
+        status = status,
+        errorCode = "404-001"
     )
 
-    constructor(resourceType: String, field: String, value: String) : super(
-        message = "$resourceType with $field '$value' not found",
-        status = HttpStatus.NOT_FOUND,
-        errorCode = "RESOURCE_NOT_FOUND"
-    )
-
-    constructor(id: Any) : super(
-        message = "User not found with id: $id",
-        status = HttpStatus.NOT_FOUND,
-        errorCode = "USER_NOT_FOUND"
-    )
-}
-
-class UserConflictException : BusinessException {
-
-    constructor(message: String) : super(
+class UserConflictException(
+    message: String = "User allreaady exists",
+    status: HttpStatus = HttpStatus.CONFLICT
+) : BusinessException (
         message = message,
-        status = HttpStatus.CONFLICT,
-        errorCode = "CONFLICT"
+        status = status,
+        errorCode = "409-001"
     )
-
-    constructor(resourceType: String, field: String, value: String) : super(
-        message = "$resourceType with $field '$value' already exists",
-        status = HttpStatus.CONFLICT,
-        errorCode = "DUPLICATE_RESOURCE"
-    )
-}

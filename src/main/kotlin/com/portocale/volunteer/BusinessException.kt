@@ -1,4 +1,4 @@
-package com.example.exception
+package com.portocale.volunteer
 
 import org.springframework.http.HttpStatus
 
@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus
  * - Inherits from [RuntimeException] so it does not require explicit method signatures (unchecked exception).
  */
 open class BusinessException(
-    message: String,
+    override val message: String,
     val status: HttpStatus,          // HTTP response status to return (e.g. HttpStatus.NOT_FOUND)
     val errorCode: String,           // String identifier for the error (e.g. "USER_NOT_FOUND")
     cause: Throwable? = null         // Optional underlying cause if wrapping another exception

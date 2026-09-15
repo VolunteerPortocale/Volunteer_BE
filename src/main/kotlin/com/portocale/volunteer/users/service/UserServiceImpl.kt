@@ -1,6 +1,7 @@
 package com.portocale.volunteer.users.service
 
 import com.portocale.volunteer.users.UserApi
+import com.portocale.volunteer.users.UserNotFoundException
 import com.portocale.volunteer.users.repository.UserRepository
 import com.portocale.volunteer.users.toUserApi
 import org.springframework.stereotype.Service
@@ -17,7 +18,7 @@ class UserServiceImpl(
     override fun getById(id: String): UserApi {
         return userRepository.findById(id)
             .map { it.toUserApi() }
-            .orElseThrow { RuntimeException("User not found") }
+            .orElseThrow { UserNotFoundException() }
     }
 
     override fun suspend(id: Int): UserApi {

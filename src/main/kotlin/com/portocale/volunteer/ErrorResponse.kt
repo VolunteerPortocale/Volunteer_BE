@@ -1,4 +1,4 @@
-package com.example.exception
+package com.portocale.volunteer
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.Instant
