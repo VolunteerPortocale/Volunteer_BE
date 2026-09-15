@@ -38,8 +38,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
-	//graphql
-	implementation("org.springframework.boot:spring-boot-starter-graphql")
+    //graphql
+    implementation("org.springframework.boot:spring-boot-starter-graphql")
 
 	//qrcode - google zxing
 	implementation("com.google.zxing:javase:3.5.3")
@@ -48,10 +48,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.apache.velocity:velocity-engine-core:2.4.1")
 
-	testImplementation("org.springframework.graphql:spring-graphql-test")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.graphql:spring-graphql-test")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
 }
 
 kotlin {
