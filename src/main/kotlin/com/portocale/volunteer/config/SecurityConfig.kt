@@ -35,7 +35,8 @@ class SecurityConfig {
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
-                        "/actuator/**"
+                        "/actuator/**",
+                        "/api/v1/qr/**"
                     ).permitAll()
 
                     // Secure endpoints by role or allow any authenticated user
