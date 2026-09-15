@@ -1,0 +1,28 @@
+package com.portocale.volunteer
+
+import com.fasterxml.jackson.annotation.JsonInclude
+import java.time.Instant
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class ErrorResponse(
+    // UTC timestamp of when the error occurred
+    val timestamp: Instant? = null,
+
+    // HTTP status code (e.g. 404, 400, 500)
+    val status: Int,
+
+    // HTTP status name (e.g. "Not Found", "Bad Request", "Internal Server Error")
+    val error: String? = null,
+
+    // Human-readable message explaining what went wrong
+    val message: String? = null,
+
+    // The API endpoint URL that was called (e.g. "/api/v1/users/42")
+    val path: String? = null,
+
+    // Optional trace identifier for tracing this error in distributed log systems
+    val traceId: String? = null,
+
+    // Optional additional debug details
+    val details: Any? = null
+)
