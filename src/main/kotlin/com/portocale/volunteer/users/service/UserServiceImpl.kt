@@ -1,8 +1,8 @@
-package com.example.demo.users.service
+package com.portocale.volunteer.users.service
 
-import com.example.demo.users.UserApi
-import com.example.demo.users.repository.UserRepository
-import com.example.demo.users.toUserApi
+import com.portocale.volunteer.users.UserApi
+import com.portocale.volunteer.users.repository.UserRepository
+import com.portocale.volunteer.users.toUserApi
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,8 +14,10 @@ class UserServiceImpl(
             .map { user -> user.toUserApi() }
     }
 
-    override fun getById(id: Int): UserApi {
-        TODO("Not yet implemented")
+    override fun getById(id: String): UserApi {
+        return userRepository.findById(id)
+            .map { it.toUserApi() }
+            .orElseThrow { RuntimeException("User not found") }
     }
 
     override fun suspend(id: Int): UserApi {

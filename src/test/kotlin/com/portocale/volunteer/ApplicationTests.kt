@@ -1,13 +1,14 @@
-package com.example.demo
+package com.portocale.volunteer
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class DemoApplicationTests {
+class ApplicationTests {
 
 	@Test
 	fun contextLoads() {
+		// Verifies that the Spring application context loads successfully.
 	}
 
 }
