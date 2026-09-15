@@ -1,0 +1,9 @@
+<div class="header">
+    <div class="header-content">
+        <img
+                class="logo"
+                src="../assets/favicon.ico"
+                alt="VOLUNTEERIO"
+        />
+    </div>
+</div>
