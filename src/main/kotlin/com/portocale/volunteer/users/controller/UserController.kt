@@ -6,27 +6,26 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
 import com.portocale.volunteer.users.UserApi
-import com.portocale.volunteer.users.service.QrService
 import com.portocale.volunteer.users.service.UserService
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@Tag(name = "Users", description = "Group of endpoints for user management and confirmation QR codes")
+@Tag(name = "Users", description = "Group of endpoints for user management")
+@RequestMapping("/api/v1/users")
 class UserController(
-    private val userService: UserService,
-    private val qrService: QrService
+    private val userService: UserService
 ) {
-
-    @GetMapping("/api/v1/users")
+    @GetMapping
     @Operation(summary = "Get all users")
     fun getAll(): List<UserApi> {
         return userService.getAll()
     }
 
-    @GetMapping("/api/v1/users/{id}")
+    @GetMapping("/{id}")
     @Operation(summary = "Get user by Id")
     @ApiResponses(
         value = [ApiResponse(
@@ -37,25 +36,5 @@ class UserController(
     )
     fun getById(@PathVariable id: String): UserApi {
         return userService.getById(id)
-    }
-
-    @GetMapping(
-        value = [
-            "/api/v1/qr",
-            "/api/v1/qr/generate",
-            "/api/v1/users/generate",
-            "/api/v1/users/{userId}/events/{eventId}/confirmation"
-        ],
-        produces = [MediaType.IMAGE_PNG_VALUE]
-    )
-    @Operation(summary = "Generate and stream QR code image for eventId and userId")
-    fun getConfirmationQr(
-        @RequestParam(defaultValue = "demo-event") eventId: String,
-        @RequestParam(defaultValue = "demo-user") userId: String
-    ): ResponseEntity<ByteArray> {
-        val imageBytes = qrService.getConfirmation(eventId, userId)
-        return ResponseEntity.ok()
-            .contentType(MediaType.IMAGE_PNG)
-            .body(imageBytes)
     }
 }

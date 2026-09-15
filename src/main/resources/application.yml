@@ -39,6 +39,7 @@ users:
     - username: notadmin
       password: password123
       roles: ADNIN
-
+volunteer:
+  volunteerPresenceConfirmationUlr: https://volunteer-fe.amanemisalovereaddeathnote.workers.dev/?eventId=%s&userId=%s
 
 
