@@ -1,13 +1,12 @@
-package com.portocale.volunteer.qr
+package com.portocale.volunteer.users.service
+
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.client.j2se.MatrixToImageWriter
 import com.google.zxing.qrcode.QRCodeWriter
+import com.portocale.volunteer.qr.EventQr
+import com.portocale.volunteer.qr.EventQrRepository
 import org.springframework.stereotype.Service
 import java.io.ByteArrayOutputStream
-
-interface QrService {
-    fun getOrCreateAndRender(eventId: String, userId: String): ByteArray
-}
 
 @Service
 class QrServiceImpl(
@@ -16,7 +15,7 @@ class QrServiceImpl(
 
     private val frontendBaseUrl = "https://volunteer-fe.amanemisalovereaddeathnote.workers.dev"
 
-    override fun getOrCreateAndRender(eventId: String, userId: String): ByteArray {
+    override fun getConfirmation(eventId: String, userId: String): ByteArray {
         val link = "$frontendBaseUrl/?eventId=$eventId&userId=$userId"
 
         if (!repository.existsByEventIdAndUserId(eventId, userId)) {

@@ -44,6 +44,10 @@ dependencies {
 	//qrcode - google zxing
 	implementation("com.google.zxing:javase:3.5.3")
 
+    //email/velocity
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("org.apache.velocity:velocity-engine-core:2.4.1")
+
 	testImplementation("org.springframework.graphql:spring-graphql-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
