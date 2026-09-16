@@ -41,8 +41,13 @@ dependencies {
     //graphql
     implementation("org.springframework.boot:spring-boot-starter-graphql")
 
-	  //qrcode - google zxing
-	  implementation("com.google.zxing:javase:3.5.3")
+    //qrcode - google zxing
+    implementation("com.google.zxing:javase:3.5.3")
+
+    //drive/storage
+    implementation("com.google.apis:google-api-services-drive:v3-rev20260901-2.0.0")
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.52.0")
+    implementation("com.google.oauth-client:google-oauth-client-jetty:1.36.0")
 
     //email/velocity
     implementation("org.springframework.boot:spring-boot-starter-mail")

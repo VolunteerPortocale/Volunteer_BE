@@ -2,11 +2,13 @@ package com.portocale.volunteer
 
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 import org.springframework.boot.web.server.context.WebServerApplicationContext
 import org.springframework.core.env.getProperty
 
-@SpringBootApplication(scanBasePackages = ["com.portocale"])
+@SpringBootApplication
+@ConfigurationPropertiesScan
 class Application
 
 private val log = LoggerFactory.getLogger(Application::class.java)

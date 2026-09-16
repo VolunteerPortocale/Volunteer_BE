@@ -1,24 +1,25 @@
-package com.portocale.volunteer.users
+package com.portocale.volunteer.storage
 
 import com.portocale.volunteer.BusinessException
 import com.portocale.volunteer.ErrorCode
 import org.springframework.http.HttpStatus
 
-class UserNotFoundException
+class StorageNotFoundException
     (
-    message: String = "User not found",
+    message: String = "Folder not found",
     status: HttpStatus = HttpStatus.NOT_FOUND
 ) : BusinessException(
     message = message,
     status = status,
-    errorCode = ErrorCode.E404_001.value
+    errorCode = ErrorCode.E404_003.value
 )
 
-class UserConflictException(
-    message: String = "User already exists",
+class StorageConflictFoundException
+    (
+    message: String = "Storage duplicated",
     status: HttpStatus = HttpStatus.CONFLICT
 ) : BusinessException(
     message = message,
     status = status,
-    errorCode = ErrorCode.E409_001.value
+    errorCode = ErrorCode.E409_002.value
 )

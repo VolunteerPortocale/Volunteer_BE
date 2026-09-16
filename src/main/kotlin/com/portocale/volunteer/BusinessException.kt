@@ -17,3 +17,12 @@ open class BusinessException(
     val errorCode: String,           // String identifier for the error (e.g. "USER_NOT_FOUND")
     cause: Throwable? = null         // Optional underlying cause if wrapping another exception
 ) : RuntimeException(message, cause)
+
+enum class ErrorCode(val value: String) {
+    E404_001("404-001"),    // UserNotFound
+    E404_002("404-002"),    // EventNotFound
+    E404_003("404-003"),    // FolderNorFound
+    E409_001("409-001"),    // UserConflict
+    E409_002("409-002"),    // StorageConflict
+    E409_003("409-003"),    // EventConflict
+}

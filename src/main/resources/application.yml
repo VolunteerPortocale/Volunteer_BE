@@ -45,7 +45,14 @@ users:
     - username: notadmin
       password: password123
       roles: ADNIN
+
+google:
+  drive:
+    application-name: volunteer-platform
+#    root-folder-id: ${GOOGLE_DRIVE_ROOT_FOLDER_ID}
+    credentials-path: ${GOOGLE_DRIVE_CREDENTIALS_PATH:./config/google/credentials.json}
+    tokens-path: ${GOOGLE_DRIVE_TOKENS_PATH:./config/google/tokens}
+
 volunteer:
   volunteerPresenceConfirmationUlr: https://volunteer-fe.amanemisalovereaddeathnote.workers.dev/?eventId=%s&userId=%s
-
 

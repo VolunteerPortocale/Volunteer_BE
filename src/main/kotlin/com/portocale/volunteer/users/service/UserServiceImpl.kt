@@ -18,7 +18,7 @@ class UserServiceImpl(
     override fun getById(id: String): UserApi {
         return userRepository.findById(id)
             .map { it.toUserApi() }
-            .orElseThrow { UserNotFoundException() }
+            .orElseThrow { UserNotFoundException("User not found: $id") }
     }
 
     override fun suspend(id: Int): UserApi {
