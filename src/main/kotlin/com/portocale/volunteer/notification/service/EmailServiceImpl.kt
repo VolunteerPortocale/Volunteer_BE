@@ -21,7 +21,7 @@ class EmailServiceImpl(
     private val velocityEngine: VelocityEngine,
     private val messageResolver: MessageResolver,
     private val emailLogRepository: EmailLogRepository,
-    @Value("\${volunteer.mail.from:\${spring.mail.username:noreply@volunteerio.com}}")
+    @Value("\${spring.mail.sender}")
     private val defaultFromAddress: String
 ) : EmailService {
 
