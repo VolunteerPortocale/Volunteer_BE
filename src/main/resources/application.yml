@@ -9,6 +9,11 @@ spring:
     graphiql:
       enabled: true
 
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 150MB
+
   mongodb:
     username: volunteer_be
     password: taSudhu6K_VLw
@@ -20,6 +25,7 @@ spring:
         jwt:
           issuer-uri: https://volunteer-kc.duckdns.org/realms/volunteer
   mail:
+    sender: amanemisalovereaddeathnote@gmail.com
     host: smtp-relay.brevo.com
     port: 587
     username: b97278001@smtp-brevo.com
@@ -31,7 +37,7 @@ spring:
           starttls:
             enable: true
   messages:
-    basename: i18n/messages
+    basename: templates/i18n/messages
     encoding: UTF-8
 server:
   port: 8081
@@ -50,8 +56,8 @@ google:
   drive:
     application-name: volunteer-platform
 #    root-folder-id: ${GOOGLE_DRIVE_ROOT_FOLDER_ID}
-    credentials-path: ${GOOGLE_DRIVE_CREDENTIALS_PATH:./config/google/credentials.json}
-    tokens-path: ${GOOGLE_DRIVE_TOKENS_PATH:./config/google/tokens}
+    credentials-path: ${GOOGLE_DRIVE_CREDENTIALS_PATH}
+    tokens-path: ${GOOGLE_DRIVE_TOKENS_PATH}
 
 volunteer:
   volunteerPresenceConfirmationUlr: https://volunteer-fe.amanemisalovereaddeathnote.workers.dev/?eventId=%s&userId=%s
