@@ -18,7 +18,20 @@ data class Event(
     val createdAt: Instant? = Instant.now(),
     val createdBy: String,
     val lastModifiedAt: Instant? = Instant.now(),
-    val lastModifiedBy: String
+    val lastModifiedBy: String,
+    val location: String? = null,
+    val nrVolunteers: Int? = null,
+    val startDate: String? = null,
+    val endDate: String? = null,
+    val dates: List<String>? = null,
+    val time: String? = null,
+    val coverImage: String? = null,
+    val images: List<String>? = null,
+    val eventType: String? = null,
+    val dressCode: String? = null,
+    val duration: String? = null,
+    val contactPhone: String? = null,
+    val contactEmail: String? = null
 )
 
 @Document("eventFiles")

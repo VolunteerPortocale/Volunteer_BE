@@ -3,22 +3,58 @@
 package com.portocale.volunteer.event
 
 import com.portocale.volunteer.config.LanguageApi
+import com.portocale.volunteer.graphql.model.DressCodeGQL
+import com.portocale.volunteer.graphql.model.EventDurationGQL
+import com.portocale.volunteer.graphql.model.EventGQL
+import com.portocale.volunteer.graphql.model.EventTypeGQL
 
 
-fun Event.toEventApi(language: LanguageApi): EventApi {
+fun Event.toEventApi(language: LanguageApi = LanguageApi.RO): EventApi {
     return EventApi(
         id = id ?: error(IllegalStateException("ID is null")),
         details = details.toEventDetailsApi(language),
         category = category.toEventCategoryApi(),
-        storageFolderId = storageFolderId ?: error(IllegalStateException("StorageFolderId is null")),
+        storageFolderId = storageFolderId ?: "",
         status = status.toEventStatusApi(),
         startTime = startTime,
         createdAt = createdAt,
         createdBy = createdBy,
         lastModifiedAt = lastModifiedAt,
         lastModifiedBy = lastModifiedBy,
+        location = location,
+        nrVolunteers = nrVolunteers,
+        startDate = startDate,
+        endDate = endDate,
+        dates = dates,
+        time = time,
+        coverImage = coverImage,
+        images = images,
+        eventType = eventType,
+        dressCode = dressCode,
+        duration = duration,
+        contactPhone = contactPhone,
+        contactEmail = contactEmail
     )
 }
+
+fun EventApi.toEventGQL(): EventGQL = EventGQL(
+    id,
+    details.title,
+    details.description,
+    location.orEmpty(),
+    nrVolunteers ?: 0,
+    startDate ?: startTime.toString(),
+    endDate ?: details.endTime?.toString(),
+    dates ?: emptyList(),
+    time,
+    coverImage,
+    images ?: emptyList(),
+    eventType?.let { runCatching { EventTypeGQL.valueOf(it) }.getOrNull() } ?: EventTypeGQL.OTHER,
+    dressCode?.let { runCatching { DressCodeGQL.valueOf(it) }.getOrNull() } ?: DressCodeGQL.CASUAL,
+    duration?.let { runCatching { EventDurationGQL.valueOf(it) }.getOrNull() } ?: EventDurationGQL.ONE_DAY,
+    contactEmail.orEmpty(),
+    contactPhone.orEmpty()
+)
 
 fun EventDetails.toEventDetailsApi(language: LanguageApi): EventDetailsApi {
     return EventDetailsApi(

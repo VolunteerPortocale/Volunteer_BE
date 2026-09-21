@@ -1,10 +1,125 @@
 type Query {
     getAllUsers: [User!]!
     getUserById(id: String!): User!
+    getAllEvents: [Event!]!
+    getEventById(id: String!): Event!
+}
+
+type Mutation {
+    publishEvent(input: PublishEventInput!): Event!
+    modifyEventById(id: String!, input: ModifyEventInput!): Event!
 }
 
 type User {
     id: String
     name: String!
     age: Int!
+}
+
+type Event {
+    id: String
+    name: String!
+    description: String!
+    location: String!
+    nrVolunteers: Int!
+    startDate: String!
+    endDate: String
+    dates: [String!]
+    time: String
+    coverImage: String
+    images: [String!]!
+    eventType: EventType!
+    dressCode: DressCode!
+    duration: EventDuration!
+    email: String!
+    phone: String!
+}
+
+enum EventType {
+    SOCIAL
+    ANIMAL_CARE
+    CHILDREN_AND_YOUTH
+    EDUCATION
+    ENVIRONMENT
+    HEALTH
+    DISABILITY_SUPPORT
+    ELDERLY_CARE
+    DISASTER
+    POVERTY
+    CULTURE
+    SPORT
+    FESTIVALS
+    TECHNOLOGY
+    BUSINESS
+    EMPLOYMENT
+    SCIENCE
+    AGRICULTURE
+    CONSTRUCTION
+    RELIGION
+    HUMAN_RIGHTS
+    LEGAL
+    SAFETY
+    FAMILY
+    LGBTQ_PLUS
+    REFUGEE_SUPPORT
+    INTERNATIONAL_VOLUNTEERING
+    TOURISM
+    HERITAGE
+    MEDIA
+    GARDENING
+    PEACE
+    ADDICTION_RECOVERY
+    OTHER
+}
+
+enum DressCode {
+    FORMAL
+    CASUAL
+}
+
+enum EventDuration {
+    ONE_DAY
+    TWO_DAYS
+    THREE_DAYS
+    FOUR_DAYS
+    FIVE_DAYS
+    SIX_DAYS
+    SEVEN_DAYS
+}
+
+input PublishEventInput {
+    name: String!
+    description: String!
+    location: String!
+    nrVolunteers: Int!
+    startDate: String!
+    endDate: String
+    dates: [String!]
+    time: String
+    coverImage: String
+    images: [String!]
+    eventType: EventType!
+    dressCode: DressCode!
+    duration: EventDuration!
+    email: String!
+    phone: String!
+}
+
+input ModifyEventInput {
+    name: String
+    description: String
+    location: String
+    nrVolunteers: Int
+    startDate: String
+    endDate: String
+    dates: [String!]
+    time: String
+    dressCode: DressCode
+    coverImage: String
+    removeCover: Boolean
+    images: [String!]
+    eventType: EventType
+    duration: EventDuration
+    email: String
+    phone: String
 }
