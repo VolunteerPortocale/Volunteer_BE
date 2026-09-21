@@ -1,3 +1,4 @@
+#set($subject = $messages.get("email.welcome.title", $locale))
 <!DOCTYPE html>
 <html lang="ro">
 <head>

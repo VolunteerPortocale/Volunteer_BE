@@ -2,7 +2,7 @@
     <div class="header-content">
         <img
                 class="logo"
-                src="../assets/favicon.ico"
+                src="cid:appLogo"
                 alt="VOLUNTEERIO"
         />
     </div>

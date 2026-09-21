@@ -1,0 +1,27 @@
+#set($subject = $messages.get("email.enrollment.confirmation.title", $locale))
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8"/>
+    #parse("shared/styles.vm")
+</head>
+
+<body>
+
+    #parse("shared/header.vm")
+
+<div class="page">
+    <div class="content">
+        <h1 class="title">$messages.get("email.enrollment.confirmation.title", $locale)</h1>
+        <p class="content">$messages.get("email.enrollment.confirmation.content", $locale)</p>
+
+        <div style="margin: 32px 0;">
+            <img src="cid:qrCode" alt="QR Code" width="300" height="300" style="border: 1px solid #E0E0E0; border-radius: 8px; padding: 8px; background: #FFFFFF;" />
+        </div>
+
+        <p class="subtitle">$messages.get("email.enrollment.confirmation.instruction", $locale)</p>
+    </div>
+</div>
+
+</body>
+</html>

@@ -8,6 +8,8 @@ import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.VelocityEngine
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.ByteArrayResource
+import org.springframework.core.io.ClassPathResource
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
@@ -27,34 +29,27 @@ class EmailServiceImpl(
 
     private val log = LoggerFactory.getLogger(EmailServiceImpl::class.java)
 
-    override fun sendSimpleEmail(to: String, subject: String, content: String, isHtml: Boolean) {
-        dispatchEmail(
-            to = to,
-            subject = subject,
-            content = content,
-            isHtml = isHtml,
-            templateName = null
-        )
-    }
-
     override fun sendTemplatedEmail(
         to: String,
-        subject: String,
         templateName: String,
         templateModel: Map<String, Any>,
-        locale: Locale
+        locale: Locale,
+        subject: String?,
+        inlineImages: Map<String, ByteArray>
     ) {
-        val renderedContent = renderTemplate(templateName, templateModel, locale)
+        val rendered = renderTemplate(templateName, templateModel, locale)
+        val finalSubject = subject ?: rendered.subject ?: DEFAULT_SUBJECT
+
         dispatchEmail(
             to = to,
-            subject = subject,
-            content = renderedContent,
-            isHtml = true,
-            templateName = templateName
+            subject = finalSubject,
+            content = rendered.content,
+            templateName = templateName,
+            inlineImages = inlineImages
         )
     }
 
-    private fun renderTemplate(templateName: String, model: Map<String, Any>, locale: Locale): String {
+    private fun renderTemplate(templateName: String, model: Map<String, Any>, locale: Locale): RenderedEmail {
         val normalizedTemplate = if (templateName.endsWith(".vm")) templateName else "$templateName.vm"
         val templatePath = if (normalizedTemplate.startsWith("templates/")) {
             normalizedTemplate
@@ -70,7 +65,9 @@ class EmailServiceImpl(
 
         val writer = StringWriter()
         velocityEngine.mergeTemplate(templatePath, StandardCharsets.UTF_8.name(), context, writer)
-        return writer.toString()
+
+        val resolvedSubject = context.get("subject") as? String
+        return RenderedEmail(subject = resolvedSubject, content = writer.toString())
     }
 
     @SuppressWarnings("TooGenericExceptionCaught")
@@ -78,8 +75,8 @@ class EmailServiceImpl(
         to: String,
         subject: String,
         content: String,
-        isHtml: Boolean,
-        templateName: String?
+        templateName: String,
+        inlineImages: Map<String, ByteArray> = emptyMap()
     ) {
         var status = EmailStatus.SENT
         var errorMessage: String? = null
@@ -95,7 +92,16 @@ class EmailServiceImpl(
             helper.setFrom(defaultFromAddress)
             helper.setTo(to)
             helper.setSubject(subject)
-            helper.setText(content, isHtml)
+            helper.setText(content, true)
+
+            inlineImages.forEach { (contentId, bytes) ->
+                helper.addInline(contentId, ByteArrayResource(bytes), "image/png")
+            }
+
+            val logoResource = ClassPathResource(HEADER_LOGO_PATH)
+            if (logoResource.exists()) {
+                helper.addInline("appLogo", logoResource, "image/x-icon")
+            }
 
             mailSender.send(message)
             log.info("Email sent successfully to: {} with subject: '{}'", to, subject)
@@ -116,5 +122,15 @@ class EmailServiceImpl(
                 )
             )
         }
+    }
+
+    private data class RenderedEmail(
+        val subject: String?,
+        val content: String
+    )
+
+    companion object {
+        private const val DEFAULT_SUBJECT = "Volunteerio Notification"
+        private const val HEADER_LOGO_PATH = "templates/assets/favicon.ico"
     }
 }
