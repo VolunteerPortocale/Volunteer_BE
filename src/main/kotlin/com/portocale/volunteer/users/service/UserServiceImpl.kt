@@ -1,5 +1,6 @@
 package com.portocale.volunteer.users.service
 
+import com.portocale.volunteer.config.jwt.Principal
 import com.portocale.volunteer.notification.service.EmailService
 import com.portocale.volunteer.notification.service.OtpGenerator
 import com.portocale.volunteer.users.CreateUserApi
@@ -20,6 +21,7 @@ import com.portocale.volunteer.users.toUser
 import com.portocale.volunteer.users.toUserApi
 import java.time.Duration
 import java.time.Instant
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -129,6 +131,14 @@ class UserServiceImpl(
 
         return userRepository.save(updatedUser).toUserApi()
     }
+
+    override fun update(input: UpdateUserApi): UserApi {
+        val authenticatedUser = SecurityContextHolder.getContext().authentication as Principal
+
+        val user = getUserById(authenticatedUser.userId)
+        val updatedUser = user.toUpdatedUser(input)
+
+        return userRepository.save(updatedUser).toUserApi()    }
 
     override fun suspend(
         id: String,

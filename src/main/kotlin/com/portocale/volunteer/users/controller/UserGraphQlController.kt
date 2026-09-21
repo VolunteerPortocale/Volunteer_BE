@@ -58,11 +58,9 @@ class UserGraphQlController(
 
     @MutationMapping
     fun updateUser(
-        @Argument id: String,
         @Argument input: UpdateUserInputGQL
     ): UserGQL {
         return userService.update(
-            id = id,
             input = input.toUpdateUserApi()
         ).toUserGql()
     }

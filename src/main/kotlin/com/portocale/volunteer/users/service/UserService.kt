@@ -18,9 +18,14 @@ interface UserService {
     @PreAuthorize("hasRole('ADMIN')")
     fun create(input: CreateUserApi): UserApi
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO', 'VOLUNTEER')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     fun update(
         id: String,
+        input: UpdateUserApi,
+    ): UserApi
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO', 'VOLUNTEER')")
+    fun update(
         input: UpdateUserApi,
     ): UserApi
 
