@@ -5,6 +5,7 @@ import java.util.Locale
 interface EmailService {
 
     fun sendSimpleEmail(to: String, subject: String, content: String, isHtml: Boolean = false)
+    fun sendRegistrationEmail(to: String, firstName: String, otp: String)
 
     fun sendTemplatedEmail(
         to: String,

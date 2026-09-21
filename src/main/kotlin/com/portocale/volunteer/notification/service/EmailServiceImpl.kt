@@ -37,6 +37,10 @@ class EmailServiceImpl(
         )
     }
 
+    override fun sendRegistrationEmail(to: String, firstName: String, otp: String) {
+        println("Not implemented yet")
+    }
+
     override fun sendTemplatedEmail(
         to: String,
         subject: String,

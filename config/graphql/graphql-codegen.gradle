@@ -1,5 +1,8 @@
 tasks.named("graphqlCodegen") {
-    graphqlSchemaPaths = ["$projectDir/src/main/resources/graphql/schema.graphqls".toString()]
+    graphqlSchemaPaths = fileTree("$projectDir/src/main/resources/graphql") {
+        include "**/*.graphqls"
+    }.files.collect { it.absolutePath }
+
     outputDir = file(layout.buildDirectory.dir("generated/graphql"))
     packageName = "com.portocale.volunteer.graphql.model"
     modelNameSuffix = "GQL"
