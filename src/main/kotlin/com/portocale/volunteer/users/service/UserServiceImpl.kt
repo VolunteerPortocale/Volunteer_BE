@@ -1,5 +1,6 @@
 package com.portocale.volunteer.users.service
 
+import com.portocale.volunteer.config.LanguageApi
 import com.portocale.volunteer.config.jwt.Principal
 import com.portocale.volunteer.notification.service.EmailService
 import com.portocale.volunteer.notification.service.OtpGenerator
@@ -55,7 +56,8 @@ class UserServiceImpl(
     }
 
     override fun selfRegister(
-        input: CreateUserApi
+        input: CreateUserApi,
+        language: LanguageApi
     ): UserApi {
         val email = input.email.trim().lowercase()
 
@@ -70,7 +72,8 @@ class UserServiceImpl(
         emailService.sendRegistrationEmail(
             to = savedUser.email,
             firstName = savedUser.firstName,
-            otp = otp
+            otp = otp,
+            language = language
         )
 
         return savedUser.toUserApi()
@@ -95,7 +98,8 @@ class UserServiceImpl(
     }
 
     override fun resendRegistrationOtp(
-        email: String
+        email: String,
+        language: LanguageApi
     ) {
 
         val normalizedEmail = email.trim().lowercase()
@@ -118,7 +122,8 @@ class UserServiceImpl(
         emailService.sendRegistrationEmail(
             to = updatedUser.email,
             firstName = updatedUser.firstName,
-            otp = otp
+            otp = otp,
+            language = language
         )
     }
 

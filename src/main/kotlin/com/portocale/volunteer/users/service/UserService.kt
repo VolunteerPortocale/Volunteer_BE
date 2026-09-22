@@ -1,10 +1,12 @@
 package com.portocale.volunteer.users.service
 
+import com.portocale.volunteer.config.LanguageApi
 import com.portocale.volunteer.users.CreateUserApi
 import com.portocale.volunteer.users.LoginUserApi
 import com.portocale.volunteer.users.UpdateUserApi
 import com.portocale.volunteer.users.UserApi
 import java.time.Instant
+import java.util.Locale
 import org.springframework.security.access.prepost.PreAuthorize
 
 interface UserService {
@@ -39,7 +41,7 @@ interface UserService {
     fun delete(id: String): Boolean
 
     //    Unprotected services
-    fun selfRegister(input: CreateUserApi): UserApi
+    fun selfRegister(input: CreateUserApi, language: LanguageApi): UserApi
 
     fun validateRegistrationOtp(
         email: String,
@@ -47,7 +49,8 @@ interface UserService {
     ): UserApi
 
     fun resendRegistrationOtp(
-        email: String
+        email: String,
+        language: LanguageApi
     )
 
     fun login(input: LoginUserApi): UserApi
