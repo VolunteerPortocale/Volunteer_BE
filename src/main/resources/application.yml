@@ -46,11 +46,19 @@ users:
   credentials:
     - username: admin
       password: password123
-      roles: USER
+      roles: ADMIN
 
-    - username: notadmin
+    - username: moderator
       password: password123
-      roles: ADNIN
+      roles: MODERATOR
+
+    - username: volunteer
+      password: password123
+      roles: VOLUNTEER
+
+    - username: ngo
+      password: password123
+      roles: NGO
 
 google:
   drive:

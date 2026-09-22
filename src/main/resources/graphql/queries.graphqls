@@ -2,9 +2,3 @@ type Query {
     getAllUsers: [User!]!
     getUserById(id: String!): User!
 }
-
-type User {
-    id: String
-    name: String!
-    age: Int!
-}
