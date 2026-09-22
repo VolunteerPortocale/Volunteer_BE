@@ -30,6 +30,11 @@ class UserGraphQlController(
         return userService.getById(id).toUserGql()
     }
 
+    @QueryMapping
+    fun isEmailRegistered(@Argument("email") email: String): Boolean {
+        return userService.isEmailRegistered(email)
+    }
+
     @MutationMapping
     fun createUser(
         @Argument input: CreateUserInputGQL,

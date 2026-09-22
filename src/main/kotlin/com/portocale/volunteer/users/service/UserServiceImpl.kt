@@ -174,6 +174,10 @@ class UserServiceImpl(
         return user.toUserApi()
     }
 
+    override fun isEmailRegistered(email: String): Boolean {
+        return userRepository.existsByEmail(email.trim().lowercase())
+    }
+
     private fun getUserById(id: String): User {
         return userRepository.findById(id)
             .orElseThrow {

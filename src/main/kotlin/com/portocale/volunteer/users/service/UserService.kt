@@ -55,4 +55,6 @@ interface UserService {
 
     fun login(input: LoginUserApi): UserApi
 
+    fun isEmailRegistered(email: String): Boolean
+
 }
