@@ -1,5 +1,6 @@
 package com.portocale.volunteer.users.controller
 
+import com.portocale.volunteer.config.toLanguageApi
 import com.portocale.volunteer.graphql.model.CreateUserInputGQL
 import com.portocale.volunteer.graphql.model.UpdateUserInputGQL
 import com.portocale.volunteer.graphql.model.UserGQL
@@ -8,6 +9,7 @@ import com.portocale.volunteer.users.toCreateUserApi
 import com.portocale.volunteer.users.toUpdateUserApi
 import com.portocale.volunteer.users.toUserGql
 import java.time.Instant
+import java.util.Locale
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -30,9 +32,10 @@ class UserGraphQlController(
 
     @MutationMapping
     fun createUser(
-        @Argument input: CreateUserInputGQL
+        @Argument input: CreateUserInputGQL,
+        locale: Locale
     ): UserGQL {
-        return userService.selfRegister(input.toCreateUserApi()).toUserGql()
+        return userService.selfRegister(input.toCreateUserApi(), locale.toLanguageApi()).toUserGql()
     }
 
     @MutationMapping
@@ -50,9 +53,10 @@ class UserGraphQlController(
 
     @MutationMapping
     fun resendRegistrationOtp(
-        @Argument email: String
+        @Argument email: String,
+        locale: Locale
     ): Boolean {
-        userService.resendRegistrationOtp(email)
+        userService.resendRegistrationOtp(email, locale.toLanguageApi())
         return true
     }
 

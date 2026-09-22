@@ -45,7 +45,7 @@ class EmailServiceImpl(
         val authenticatedUser = SecurityContextHolder.getContext().authentication as Principal
         val email = authenticatedUser.email
         val userId = authenticatedUser.userId
-        val templateName = EmailSubject.ENROLLMENT_CONFIRMATION.value
+        val templateName = TemplateName.ENROLLMENT_CONFIRMATION.value
         val qrBytes = qrService.generateVolunteerPresenceConfirmationQr(eventId, userId)
 
         val content = renderContent(
@@ -55,15 +55,28 @@ class EmailServiceImpl(
 
         dispatchEmail(
             to = email,
-            subject = templateName,
+            subject = EmailSubject.ENROLLMENT_CONFIRMATION.value,
             content = content,
-            templateName = TemplateName.ENROLLMENT_CONFIRMATION.value,
+            templateName = templateName,
             inlineImages = mapOf(TemplateKeys.QR_CODE.value to qrBytes)
         )
     }
 
-    override fun sendRegistrationEmail(to: String, firstName: String, otp: String) {
-        println("Not implemented yet")
+    override fun sendRegistrationEmail(to: String, firstName: String, otp: String, language: LanguageApi) {
+        val templateName = TemplateName.REGISTRATION.value
+
+        val content = renderContent(
+            templateName = templateName,
+            language = language,
+            model = mapOf(TemplateKeys.OTP.value to otp)
+        )
+
+        dispatchEmail(
+            to = to,
+            subject = EmailSubject.REGISTRATION.value,
+            content = content,
+            templateName = templateName
+        )
     }
 
     private fun renderContent(templateName: String, model: Map<String, Any>? = null, language: LanguageApi): String {
