@@ -13,7 +13,6 @@ import jakarta.mail.MessagingException
 import jakarta.mail.internet.MimeMessage
 import java.io.StringWriter
 import java.nio.charset.StandardCharsets
-import java.util.*
 import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.VelocityEngine
 import org.slf4j.LoggerFactory
@@ -26,9 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.util.MimeTypeUtils.IMAGE_PNG_VALUE
 
-private const val SUBJECT = "subject"
 private const val HEADER_LOGO_PATH = "templates/assets/favicon.ico"
-
 private const val X_ICON_CONTENT_TYPE = "image/x-icon"
 
 @Service
@@ -48,31 +45,25 @@ class EmailServiceImpl(
         val authenticatedUser = SecurityContextHolder.getContext().authentication as Principal
         val email = authenticatedUser.email
         val userId = authenticatedUser.userId
-        val content = renderContent(
-            templateName = TemplateName.ENROLLMENT_CONFIRMATION.value,
-            language = language
-        )
+        val templateName = EmailSubject.ENROLLMENT_CONFIRMATION.value
         val qrBytes = qrService.generateVolunteerPresenceConfirmationQr(eventId, userId)
 
-    override fun sendRegistrationEmail(to: String, firstName: String, otp: String) {
-        println("Not implemented yet")
-    }
+        val content = renderContent(
+            templateName = templateName,
+            language = language
+        )
 
-    override fun sendTemplatedEmail(
-        to: String,
-        subject: String,
-        templateName: String,
-        templateModel: Map<String, Any>,
-        locale: Locale
-    ) {
-        val renderedContent = renderTemplate(templateName, templateModel, locale)
         dispatchEmail(
             to = email,
-            subject = EmailSubject.ENROLLMENT_CONFIRMATION.value,
+            subject = templateName,
             content = content,
             templateName = TemplateName.ENROLLMENT_CONFIRMATION.value,
             inlineImages = mapOf(TemplateKeys.QR_CODE.value to qrBytes)
         )
+    }
+
+    override fun sendRegistrationEmail(to: String, firstName: String, otp: String) {
+        println("Not implemented yet")
     }
 
     private fun renderContent(templateName: String, model: Map<String, Any>? = null, language: LanguageApi): String {
