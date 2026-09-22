@@ -15,8 +15,8 @@ spring:
       max-request-size: 150MB
 
   mongodb:
-    username: volunteer_be
-    password: taSudhu6K_VLw
+    username: ${MONGO_USERNAME:volunteer_be}
+    password: ${MONGO_PASSWORD}
     database: volunteer_db_test
     uri: mongodb+srv://${spring.mongodb.username}:${spring.mongodb.password}@cluster0.zgo27k9.mongodb.net/${spring.mongodb.database}?retryWrites=true
   security:
@@ -39,18 +39,35 @@ spring:
   messages:
     basename: templates/i18n/messages
     encoding: UTF-8
+
 server:
   port: 8081
+
+management:
+  health:
+    mail:
+      enabled: false
+  endpoint:
+    health:
+      show-details: always   # TEMPORARY for debugging, change to when-authorized after
 
 users:
   credentials:
     - username: admin
       password: password123
-      roles: USER
+      roles: ADMIN
 
-    - username: notadmin
+    - username: moderator
       password: password123
-      roles: ADNIN
+      roles: MODERATOR
+
+    - username: volunteer
+      password: password123
+      roles: VOLUNTEER
+
+    - username: ngo
+      password: password123
+      roles: NGO
 
 google:
   drive:
@@ -61,4 +78,3 @@ google:
 
 volunteer:
   volunteerPresenceConfirmationUlr: https://volunteer-fe.amanemisalovereaddeathnote.workers.dev/?eventId=%s&userId=%s
-

@@ -10,4 +10,3 @@ data class FileReference(
 data class PlaceholderStorage(
     val fileId: String
 )
-

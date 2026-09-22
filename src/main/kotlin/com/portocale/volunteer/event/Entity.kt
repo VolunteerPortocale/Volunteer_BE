@@ -84,7 +84,7 @@ data class EventDescription(
 data class EventStatusHistory(
     val status: EventStatus,
     val occurredAt: Instant? = Instant.now(),
-    val modifiedBy: String
+    val actor: String
 )
 
 enum class EventStatus {

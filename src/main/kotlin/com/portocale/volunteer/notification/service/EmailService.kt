@@ -1,16 +1,8 @@
 package com.portocale.volunteer.notification.service
 
-import java.util.Locale
+import com.portocale.volunteer.config.LanguageApi
 
 interface EmailService {
-
-    fun sendSimpleEmail(to: String, subject: String, content: String, isHtml: Boolean = false)
-
-    fun sendTemplatedEmail(
-        to: String,
-        subject: String,
-        templateName: String,
-        templateModel: Map<String, Any> = emptyMap(),
-        locale: Locale = Locale.ENGLISH
-    )
+    fun sendEnrollmentConfirmation(eventId: String, language: LanguageApi)
+    fun sendRegistrationEmail(to: String, firstName: String, otp: String, language: LanguageApi)
 }

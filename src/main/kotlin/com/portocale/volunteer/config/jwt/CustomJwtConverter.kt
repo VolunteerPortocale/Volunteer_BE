@@ -54,9 +54,9 @@ class CustomJwtConverter : Converter<Jwt, Principal> {
 
         // ── Standard claims ────────────────────────────────────────
         val userId = jwt.subject ?: ""
-        val email = jwt.getClaimAsString("email")
-        val firstName = jwt.getClaimAsString("given_name")
-        val lastName = jwt.getClaimAsString("family_name")
+        val email = jwt.getClaimAsString("email") ?: error(IllegalStateException("Missing email"))
+        val firstName = jwt.getClaimAsString("given_name") ?: error(IllegalStateException("Missing given name"))
+        val lastName = jwt.getClaimAsString("family_name") ?: error(IllegalStateException("Missing family name"))
 
         return Principal(
             userId = userId,
