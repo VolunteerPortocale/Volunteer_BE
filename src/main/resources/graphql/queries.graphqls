@@ -5,16 +5,7 @@ type Query {
     getEventById(id: String!): Event!
 }
 
-type Mutation {
-    publishEvent(input: PublishEventInput!): Event!
-    modifyEventById(id: String!, input: ModifyEventInput!): Event!
-}
 
-type User {
-    id: String
-    name: String!
-    age: Int!
-}
 
 type Event {
     id: String
