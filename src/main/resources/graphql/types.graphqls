@@ -76,6 +76,7 @@ input CreateUserInput {
     role: CreateUserRole!
     eventCategoryPreferences: [EventCategory]
     password: String!
+    companyName: String
 }
 
 input UpdateUserInput {
@@ -83,4 +84,5 @@ input UpdateUserInput {
     lastName: String
     phoneNumber: String
     eventCategoryPreferences: [EventCategory!]
+    companyName: String
 }

@@ -59,6 +59,7 @@ data class CreateUserApi(
     val phoneNumber: String,
     val role: CreateUserRoleApi,
     val eventCategoryPreferences: List<EventCategoryApi>? = null,
+    val companyName: String? = null
 )
 
 @Schema(name = "LoginUser")
@@ -76,7 +77,8 @@ data class UpdateUserApi(
     val firstName: String? = null,
     val lastName: String? = null,
     val phoneNumber: String? = null,
-    val eventCategoryPreferences: List<EventCategoryApi>? = null
+    val eventCategoryPreferences: List<EventCategoryApi>? = null,
+    val companyName: String? = null
 )
 
 @Schema(name = "ValidateRegistrationOtp")

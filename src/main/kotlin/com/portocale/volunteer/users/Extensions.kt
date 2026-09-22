@@ -59,7 +59,8 @@ fun CreateUserInputGQL.toCreateUserApi(): CreateUserApi {
         phoneNumber = phoneNumber,
         role = role.toCreateUserRoleApi(),
         eventCategoryPreferences = eventCategoryPreferences?.map { it.toEventCategoryApi() },
-        password = password
+        password = password,
+        companyName = companyName
     )
 }
 
@@ -71,6 +72,7 @@ fun UpdateUserInputGQL.toUpdateUserApi(): UpdateUserApi {
         eventCategoryPreferences = eventCategoryPreferences?.map {
             it.toEventCategoryApi()
         },
+        companyName = companyName
     )
 }
 
@@ -160,34 +162,28 @@ fun CreateUserApi.toUser(
         email = email.trim().lowercase(),
         phoneNumber = phoneNumber,
         role = role.toUserRole(),
-
         status = if (isSelfRegistered) {
             UserStatus.INACTIVE
         } else {
             UserStatus.ACTIVE
         },
-
         eventCategoryPreferences =
             eventCategoryPreferences?.map {
                 it.toEventCategory()
             },
-
+        companyName = companyName,
         createdAt = now,
-
         passwordHash = passwordEncoder.encode(password) ?: error(IllegalStateException("Password is empty")),
-
         registrationOtpHash = if (isSelfRegistered) {
             passwordEncoder.encode(otp!!)
         } else {
             null
         },
-
         registrationExpiresAt = if (isSelfRegistered) {
             now.plus(REGISTRATION_VALIDITY)
         } else {
             null
         },
-
         registrationOtpAttempts = 0
     )
 }
