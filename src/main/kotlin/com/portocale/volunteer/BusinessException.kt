@@ -19,6 +19,9 @@ open class BusinessException(
 ) : RuntimeException(message, cause)
 
 enum class ErrorCode(val value: String) {
+    E400_001("400-001"),    // InvalidCredentials
+    E400_002("400-002"),    // InvalidOtpState
+    E400_003("400-003"),    // TooManyOtpAttempts
     E404_001("404-001"),    // UserNotFound
     E404_002("404-002"),    // EventNotFound
     E404_003("404-003"),    // FolderNotFound
@@ -26,4 +29,5 @@ enum class ErrorCode(val value: String) {
     E409_001("409-001"),    // UserConflict
     E409_002("409-002"),    // StorageConflict
     E409_003("409-003"),    // EventConflict
+    E500_001("500-001"),    // UserClassCastException
 }

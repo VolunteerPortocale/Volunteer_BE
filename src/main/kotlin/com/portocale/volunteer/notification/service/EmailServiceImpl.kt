@@ -54,6 +54,18 @@ class EmailServiceImpl(
         )
         val qrBytes = qrService.generateVolunteerPresenceConfirmationQr(eventId, userId)
 
+    override fun sendRegistrationEmail(to: String, firstName: String, otp: String) {
+        println("Not implemented yet")
+    }
+
+    override fun sendTemplatedEmail(
+        to: String,
+        subject: String,
+        templateName: String,
+        templateModel: Map<String, Any>,
+        locale: Locale
+    ) {
+        val renderedContent = renderTemplate(templateName, templateModel, locale)
         dispatchEmail(
             to = email,
             subject = EmailSubject.ENROLLMENT_CONFIRMATION.value,
