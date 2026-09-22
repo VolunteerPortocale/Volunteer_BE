@@ -35,7 +35,6 @@ class EventExtensionsTest {
             time = "19:00 - 23:00",
             coverImage = "https://example.com/gala.jpg",
             images = listOf("https://example.com/gala1.jpg", "https://example.com/gala2.jpg"),
-            eventType = "CULTURE",
             dressCode = "FORMAL",
             duration = "ONE_DAY",
             contactPhone = "+37360000000",

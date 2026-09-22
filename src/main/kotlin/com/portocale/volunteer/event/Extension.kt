@@ -7,54 +7,118 @@ import com.portocale.volunteer.graphql.model.DressCodeGQL
 import com.portocale.volunteer.graphql.model.EventDurationGQL
 import com.portocale.volunteer.graphql.model.EventGQL
 import com.portocale.volunteer.graphql.model.EventTypeGQL
+import com.portocale.volunteer.graphql.model.ModifyEventInputGQL
+import com.portocale.volunteer.graphql.model.PublishEventInputGQL
+import java.time.Instant
 
 
-fun Event.toEventApi(language: LanguageApi = LanguageApi.RO): EventApi {
+fun Event.toEventApi(language: LanguageApi): EventApi {
     return EventApi(
         id = id ?: error(IllegalStateException("ID is null")),
         details = details.toEventDetailsApi(language),
         category = category.toEventCategoryApi(),
-        storageFolderId = storageFolderId ?: "",
+        storageFolderId = storageFolderId ?: error(IllegalStateException("StorageFolderId is null")),
         status = status.toEventStatusApi(),
         startTime = startTime,
         createdAt = createdAt,
         createdBy = createdBy,
         lastModifiedAt = lastModifiedAt,
-        lastModifiedBy = lastModifiedBy,
-        location = location,
-        nrVolunteers = nrVolunteers,
-        startDate = startDate,
-        endDate = endDate,
-        dates = dates,
-        time = time,
-        coverImage = coverImage,
-        images = images,
-        eventType = eventType,
-        dressCode = dressCode,
-        duration = duration,
-        contactPhone = contactPhone,
-        contactEmail = contactEmail
+        lastModifiedBy = lastModifiedBy
     )
 }
+
+fun Event.toEventGQL(language: LanguageApi = LanguageApi.RO): EventGQL = EventGQL(
+    id,
+    details.title.translated(language),
+    details.description.translated(language),
+    details.location.orEmpty(),
+    0,
+    startTime.toString(),
+    details.endTime?.toString(),
+    details.dates ?: emptyList(),
+    null,
+    null,
+    emptyList(),
+    runCatching { EventTypeGQL.valueOf(category.name) }.getOrDefault(EventTypeGQL.OTHER),
+    runCatching { DressCodeGQL.valueOf(details.dressCode.name) }.getOrDefault(DressCodeGQL.CASUAL),
+    EventDurationGQL.ONE_DAY,
+    details.contactEmail.orEmpty(),
+    details.contactPhone.orEmpty()
+)
 
 fun EventApi.toEventGQL(): EventGQL = EventGQL(
     id,
     details.title,
     details.description,
-    location.orEmpty(),
-    nrVolunteers ?: 0,
-    startDate ?: startTime.toString(),
-    endDate ?: details.endTime?.toString(),
-    dates ?: emptyList(),
-    time,
-    coverImage,
-    images ?: emptyList(),
-    eventType?.let { runCatching { EventTypeGQL.valueOf(it) }.getOrNull() } ?: EventTypeGQL.OTHER,
-    dressCode?.let { runCatching { DressCodeGQL.valueOf(it) }.getOrNull() } ?: DressCodeGQL.CASUAL,
-    duration?.let { runCatching { EventDurationGQL.valueOf(it) }.getOrNull() } ?: EventDurationGQL.ONE_DAY,
-    contactEmail.orEmpty(),
-    contactPhone.orEmpty()
+    details.location.orEmpty(),
+    0,
+    startTime.toString(),
+    details.endTime?.toString(),
+    details.dates ?: emptyList(),
+    null,
+    null,
+    emptyList(),
+    runCatching { EventTypeGQL.valueOf(category.name) }.getOrDefault(EventTypeGQL.OTHER),
+    runCatching { DressCodeGQL.valueOf(details.dressCode.name) }.getOrDefault(DressCodeGQL.CASUAL),
+    EventDurationGQL.ONE_DAY,
+    details.contactEmail.orEmpty(),
+    details.contactPhone.orEmpty()
 )
+
+fun PublishEventInputGQL.toEntity(): Event {
+    val startInstant = runCatching { Instant.parse(startDate) }.getOrDefault(Instant.now())
+    val endInstant = endDate?.let { runCatching { Instant.parse(it) }.getOrNull() }
+    return Event(
+        details = EventDetails(
+            title = EventTitle(ro = name, en = name, ru = name),
+            description = EventDescription(ro = description, en = description, ru = description),
+            startTime = startInstant,
+            endTime = endInstant,
+            dates = dates.orEmpty(),
+            location = location,
+            contactPhone = phone,
+            contactEmail = email,
+            dressCode = dressCode?.name?.let { runCatching { EventDressCode.valueOf(it) }.getOrNull() }
+                ?: EventDressCode.CASUAL
+        ),
+        category = eventType?.name?.let { runCatching { EventCategory.valueOf(it) }.getOrNull() }
+            ?: EventCategory.OTHER,
+        status = EventStatus.PUBLISHED,
+        startTime = startInstant,
+        createdBy = "system",
+        lastModifiedBy = "system"
+    )
+}
+
+fun Event.applyModifications(input: ModifyEventInputGQL): Event {
+    val updatedStart = input.startDate?.let { runCatching { Instant.parse(it) }.getOrNull() } ?: details.startTime
+    val updatedEnd = input.endDate?.let { runCatching { Instant.parse(it) }.getOrNull() } ?: details.endTime
+    val updatedDressCode = input.dressCode?.name?.let {
+        runCatching { EventDressCode.valueOf(it) }.getOrNull()
+    } ?: details.dressCode
+    val updatedDetails = details.copy(
+        title = input.name?.let { details.title.copy(ro = it, en = it, ru = it) } ?: details.title,
+        description = input.description?.let { details.description.copy(ro = it, en = it, ru = it) } ?: details.description,
+        startTime = updatedStart,
+        endTime = updatedEnd,
+        dates = input.dates ?: details.dates,
+        location = input.location ?: details.location,
+        contactPhone = input.phone ?: details.contactPhone,
+        contactEmail = input.email ?: details.contactEmail,
+        dressCode = updatedDressCode
+    )
+    val updatedCategory = input.eventType?.name?.let {
+        runCatching { EventCategory.valueOf(it) }.getOrNull()
+    } ?: category
+    return copy(
+        details = updatedDetails,
+        category = updatedCategory,
+        startTime = updatedStart,
+        lastModifiedAt = Instant.now(),
+        lastModifiedBy = "system"
+    )
+}
+
 
 fun EventDetails.toEventDetailsApi(language: LanguageApi): EventDetailsApi {
     return EventDetailsApi(
@@ -62,6 +126,11 @@ fun EventDetails.toEventDetailsApi(language: LanguageApi): EventDetailsApi {
         description = description.translated(language),
         startTime = startTime,
         endTime = endTime,
+        dates = dates,
+        location = location,
+        contactPhone = contactPhone,
+        contactEmail = contactEmail,
+        dressCode = dressCode
     )
 }
 
@@ -83,6 +152,7 @@ fun CreateEventDetailsApi.toEventDetails(): EventDetails {
         description = description.toEventDescription(),
         startTime = startTime,
         endTime = endTime,
+        dressCode = EventDressCode.CASUAL // 👈 Add this line
     )
 }
 

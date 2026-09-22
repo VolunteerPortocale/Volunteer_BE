@@ -75,6 +75,7 @@ enum EventType {
 enum DressCode {
     FORMAL
     CASUAL
+    COSTUME
 }
 
 enum EventDuration {
