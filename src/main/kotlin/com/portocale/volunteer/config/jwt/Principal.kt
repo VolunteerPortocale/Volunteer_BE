@@ -24,13 +24,13 @@ class Principal(
     val userId: String,
 
     /** User's email from the `email` claim. */
-    val email: String?,
+    val email: String,
 
     /** User's first name from the `given_name` claim. */
-    val firstName: String?,
+    val firstName: String,
 
     /** User's last name from the `family_name` claim. */
-    val lastName: String?,
+    val lastName: String,
 
     rawJwt: Jwt,
     authorities: Collection<GrantedAuthority>
@@ -50,13 +50,7 @@ class Principal(
     override fun getTokenAttributes(): Map<String, Any> = token.claims
 
     /** Convenience: full name if both parts exist. */
-    val displayName: String?
-        get() = when {
-            firstName != null && lastName != null -> "$firstName $lastName"
-            firstName != null -> firstName
-            lastName != null -> lastName
-            else -> null
-        }
+    val displayName: String = "$firstName $lastName"
 
     /** Check if user has a specific realm role (e.g. "admin", "user"). */
     fun hasRealmRole(role: String): Boolean =
