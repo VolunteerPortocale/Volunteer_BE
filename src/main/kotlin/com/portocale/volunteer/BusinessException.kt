@@ -24,7 +24,8 @@ enum class ErrorCode(val value: String) {
     E400_003("400-003"),    // TooManyOtpAttempts
     E404_001("404-001"),    // UserNotFound
     E404_002("404-002"),    // EventNotFound
-    E404_003("404-003"),    // FolderNorFound
+    E404_003("404-003"),    // FolderNotFound
+    E404_004("404-004"),    // EmailNotFound
     E409_001("409-001"),    // UserConflict
     E409_002("409-002"),    // StorageConflict
     E409_003("409-003"),    // EventConflict

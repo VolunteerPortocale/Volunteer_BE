@@ -1,19 +1,32 @@
 package com.portocale.volunteer.notification.service
 
+import com.portocale.volunteer.config.LanguageApi
+import com.portocale.volunteer.config.jwt.Principal
 import com.portocale.volunteer.notification.EmailLog
 import com.portocale.volunteer.notification.EmailStatus
+import com.portocale.volunteer.notification.EmailSubject
+import com.portocale.volunteer.notification.TemplateKeys
+import com.portocale.volunteer.notification.TemplateName
 import com.portocale.volunteer.notification.repository.EmailLogRepository
+import com.portocale.volunteer.qr.service.QrService
+import jakarta.mail.MessagingException
 import jakarta.mail.internet.MimeMessage
+import java.io.StringWriter
+import java.nio.charset.StandardCharsets
 import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.VelocityEngine
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.ByteArrayResource
+import org.springframework.core.io.ClassPathResource
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-import java.io.StringWriter
-import java.nio.charset.StandardCharsets
-import java.util.Locale
+import org.springframework.util.MimeTypeUtils.IMAGE_PNG_VALUE
+
+private const val HEADER_LOGO_PATH = "templates/assets/favicon.ico"
+private const val X_ICON_CONTENT_TYPE = "image/x-icon"
 
 @Service
 class EmailServiceImpl(
@@ -22,18 +35,30 @@ class EmailServiceImpl(
     private val messageResolver: MessageResolver,
     private val emailLogRepository: EmailLogRepository,
     @Value("\${spring.mail.sender}")
-    private val defaultFromAddress: String
+    private val defaultFromAddress: String,
+    private val qrService: QrService
 ) : EmailService {
 
     private val log = LoggerFactory.getLogger(EmailServiceImpl::class.java)
 
-    override fun sendSimpleEmail(to: String, subject: String, content: String, isHtml: Boolean) {
+    override fun sendEnrollmentConfirmation(eventId: String, language: LanguageApi) {
+        val authenticatedUser = SecurityContextHolder.getContext().authentication as Principal
+        val email = authenticatedUser.email
+        val userId = authenticatedUser.userId
+        val templateName = EmailSubject.ENROLLMENT_CONFIRMATION.value
+        val qrBytes = qrService.generateVolunteerPresenceConfirmationQr(eventId, userId)
+
+        val content = renderContent(
+            templateName = templateName,
+            language = language
+        )
+
         dispatchEmail(
-            to = to,
-            subject = subject,
+            to = email,
+            subject = templateName,
             content = content,
-            isHtml = isHtml,
-            templateName = null
+            templateName = TemplateName.ENROLLMENT_CONFIRMATION.value,
+            inlineImages = mapOf(TemplateKeys.QR_CODE.value to qrBytes)
         )
     }
 
@@ -41,49 +66,28 @@ class EmailServiceImpl(
         println("Not implemented yet")
     }
 
-    override fun sendTemplatedEmail(
-        to: String,
-        subject: String,
-        templateName: String,
-        templateModel: Map<String, Any>,
-        locale: Locale
-    ) {
-        val renderedContent = renderTemplate(templateName, templateModel, locale)
-        dispatchEmail(
-            to = to,
-            subject = subject,
-            content = renderedContent,
-            isHtml = true,
-            templateName = templateName
-        )
-    }
+    private fun renderContent(templateName: String, model: Map<String, Any>? = null, language: LanguageApi): String {
 
-    private fun renderTemplate(templateName: String, model: Map<String, Any>, locale: Locale): String {
-        val normalizedTemplate = if (templateName.endsWith(".vm")) templateName else "$templateName.vm"
-        val templatePath = if (normalizedTemplate.startsWith("templates/")) {
-            normalizedTemplate
-        } else {
-            "templates/$normalizedTemplate"
-        }
+        val templatePath = "templates/$templateName.vm"
 
         val context = VelocityContext().apply {
-            put("messages", messageResolver)
-            put("locale", locale)
-            model.forEach { (key, value) -> put(key, value) }
+            put(TemplateKeys.MESSAGES.value, messageResolver)
+            put(TemplateKeys.LOCALE.value, language.value)
+            model?.forEach { (key, value) -> put(key, value) }
         }
 
         val writer = StringWriter()
         velocityEngine.mergeTemplate(templatePath, StandardCharsets.UTF_8.name(), context, writer)
+
         return writer.toString()
     }
 
-    @SuppressWarnings("TooGenericExceptionCaught")
     private fun dispatchEmail(
         to: String,
         subject: String,
         content: String,
-        isHtml: Boolean,
-        templateName: String?
+        templateName: String,
+        inlineImages: Map<String, ByteArray> = emptyMap()
     ) {
         var status = EmailStatus.SENT
         var errorMessage: String? = null
@@ -99,11 +103,20 @@ class EmailServiceImpl(
             helper.setFrom(defaultFromAddress)
             helper.setTo(to)
             helper.setSubject(subject)
-            helper.setText(content, isHtml)
+            helper.setText(content, true)
+
+            inlineImages.forEach { (contentId, bytes) ->
+                helper.addInline(contentId, ByteArrayResource(bytes), IMAGE_PNG_VALUE)
+            }
+
+            val logoResource = ClassPathResource(HEADER_LOGO_PATH)
+            if (logoResource.exists()) {
+                helper.addInline(TemplateKeys.APP_LOGO.value, logoResource, X_ICON_CONTENT_TYPE)
+            }
 
             mailSender.send(message)
             log.info("Email sent successfully to: {} with subject: '{}'", to, subject)
-        } catch (ex: Exception) {
+        } catch (ex: MessagingException) {
             status = EmailStatus.FAILED
             errorMessage = ex.message
             log.error("Failed to send email to: {} with subject: '{}'. Error: {}", to, subject, ex.message, ex)
