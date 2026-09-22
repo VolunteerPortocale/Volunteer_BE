@@ -3,10 +3,10 @@ package com.portocale.volunteer.config
 import java.util.*
 
 
-enum class LanguageApi {
-    EN,
-    RO,
-    RU
+enum class LanguageApi(val value: String) {
+    EN("en"),
+    RO("ro"),
+    RU("ru")
 }
 
 

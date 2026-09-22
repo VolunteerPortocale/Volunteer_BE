@@ -69,7 +69,7 @@ class EmailServiceImpl(
 
         val context = VelocityContext().apply {
             put(TemplateKeys.MESSAGES.value, messageResolver)
-            put(TemplateKeys.LOCALE.value, language)
+            put(TemplateKeys.LOCALE.value, language.value)
             model?.forEach { (key, value) -> put(key, value) }
         }
 
@@ -131,5 +131,4 @@ class EmailServiceImpl(
             )
         }
     }
-
 }
