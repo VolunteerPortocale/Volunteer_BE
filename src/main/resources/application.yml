@@ -53,6 +53,11 @@ management:
 
 users:
   credentials:
+
+    - username: keycloak
+      password: ${KC_SERVICE_PASSWORD:password123}
+      roles: ADMIN
+
     - username: admin
       password: password123
       roles: ADMIN

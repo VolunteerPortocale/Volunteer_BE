@@ -49,6 +49,10 @@ class UserServiceImpl(
         return getUserById(id).toUserApi()
     }
 
+    override fun getByEmail(email: String): UserApi {
+        return getUserByEmail(email).toUserApi()
+    }
+
     override fun create(input: CreateUserApi): UserApi {
         val email = input.email.trim().lowercase()
         throwingExistsByEmail(email)

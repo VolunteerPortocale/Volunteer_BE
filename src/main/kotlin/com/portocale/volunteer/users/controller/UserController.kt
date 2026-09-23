@@ -1,5 +1,6 @@
 package com.portocale.volunteer.users.controller
 
+import org.springframework.web.bind.annotation.RequestParam
 import com.portocale.volunteer.users.CreateUserApi
 import com.portocale.volunteer.users.LoginUserApi
 import com.portocale.volunteer.users.UserApi
@@ -43,6 +44,19 @@ class UserController(
     )
     fun getById(@PathVariable id: String): UserApi {
         return userService.getById(id)
+    }
+
+    @GetMapping(params = ["email"])
+    @Operation(summary = "Get user by email")
+    @ApiResponses(
+        value = [ApiResponse(
+            description = "OK",
+            responseCode = "200",
+            content = [Content(schema = Schema(implementation = UserApi::class))]
+        )]
+    )
+    fun getByEmail(@RequestParam email: String): UserApi {
+        return userService.getByEmail(email)
     }
 
     @PostMapping
