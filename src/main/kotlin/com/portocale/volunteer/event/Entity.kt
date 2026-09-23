@@ -39,7 +39,12 @@ data class EventDetails(
     val title: EventTitle,
     val description: EventDescription,
     val startTime: Instant,
-    val endTime: Instant? = null
+    val endTime: Instant? = null,
+    val dates: List<String>? = null,
+    val location: String? = null,
+    val contactPhone: String? = null,
+    val contactEmail: String? = null,
+    val dressCode: EventDressCode
 )
 
 enum class EventFileType {
@@ -130,4 +135,10 @@ enum class EventCategory {
     PEACE,
     ADDICTION_RECOVERY,
     OTHER
+}
+
+enum class EventDressCode{
+    FORMAL,
+    CASUAL,
+    COSTUME
 }

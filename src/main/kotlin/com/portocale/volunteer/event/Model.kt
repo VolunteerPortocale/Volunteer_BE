@@ -15,6 +15,18 @@ data class EventApi(
     val createdBy: String,
     val lastModifiedAt: Instant? = null,
     val lastModifiedBy: String,
+    val location: String? = null,
+    val nrVolunteers: Int? = null,
+    val startDate: String? = null,
+    val endDate: String? = null,
+    val dates: List<String>? = null,
+    val time: String? = null,
+    val coverImage: String? = null,
+    val images: List<String>? = null,
+    val dressCode: String? = null,
+    val duration: String? = null,
+    val contactPhone: String? = null,
+    val contactEmail: String? = null
 )
 
 @Schema(name = "CreteEvent")
@@ -35,7 +47,12 @@ data class EventDetailsApi(
     val title: String,
     val description: String,
     val startTime: Instant,
-    val endTime: Instant?
+    val endTime: Instant?,
+    val dates: List<String>? = null,
+    val location: String? = null,
+    val contactPhone: String? = null,
+    val contactEmail: String? = null,
+    val dressCode: EventDressCode
 )
 
 @Schema(name = "CreateEventDetails")
@@ -137,4 +154,11 @@ enum class EventFileTypeApi {
     COVER,
     GALLERY,
     ATTACHMENT
+}
+
+@Schema(name = "EventDressCode", enumAsRef = true)
+enum class EventDressCodeApi {
+    FORMAL,
+    CASUAL,
+    COSTUME
 }
