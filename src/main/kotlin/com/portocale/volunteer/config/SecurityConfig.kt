@@ -1,5 +1,12 @@
 package com.portocale.volunteer.config
 
+// this is for keycloak
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.annotation.Order
+import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+//until here, don't tuci zis !
+
 import com.portocale.volunteer.config.jwt.CustomJwtConverter
 import org.springframework.boot.context.properties.bind.Bindable
 import org.springframework.boot.context.properties.bind.Binder
@@ -23,8 +30,23 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 class SecurityConfig {
+    @Bean
+    @Order(1)
+    fun keycloakInternalChain(
+        http: HttpSecurity,
+        @Value("\${keycloak-provider.api-key:}") apiKey: String
+    ): SecurityFilterChain {
+        http
+            .securityMatcher("/internal/kc/**")
+            .csrf { it.disable() }
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .authorizeHttpRequests { it.anyRequest().permitAll() }
+            .addFilterBefore(KeycloakApiKeyFilter(apiKey), UsernamePasswordAuthenticationFilter::class.java)
+        return http.build()
+    }
 
     @Bean
+    @Order(2)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf { csrf -> csrf.disable() }

@@ -42,7 +42,8 @@ spring:
 
 server:
   port: 8081
-
+keycloak-provider:
+  api-key: ${KC_PROVIDER_API_KEY:}
 management:
   health:
     mail:
