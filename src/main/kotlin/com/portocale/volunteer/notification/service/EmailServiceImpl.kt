@@ -1,7 +1,6 @@
 package com.portocale.volunteer.notification.service
 
 import com.portocale.volunteer.config.LanguageApi
-import com.portocale.volunteer.config.jwt.Principal
 import com.portocale.volunteer.notification.EmailLog
 import com.portocale.volunteer.notification.EmailStatus
 import com.portocale.volunteer.notification.EmailSubject
@@ -21,7 +20,6 @@ import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.ClassPathResource
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.util.MimeTypeUtils.IMAGE_PNG_VALUE
 
@@ -41,10 +39,12 @@ class EmailServiceImpl(
 
     private val log = LoggerFactory.getLogger(EmailServiceImpl::class.java)
 
-    override fun sendEnrollmentConfirmation(eventId: String, language: LanguageApi) {
-        val authenticatedUser = SecurityContextHolder.getContext().authentication as Principal
-        val email = authenticatedUser.email
-        val userId = authenticatedUser.userId
+    override fun sendEnrollmentConfirmation(
+        eventId: String,
+        userId: String,
+        email: String,
+        language: LanguageApi
+    ) {
         val templateName = TemplateName.ENROLLMENT_CONFIRMATION.value
         val qrBytes = qrService.generateVolunteerPresenceConfirmationQr(eventId, userId)
 
@@ -80,7 +80,6 @@ class EmailServiceImpl(
     }
 
     private fun renderContent(templateName: String, model: Map<String, Any>? = null, language: LanguageApi): String {
-
         val templatePath = "templates/$templateName.vm"
 
         val context = VelocityContext().apply {
