@@ -9,14 +9,18 @@ import java.time.Instant
 import java.util.Locale
 import org.springframework.security.access.prepost.PreAuthorize
 
-@Suppress("TooManyFunctions")
+
+@SuppressWarnings("TooManyFunctions")
 interface UserService {
 
     @PreAuthorize("hasRole('ADMIN')")
     fun getAll(): List<UserApi>
 
-    @PreAuthorize("hasRole('ADMIN, MODERATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     fun getById(id: String): UserApi
+
+    @PreAuthorize("hasRole('ADMIN')")
+    fun getByEmail(email: String): UserApi
 
     @PreAuthorize("hasRole('ADMIN')")
     fun create(input: CreateUserApi): UserApi
