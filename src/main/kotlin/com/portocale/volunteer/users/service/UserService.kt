@@ -9,6 +9,7 @@ import java.time.Instant
 import java.util.Locale
 import org.springframework.security.access.prepost.PreAuthorize
 
+@Suppress("TooManyFunctions")
 interface UserService {
 
     @PreAuthorize("hasRole('ADMIN')")
