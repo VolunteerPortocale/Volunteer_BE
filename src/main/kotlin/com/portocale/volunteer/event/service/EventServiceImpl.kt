@@ -17,6 +17,12 @@ class EventServiceImpl(
     private val storageService: StorageService,
     private val properties: StorageConfig
 ) : EventService {
+
+    override fun getAll(language: LanguageApi): List<EventApi> {
+        return eventRepository.findAll()
+            .map { it.toEventApi(language) }
+    }
+
     override fun getById(id: String, language: LanguageApi): EventApi {
         return eventRepository.findById(id)
             .orElseThrow { EventNotFoundException("Event not found: $id") }

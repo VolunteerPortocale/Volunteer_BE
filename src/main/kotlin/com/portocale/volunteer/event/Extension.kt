@@ -3,7 +3,14 @@
 package com.portocale.volunteer.event
 
 import com.portocale.volunteer.config.LanguageApi
-import com.portocale.volunteer.graphql.model.*
+import com.portocale.volunteer.graphql.model.CreateEventDetailsInputGQL
+import com.portocale.volunteer.graphql.model.CreateEventInputGQL
+import com.portocale.volunteer.graphql.model.EventDescriptionInputGQL
+import com.portocale.volunteer.graphql.model.EventDetailsGQL
+import com.portocale.volunteer.graphql.model.EventDressCodeGQL
+import com.portocale.volunteer.graphql.model.EventGQL
+import com.portocale.volunteer.graphql.model.EventStatusGQL
+import com.portocale.volunteer.graphql.model.EventTitleInputGQL
 import java.time.Instant
 import com.portocale.volunteer.users.toEventCategoryApi
 import com.portocale.volunteer.users.toEventCategoryGql

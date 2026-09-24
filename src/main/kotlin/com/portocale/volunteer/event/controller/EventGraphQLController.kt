@@ -14,7 +14,7 @@ import java.security.Principal
 import java.util.Locale
 
 @Controller
-class EventGraphQlController(
+class EventGraphQLController(
     private val eventService: EventService
 ) {
     @QueryMapping
@@ -39,3 +39,13 @@ class EventGraphQlController(
         ).toEventGql()
     }
 }
+
+
+
+
+
+
+
+
+
+
