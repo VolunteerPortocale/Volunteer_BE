@@ -6,4 +6,5 @@ type Mutation {
     suspendUser(id: String!, suspendedUntil: String!): User!
     deleteUser(id: String!): Boolean!
     createEvent(input: CreateEventInput!): Event!
+    enroll(input: CreateEnrollmentInput!): Enrollment!
 }

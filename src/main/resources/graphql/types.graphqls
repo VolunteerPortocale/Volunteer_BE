@@ -159,3 +159,20 @@ input EventDescriptionInput {
     en: String
     ru: String
 }
+
+type Enrollment {
+    id: ID!
+    eventId: String!
+    userId: String!
+    status: EnrollmentStatus!
+}
+
+enum EnrollmentStatus {
+    PENDING
+    CONFIRMED
+    COMPLETED
+}
+
+input CreateEnrollmentInput {
+    eventId: String!
+}
