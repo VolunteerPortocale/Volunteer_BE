@@ -1,4 +1,5 @@
 type Query {
     getAllUsers: [User!]!
     getUserById(id: String!): User!
+    isEmailRegistered(email: String!): Boolean!
 }
