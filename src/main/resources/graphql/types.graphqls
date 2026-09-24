@@ -93,25 +93,6 @@ enum EventCategory {
     OTHER
 }
 
-enum EventStatus {
-    DRAFT
-    PENDING_APPROVAL
-    PUBLISHED
-    APPLICATIONS_CLOSED
-    FULL
-    IN_PROGRESS
-    COMPLETED
-    CANCELLED
-    POSTPONED
-    REJECTED
-}
-
-enum EventDressCode {
-    CASUAL
-    FORMAL
-    COSTUME
-}
-
 input CreateUserInput {
     firstName: String!
     lastName: String!
@@ -158,4 +139,21 @@ input EventDescriptionInput {
     ro: String!
     en: String
     ru: String
+}
+
+type Enrollment {
+    id: ID!
+    eventId: String!
+    userId: String!
+    status: EnrollmentStatus!
+}
+
+enum EnrollmentStatus {
+    PENDING
+    CONFIRMED
+    COMPLETED
+}
+
+input CreateEnrollmentInput {
+    eventId: String!
 }

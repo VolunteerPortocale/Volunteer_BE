@@ -1,6 +1,7 @@
 package com.portocale.volunteer.enrollment.service
 
 import com.portocale.volunteer.config.LanguageApi
+import com.portocale.volunteer.config.jwt.Principal
 import com.portocale.volunteer.enrollment.CreateEnrollmentApi
 import com.portocale.volunteer.enrollment.Enrollment
 import com.portocale.volunteer.enrollment.EnrollmentResponseApi
@@ -11,8 +12,9 @@ import com.portocale.volunteer.event.repository.EventRepository
 import com.portocale.volunteer.notification.service.EmailService
 import com.portocale.volunteer.users.UserNotFoundException
 import com.portocale.volunteer.users.repository.UserRepository
-import org.springframework.stereotype.Service
 import java.time.Instant
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.stereotype.Service
 
 @Service
 class EnrollmentServiceImpl(
@@ -27,8 +29,11 @@ class EnrollmentServiceImpl(
             throw EventNotFoundException("Event not found with ID: ${request.eventId}")
         }
 
-        val user = userRepository.findByEmail(request.email)
-            .orElseThrow { UserNotFoundException("User not found with email: ${request.email}") }
+        val authenticatedUser = SecurityContextHolder.getContext().authentication as Principal
+
+        val user = userRepository.findById(authenticatedUser.userId)
+            .or { userRepository.findByEmail(authenticatedUser.email) }
+            .orElseThrow { UserNotFoundException("User not found: ${authenticatedUser.userId}") }
 
         val enrollment = enrollmentRepository.save(
             Enrollment(
@@ -56,4 +61,3 @@ class EnrollmentServiceImpl(
         )
     }
 }
-

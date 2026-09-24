@@ -4,10 +4,7 @@ import jakarta.validation.constraints.NotBlank
 
 data class CreateEnrollmentApi(
     @field:NotBlank(message = "event ID required")
-    val eventId: String,
-
-    @field:NotBlank(message = "email required")
-    val email: String
+    val eventId: String
 )
 
 data class EnrollmentResponseApi(

@@ -1,9 +1,9 @@
 package com.portocale.volunteer.enrollment.controller
 
 import com.portocale.volunteer.config.toLanguageApi
-import com.portocale.volunteer.enrollment.CreateEnrollmentApi
-import com.portocale.volunteer.enrollment.EnrollmentResponseApi
 import com.portocale.volunteer.enrollment.service.EnrollmentService
+import com.portocale.volunteer.enrollment.toCreateEnrollmentApi
+import com.portocale.volunteer.enrollment.toEnrollmentGql
 import com.portocale.volunteer.event.Event
 import com.portocale.volunteer.event.EventCategory
 import com.portocale.volunteer.event.EventDescription
@@ -11,11 +11,13 @@ import com.portocale.volunteer.event.EventDetails
 import com.portocale.volunteer.event.EventStatus
 import com.portocale.volunteer.event.EventTitle
 import com.portocale.volunteer.event.repository.EventRepository
-import jakarta.validation.Valid
+import com.portocale.volunteer.graphql.model.CreateEnrollmentInputGQL
+import com.portocale.volunteer.graphql.model.EnrollmentGQL
 import java.time.Instant
 import java.util.Locale
+import org.springframework.graphql.data.method.annotation.Argument
+import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -47,14 +49,14 @@ class EnrollmentController(
     }
     //////////////////////////////////////////////////////////////
 
-    @PostMapping
+    @MutationMapping
     fun enroll(
-        @Valid @RequestBody request: CreateEnrollmentApi,
+        @Argument input: CreateEnrollmentInputGQL,
         locale: Locale
-    ): EnrollmentResponseApi {
+    ): EnrollmentGQL {
         return enrollmentService.enroll(
-            request = request,
+            request = input.toCreateEnrollmentApi(),
             language = locale.toLanguageApi()
-        )
+        ).toEnrollmentGql()
     }
 }
