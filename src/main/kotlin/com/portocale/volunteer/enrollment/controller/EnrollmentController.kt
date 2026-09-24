@@ -4,13 +4,13 @@ import com.portocale.volunteer.config.toLanguageApi
 import com.portocale.volunteer.enrollment.service.EnrollmentService
 import com.portocale.volunteer.enrollment.toCreateEnrollmentApi
 import com.portocale.volunteer.enrollment.toEnrollmentGql
-import com.portocale.volunteer.event.Event
-import com.portocale.volunteer.event.EventCategory
-import com.portocale.volunteer.event.EventDescription
-import com.portocale.volunteer.event.EventDetails
-import com.portocale.volunteer.event.EventStatus
-import com.portocale.volunteer.event.EventTitle
-import com.portocale.volunteer.event.repository.EventRepository
+import com.portocale.volunteer.event.CreateEventApi
+import com.portocale.volunteer.event.CreateEventDetailsApi
+import com.portocale.volunteer.event.EventCategoryApi
+import com.portocale.volunteer.event.EventDescriptionApi
+import com.portocale.volunteer.event.EventStatusApi
+import com.portocale.volunteer.event.EventTitleApi
+import com.portocale.volunteer.event.service.EventService
 import com.portocale.volunteer.graphql.model.CreateEnrollmentInputGQL
 import com.portocale.volunteer.graphql.model.EnrollmentGQL
 import java.time.Instant
@@ -25,27 +25,29 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/v1/enrollment")
 class EnrollmentController(
     private val enrollmentService: EnrollmentService,
-    private val eventRepository: EventRepository
+    private val eventService: EventService
 ) {
 
     //TO BE DELETED WHEN WE HAVE A PROPER WAY TO CREATE EVENTS
     @PostMapping("/test-event")
-    fun createTestEvent(): String {
-        val event = eventRepository.save(
-            Event(
-                details = EventDetails(
-                    title = EventTitle("Test"),
-                    description = EventDescription("Test"),
-                    startTime = Instant.now()
+    fun createTestEvent(locale: Locale): String {
+        val event = eventService.create(
+            event = CreateEventApi(
+                details = CreateEventDetailsApi(
+                    title = EventTitleApi(ro = "Test", en = "Test", ru = null),
+                    description = EventDescriptionApi(ro = "Test", en = "Test", ru = null),
+                    startTime = Instant.now(),
+                    endTime = null
                 ),
-                category = EventCategory.OTHER,
-                status = EventStatus.PUBLISHED,
+                category = EventCategoryApi.OTHER,
+                status = EventStatusApi.PUBLISHED,
                 startTime = Instant.now(),
                 createdBy = "admin",
                 lastModifiedBy = "admin"
-            )
+            ),
+            language = locale.toLanguageApi()
         )
-        return event.id!!
+        return event.id
     }
     //////////////////////////////////////////////////////////////
 

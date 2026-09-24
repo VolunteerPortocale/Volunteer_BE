@@ -21,7 +21,7 @@ fun Event.toEventApi(language: LanguageApi): EventApi {
         id = id ?: error(IllegalStateException("ID is null")),
         details = details.toEventDetailsApi(language),
         category = category.toEventCategoryApi(),
-        storageFolderId = storageFolderId ?: error(IllegalStateException("StorageFolderId is null")),
+        storageFolderId = storageFolderId,
         status = status.toEventStatusApi(),
         createdAt = createdAt,
         createdBy = createdBy,
