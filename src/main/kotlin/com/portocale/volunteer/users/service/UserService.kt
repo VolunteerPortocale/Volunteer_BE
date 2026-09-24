@@ -16,7 +16,7 @@ interface UserService {
     @PreAuthorize("hasRole('ADMIN')")
     fun getAll(): List<UserApi>
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO', 'VOLUNTEER')")
     fun getById(id: String): UserApi
 
     @PreAuthorize("hasRole('ADMIN')")

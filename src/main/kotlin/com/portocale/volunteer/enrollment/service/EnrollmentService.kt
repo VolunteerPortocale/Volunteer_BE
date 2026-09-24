@@ -9,3 +9,4 @@ interface EnrollmentService {
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO', 'VOLUNTEER')")
     fun enroll(request: CreateEnrollmentApi, language: LanguageApi): EnrollmentResponseApi
 }
+
