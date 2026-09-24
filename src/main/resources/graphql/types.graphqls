@@ -13,7 +13,7 @@ type User {
 }
 
 type Event {
-    id: ID!
+    id: String!
     details: EventDetails!
     category: EventCategory!
     storageFolderId: String!
