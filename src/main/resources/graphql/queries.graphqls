@@ -3,4 +3,5 @@ type Query {
     getUserById(id: String!): User!
     getAllEvents: [Event!]!
     getEventById(id: String!): Event!
+    isEmailRegistered(email: String!): Boolean!
 }
