@@ -93,6 +93,25 @@ enum EventCategory {
     OTHER
 }
 
+enum EventStatus {
+    DRAFT
+    PENDING_APPROVAL
+    PUBLISHED
+    APPLICATIONS_CLOSED
+    FULL
+    IN_PROGRESS
+    COMPLETED
+    CANCELLED
+    POSTPONED
+    REJECTED
+}
+
+enum EventDressCode {
+    CASUAL
+    FORMAL
+    COSTUME
+}
+
 input CreateUserInput {
     firstName: String!
     lastName: String!
