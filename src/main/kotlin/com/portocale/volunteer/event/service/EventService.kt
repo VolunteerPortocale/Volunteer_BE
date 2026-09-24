@@ -7,4 +7,5 @@ import com.portocale.volunteer.event.EventApi
 interface EventService {
     fun getById(id: String, language: LanguageApi): EventApi
     fun create(event: CreateEventApi, language: LanguageApi): EventApi
+    fun getAll(language: LanguageApi): List<EventApi>
 }

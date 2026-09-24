@@ -12,6 +12,31 @@ type User {
     suspendedUntil: String
 }
 
+type Event {
+    id: String!
+    details: EventDetails!
+    category: EventCategory!
+    storageFolderId: String!
+    status: EventStatus!
+    createdAt: String!
+    createdBy: String
+    lastModifiedAt: String!
+    lastModifiedBy: String
+
+}
+
+type EventDetails {
+    title: String!
+    description: String!
+    startTime: String!
+    endTime: String
+    location: String
+    nrVolunteers: Int!
+    contactPhone: String
+    contactEmail: String
+    dressCode: EventDressCode!
+}
+
 enum UserRole {
     ADMIN
     MODERATOR
@@ -68,6 +93,25 @@ enum EventCategory {
     OTHER
 }
 
+enum EventStatus {
+    DRAFT
+    PENDING_APPROVAL
+    PUBLISHED
+    APPLICATIONS_CLOSED
+    FULL
+    IN_PROGRESS
+    COMPLETED
+    CANCELLED
+    POSTPONED
+    REJECTED
+}
+
+enum EventDressCode {
+    CASUAL
+    FORMAL
+    COSTUME
+}
+
 input CreateUserInput {
     firstName: String!
     lastName: String!
@@ -85,4 +129,33 @@ input UpdateUserInput {
     phoneNumber: String
     eventCategoryPreferences: [EventCategory!]
     companyName: String
+}
+
+input CreateEventInput {
+    details: CreateEventDetailsInput!
+    category: EventCategory!
+    status: EventStatus!
+}
+
+input CreateEventDetailsInput {
+    title: EventTitleInput!
+    description: EventDescriptionInput!
+    startTime: String!
+    endTime: String
+    location: String
+    nrVolunteers: Int!
+    contactPhone: String
+    contactEmail: String
+    dressCode: EventDressCode!
+}
+
+input EventTitleInput {
+    ro: String!
+    en: String
+    ru: String
+}
+input EventDescriptionInput {
+    ro: String!
+    en: String
+    ru: String
 }

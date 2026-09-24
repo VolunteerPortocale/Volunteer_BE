@@ -14,7 +14,6 @@ data class Event(
     val storageFolderId: String? = null,
     val status: EventStatus,
     val statusHistory: List<EventStatusHistory>? = null,
-    val startTime: Instant,
     val createdAt: Instant? = Instant.now(),
     val createdBy: String,
     val lastModifiedAt: Instant? = Instant.now(),
@@ -39,7 +38,12 @@ data class EventDetails(
     val title: EventTitle,
     val description: EventDescription,
     val startTime: Instant,
-    val endTime: Instant? = null
+    val endTime: Instant? = null,
+    val location: String? = null,
+    val nrVolunteers: Int,
+    val contactPhone: String? = null,
+    val contactEmail: String? = null,
+    val dressCode: EventDressCode
 )
 
 enum class EventFileType {
@@ -131,3 +135,10 @@ enum class EventCategory {
     ADDICTION_RECOVERY,
     OTHER
 }
+
+enum class EventDressCode {
+    CASUAL,
+    FORMAL,
+    COSTUME
+}
+
