@@ -3,6 +3,10 @@
 package com.portocale.volunteer.event
 
 import com.portocale.volunteer.config.LanguageApi
+import com.portocale.volunteer.graphql.model.*
+import java.time.Instant
+import com.portocale.volunteer.users.toEventCategoryApi
+import com.portocale.volunteer.users.toEventCategoryGql
 
 
 fun Event.toEventApi(language: LanguageApi): EventApi {
@@ -12,7 +16,6 @@ fun Event.toEventApi(language: LanguageApi): EventApi {
         category = category.toEventCategoryApi(),
         storageFolderId = storageFolderId ?: error(IllegalStateException("StorageFolderId is null")),
         status = status.toEventStatusApi(),
-        startTime = startTime,
         createdAt = createdAt,
         createdBy = createdBy,
         lastModifiedAt = lastModifiedAt,
@@ -26,6 +29,11 @@ fun EventDetails.toEventDetailsApi(language: LanguageApi): EventDetailsApi {
         description = description.translated(language),
         startTime = startTime,
         endTime = endTime,
+        location = location,
+        nrVolunteers = nrVolunteers,
+        contactPhone = contactPhone,
+        contactEmail = contactEmail,
+        dressCode = dressCode.toEventDressCodeApi(),
     )
 }
 
@@ -35,9 +43,8 @@ fun CreateEventApi.toEntity(): Event {
         category = category.toEventCategory(),
         storageFolderId = storageFolderId,
         status = status.toEventStatus(),
-        startTime = startTime,
         createdBy = createdBy,
-        lastModifiedBy = lastModifiedBy,
+        lastModifiedBy = createdBy
     )
 }
 
@@ -47,6 +54,11 @@ fun CreateEventDetailsApi.toEventDetails(): EventDetails {
         description = description.toEventDescription(),
         startTime = startTime,
         endTime = endTime,
+        location = location,
+        nrVolunteers = nrVolunteers,
+        contactPhone = contactPhone,
+        contactEmail = contactEmail,
+        dressCode = dressCode.toEventDressCode(),
     )
 }
 
@@ -195,5 +207,117 @@ fun EventFileType.toEventFileTypeApi(): EventFileTypeApi {
         EventFileType.ATTACHMENT -> EventFileTypeApi.ATTACHMENT
         EventFileType.COVER -> EventFileTypeApi.COVER
         EventFileType.GALLERY -> EventFileTypeApi.GALLERY
+    }
+}
+
+fun EventDressCode.toEventDressCodeApi(): EventDressCodeApi {
+    return when (this) {
+        EventDressCode.CASUAL -> EventDressCodeApi.CASUAL
+        EventDressCode.FORMAL -> EventDressCodeApi.FORMAL
+        EventDressCode.COSTUME -> EventDressCodeApi.COSTUME
+    }
+}
+fun EventDressCodeApi.toEventDressCode(): EventDressCode {
+    return when (this) {
+        EventDressCodeApi.CASUAL -> EventDressCode.CASUAL
+        EventDressCodeApi.FORMAL -> EventDressCode.FORMAL
+        EventDressCodeApi.COSTUME -> EventDressCode.COSTUME
+    }
+}
+
+fun CreateEventInputGQL.toCreateEventApi(createdBy: String): CreateEventApi {
+    return CreateEventApi(
+        details = details.toCreateEventDetailsApi(),
+        category = category.toEventCategoryApi(),
+        status = status.toEventStatusApi(),
+        createdBy = createdBy,
+    )
+}
+fun CreateEventDetailsInputGQL.toCreateEventDetailsApi(): CreateEventDetailsApi {
+    return CreateEventDetailsApi(
+        title = title.toEventTitleApi(),
+        description = description.toEventDescriptionApi(),
+        startTime = Instant.parse(startTime),
+        endTime = endTime?.let { Instant.parse(it) },
+        location = location,
+        nrVolunteers = nrVolunteers,
+        contactPhone = contactPhone,
+        contactEmail = contactEmail,
+        dressCode = dressCode.toEventDressCodeApi()
+    )
+}
+fun EventTitleInputGQL.toEventTitleApi(): EventTitleApi =
+    EventTitleApi(ro = ro, en = en, ru = ru)
+
+fun EventDescriptionInputGQL.toEventDescriptionApi(): EventDescriptionApi =
+    EventDescriptionApi(ro = ro, en = en, ru = ru)
+
+fun EventApi.toEventGql(): EventGQL {
+    return EventGQL(
+        id,
+        details.toEventDetailsGql(),
+        category.toEventCategoryGql(),
+        storageFolderId,
+        status.toEventStatusGql(),
+        createdAt?.toString(),
+        createdBy,
+        lastModifiedAt?.toString(),
+        lastModifiedBy
+    )
+}
+fun EventDetailsApi.toEventDetailsGql(): EventDetailsGQL {
+    return EventDetailsGQL(
+        title,
+        description,
+        startTime.toString(),
+        endTime?.toString(),
+        location,
+        nrVolunteers,
+        contactPhone,
+        contactEmail,
+        dressCode.toEventDressCodeGql()
+    )
+}
+fun EventDressCodeGQL.toEventDressCodeApi(): EventDressCodeApi {
+    return when (this) {
+        EventDressCodeGQL.CASUAL -> EventDressCodeApi.CASUAL
+        EventDressCodeGQL.FORMAL -> EventDressCodeApi.FORMAL
+        EventDressCodeGQL.COSTUME -> EventDressCodeApi.COSTUME
+    }
+}
+fun EventDressCodeApi.toEventDressCodeGql(): EventDressCodeGQL {
+    return when (this) {
+        EventDressCodeApi.CASUAL -> EventDressCodeGQL.CASUAL
+        EventDressCodeApi.FORMAL -> EventDressCodeGQL.FORMAL
+        EventDressCodeApi.COSTUME -> EventDressCodeGQL.COSTUME
+    }
+}
+
+fun EventStatusGQL.toEventStatusApi(): EventStatusApi {
+    return when (this) {
+        EventStatusGQL.DRAFT -> EventStatusApi.DRAFT
+        EventStatusGQL.PENDING_APPROVAL -> EventStatusApi.PENDING_APPROVAL
+        EventStatusGQL.PUBLISHED -> EventStatusApi.PUBLISHED
+        EventStatusGQL.APPLICATIONS_CLOSED -> EventStatusApi.APPLICATIONS_CLOSED
+        EventStatusGQL.FULL -> EventStatusApi.FULL
+        EventStatusGQL.IN_PROGRESS -> EventStatusApi.IN_PROGRESS
+        EventStatusGQL.COMPLETED -> EventStatusApi.COMPLETED
+        EventStatusGQL.CANCELLED -> EventStatusApi.CANCELLED
+        EventStatusGQL.POSTPONED -> EventStatusApi.POSTPONED
+        EventStatusGQL.REJECTED -> EventStatusApi.REJECTED
+    }
+}
+fun EventStatusApi.toEventStatusGql(): EventStatusGQL {
+    return when (this) {
+        EventStatusApi.DRAFT -> EventStatusGQL.DRAFT
+        EventStatusApi.PENDING_APPROVAL -> EventStatusGQL.PENDING_APPROVAL
+        EventStatusApi.PUBLISHED -> EventStatusGQL.PUBLISHED
+        EventStatusApi.APPLICATIONS_CLOSED -> EventStatusGQL.APPLICATIONS_CLOSED
+        EventStatusApi.FULL -> EventStatusGQL.FULL
+        EventStatusApi.IN_PROGRESS -> EventStatusGQL.IN_PROGRESS
+        EventStatusApi.COMPLETED -> EventStatusGQL.COMPLETED
+        EventStatusApi.CANCELLED -> EventStatusGQL.CANCELLED
+        EventStatusApi.POSTPONED -> EventStatusGQL.POSTPONED
+        EventStatusApi.REJECTED -> EventStatusGQL.REJECTED
     }
 }

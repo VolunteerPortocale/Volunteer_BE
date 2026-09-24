@@ -10,7 +10,6 @@ data class EventApi(
     val category: EventCategoryApi,
     val storageFolderId: String,
     val status: EventStatusApi,
-    val startTime: Instant,
     val createdAt: Instant? = null,
     val createdBy: String,
     val lastModifiedAt: Instant? = null,
@@ -23,11 +22,8 @@ data class CreateEventApi(
     val status: EventStatusApi,
     val category: EventCategoryApi,
     val storageFolderId: String? = null,
-    val startTime: Instant,
     val createdAt: Instant? = Instant.now(),
     val createdBy: String,
-    val lastModifiedAt: Instant? = Instant.now(),
-    val lastModifiedBy: String
 )
 
 @Schema(name = "EventDetails")
@@ -35,15 +31,24 @@ data class EventDetailsApi(
     val title: String,
     val description: String,
     val startTime: Instant,
-    val endTime: Instant?
+    val endTime: Instant?,
+    val location: String?,
+    val nrVolunteers: Int,
+    val contactPhone: String?,
+    val contactEmail: String?,
+    val dressCode: EventDressCodeApi
 )
-
 @Schema(name = "CreateEventDetails")
 data class CreateEventDetailsApi(
     val title: EventTitleApi,
     val description: EventDescriptionApi,
     val startTime: Instant,
-    val endTime: Instant?
+    val endTime: Instant?,
+    val location: String? = null,
+    val nrVolunteers: Int,
+    val contactPhone: String? = null,
+    val contactEmail: String? = null,
+    val dressCode: EventDressCodeApi
 )
 
 @Schema(name = "EventTitle")
@@ -137,4 +142,11 @@ enum class EventFileTypeApi {
     COVER,
     GALLERY,
     ATTACHMENT
+}
+
+@Schema(name = "EventDressCode", enumAsRef = true )
+enum class EventDressCodeApi {
+    CASUAL,
+    FORMAL,
+    COSTUME
 }
