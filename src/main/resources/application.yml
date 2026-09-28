@@ -18,7 +18,7 @@ spring:
       auto-index-creation: true
   mongodb:
     username: ${MONGO_USERNAME:volunteer_be}
-    password: ${MONGO_PASSWORD}
+    password: ${MONGO_PASSWORD:taSudhu6K_VLw}
     database: volunteer_db_test
     uri: mongodb+srv://${spring.mongodb.username}:${spring.mongodb.password}@cluster0.zgo27k9.mongodb.net/${spring.mongodb.database}?retryWrites=true
   security:
