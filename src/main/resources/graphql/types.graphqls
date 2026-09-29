@@ -176,7 +176,7 @@ type Enrollment {
 }
 
 enum EnrollmentStatus {
-    PENDING
+    ENROLLED
     CONFIRMED
     COMPLETED
 }
