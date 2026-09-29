@@ -40,13 +40,12 @@ class EmailServiceImpl(
     private val log = LoggerFactory.getLogger(EmailServiceImpl::class.java)
 
     override fun sendEnrollmentConfirmation(
-        eventId: String,
-        userId: String,
+        enrollmentId: String,
         email: String,
         language: LanguageApi
     ) {
         val templateName = TemplateName.ENROLLMENT_CONFIRMATION.value
-        val qrBytes = qrService.generateVolunteerPresenceConfirmationQr(eventId, userId)
+        val qrBytes = qrService.generateVolunteerPresenceConfirmationQr(enrollmentId)
 
         val content = renderContent(
             templateName = templateName,

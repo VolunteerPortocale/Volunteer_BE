@@ -2,6 +2,7 @@ package com.portocale.volunteer.enrollment
 
 import java.time.Instant
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
@@ -10,13 +11,14 @@ data class Enrollment(
     val id: String?,
     val eventId: String,
     val userId: String,
-    val enrolledAt: Instant,
+    @Indexed(expireAfter = "365d")
+    val enrolledAt: Instant = Instant.now(),
     val status: EnrollmentStatus,
-    val statusHistory: List<EnrollmentStatusHistory>,
+    val statusHistory: List<EnrollmentStatusHistory>? = null
 )
 
 enum class EnrollmentStatus {
-    PENDING,
+    ENROLLED,
     CONFIRMED,
     COMPLETED
 }

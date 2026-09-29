@@ -3,6 +3,9 @@ package com.portocale.volunteer.enrollment
 import com.portocale.volunteer.graphql.model.CreateEnrollmentInputGQL
 import com.portocale.volunteer.graphql.model.EnrollmentGQL
 import com.portocale.volunteer.graphql.model.EnrollmentStatusGQL
+import com.portocale.volunteer.graphql.model.GenericPayloadGQL
+import com.portocale.volunteer.graphql.model.GenericStatusGQL
+import io.micrometer.core.instrument.binder.http.HttpJakartaServletRequestTags.status
 import java.time.Instant
 
 
@@ -11,9 +14,7 @@ fun CreateEnrollmentApi.toEntity(userId: String): Enrollment {
         id = null,
         eventId = eventId,
         userId = userId,
-        enrolledAt = Instant.now(),
-        status = EnrollmentStatus.CONFIRMED,
-        statusHistory = emptyList()
+        status = EnrollmentStatus.ENROLLED
     )
 }
 
@@ -38,6 +39,15 @@ fun EnrollmentResponseApi.toEnrollmentGql(): EnrollmentGQL {
 fun CreateEnrollmentInputGQL.toCreateEnrollmentApi(): CreateEnrollmentApi {
     return CreateEnrollmentApi(
         eventId = eventId
+    )
+}
+
+fun GenericStatusApi.toGenericPayloadGQL(): GenericPayloadGQL {
+    return GenericPayloadGQL(
+        when (this) {
+            GenericStatusApi.OK -> GenericStatusGQL.OK
+            GenericStatusApi.NOK -> GenericStatusGQL.NOK
+        }
     )
 }
 

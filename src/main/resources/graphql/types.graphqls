@@ -12,6 +12,14 @@ type User {
     suspendedUntil: String
 }
 
+type GenericPayload {
+    status: GenericStatus
+}
+
+enum GenericStatus {
+    OK
+    NOK
+}
 type Event {
     id: String!
     details: EventDetails!
@@ -175,4 +183,8 @@ enum EnrollmentStatus {
 
 input CreateEnrollmentInput {
     eventId: String!
+}
+
+input ConfirmEnrollmentInput {
+    enrollmentId: String!
 }

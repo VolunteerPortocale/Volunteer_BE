@@ -80,6 +80,3 @@ google:
 #    root-folder-id: ${GOOGLE_DRIVE_ROOT_FOLDER_ID}
     credentials-path: ${GOOGLE_DRIVE_CREDENTIALS_PATH}
     tokens-path: ${GOOGLE_DRIVE_TOKENS_PATH}
-
-volunteer:
-  volunteerPresenceConfirmationUlr: https://volunteer-fe.amanemisalovereaddeathnote.workers.dev/?eventId=%s&userId=%s

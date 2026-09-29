@@ -4,8 +4,7 @@ import com.portocale.volunteer.config.LanguageApi
 
 interface EmailService {
     fun sendEnrollmentConfirmation(
-        eventId: String,
-        userId: String,
+        enrollmentId: String,
         email: String,
         language: LanguageApi
     )

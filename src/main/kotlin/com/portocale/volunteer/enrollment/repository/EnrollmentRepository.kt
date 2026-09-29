@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface EnrollmentRepository : MongoRepository<Enrollment, String> {
     fun findByEventIdAndUserId(eventId: String, userId: String): Enrollment?
+    fun existsByEventIdAndUserId(eventId: String, userId: String): Boolean
 }
