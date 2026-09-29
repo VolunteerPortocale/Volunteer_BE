@@ -12,6 +12,15 @@ type User {
     suspendedUntil: String
 }
 
+type GenericPayload {
+    status: GenericStatus
+}
+
+enum GenericStatus {
+    OK
+    NOK
+}
+
 type Event {
     id: String!
     details: EventDetails!
@@ -22,7 +31,6 @@ type Event {
     createdBy: String
     lastModifiedAt: String!
     lastModifiedBy: String
-
 }
 
 type EventDetails {
@@ -176,4 +184,25 @@ input UpdateEventDetailsInput{
     contactPhone: String
     contactEmail: String
     dressCode: EventDressCode!
+}
+
+type Enrollment {
+    id: ID!
+    eventId: String!
+    userId: String!
+    status: EnrollmentStatus!
+}
+
+enum EnrollmentStatus {
+    PENDING
+    CONFIRMED
+    COMPLETED
+}
+
+input CreateEnrollmentInput {
+    eventId: String!
+}
+
+input ConfirmEnrollmentInput {
+    enrollmentId: String!
 }
