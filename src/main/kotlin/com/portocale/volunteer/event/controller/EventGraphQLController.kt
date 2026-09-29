@@ -12,6 +12,8 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
 import java.security.Principal
 import java.util.Locale
+import com.portocale.volunteer.event.toUpdateEventApi
+import com.portocale.volunteer.graphql.model.UpdateEventInputGQL
 
 @Controller
 class EventGraphQLController(
@@ -36,6 +38,20 @@ class EventGraphQLController(
         return eventService.create(
             input.toCreateEventApi(createdBy = principal.name),
             locale.toLanguageApi()
+        ).toEventGql()
+    }
+    @MutationMapping
+    fun updateEvent(
+        @Argument id: String,
+        @Argument input: UpdateEventInputGQL,
+        principal: Principal,
+        locale: Locale
+    ): EventGQL {
+        return eventService.update(
+            id = id,
+            event = input.toUpdateEventApi(),
+            language = locale.toLanguageApi(),
+            modifiedBy = principal.name
         ).toEventGql()
     }
 }

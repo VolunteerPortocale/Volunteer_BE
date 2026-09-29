@@ -1,5 +1,5 @@
 type User {
-    id: ID!
+    id: String!
     firstName: String!
     lastName: String!
     email: String!
@@ -158,4 +158,22 @@ input EventDescriptionInput {
     ro: String!
     en: String
     ru: String
+}
+
+input UpdateEventInput{
+    details: UpdateEventDetailsInput!
+    category: EventCategory!
+    status: EventStatus!
+}
+
+input UpdateEventDetailsInput{
+    title: EventTitleInput!
+    description: EventDescriptionInput!
+    startTime: String!
+    endTime: String
+    location: String
+    nrVolunteers: Int!
+    contactPhone: String
+    contactEmail: String
+    dressCode: EventDressCode!
 }

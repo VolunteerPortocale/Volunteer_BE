@@ -14,6 +14,8 @@ import com.portocale.volunteer.graphql.model.EventTitleInputGQL
 import java.time.Instant
 import com.portocale.volunteer.users.toEventCategoryApi
 import com.portocale.volunteer.users.toEventCategoryGql
+import com.portocale.volunteer.graphql.model.UpdateEventDetailsInputGQL
+import com.portocale.volunteer.graphql.model.UpdateEventInputGQL
 
 
 fun Event.toEventApi(language: LanguageApi): EventApi {
@@ -66,6 +68,52 @@ fun CreateEventDetailsApi.toEventDetails(): EventDetails {
         contactPhone = contactPhone,
         contactEmail = contactEmail,
         dressCode = dressCode.toEventDressCode(),
+    )
+}
+
+fun UpdateEventInputGQL.toUpdateEventApi(): UpdateEventApi {
+    return UpdateEventApi(
+        details = details.toUpdateEventDetailsApi(),
+        category = category.toEventCategoryApi(),
+        status = status.toEventStatusApi()
+    )
+}
+
+fun UpdateEventDetailsInputGQL.toUpdateEventDetailsApi(): UpdateEventDetailsApi {
+    return UpdateEventDetailsApi(
+        title = title.toEventTitleApi(),
+        description = description.toEventDescriptionApi(),
+        startTime = Instant.parse(startTime),
+        endTime = endTime?.let { Instant.parse(it) },
+        location = location,
+        nrVolunteers = nrVolunteers,
+        contactPhone = contactPhone,
+        contactEmail = contactEmail,
+        dressCode = dressCode.toEventDressCodeApi()
+    )
+}
+
+fun UpdateEventDetailsApi.toEventDetails(): EventDetails {
+    return EventDetails(
+        title = title.toEventTitle(),
+        description = description.toEventDescription(),
+        startTime = startTime,
+        endTime = endTime,
+        location = location,
+        nrVolunteers = nrVolunteers,
+        contactPhone = contactPhone,
+        contactEmail = contactEmail,
+        dressCode = dressCode.toEventDressCode()
+    )
+}
+
+fun Event.toUpdatedEntity(input: UpdateEventApi, modifiedBy: String): Event {
+    return this.copy(
+        details = input.details.toEventDetails(),
+        category = input.category.toEventCategory(),
+        status = input.status.toEventStatus(),
+        lastModifiedAt = Instant.now(),
+        lastModifiedBy = modifiedBy
     )
 }
 
