@@ -36,6 +36,7 @@ class EventFileServiceImpl(
         val event = eventService.getById(eventId, language)
 
         val folderId = event.storageFolderId
+            ?: throw StorageNotFoundException("Storage folder not found for event: $eventId")
 
         val uploaded = storageService.upload(file = file, folderId = folderId)
 
