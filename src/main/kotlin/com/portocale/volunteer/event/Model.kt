@@ -26,6 +26,13 @@ data class CreateEventApi(
     val createdBy: String,
 )
 
+@Schema(name = "UpdateEvent")
+data class UpdateEventApi(
+    val details: UpdateEventDetailsApi,
+    val status: EventStatusApi,
+    val category: EventCategoryApi,
+)
+
 @Schema(name = "EventDetails")
 data class EventDetailsApi(
     val title: String,
@@ -40,6 +47,19 @@ data class EventDetailsApi(
 )
 @Schema(name = "CreateEventDetails")
 data class CreateEventDetailsApi(
+    val title: EventTitleApi,
+    val description: EventDescriptionApi,
+    val startTime: Instant,
+    val endTime: Instant?,
+    val location: String? = null,
+    val nrVolunteers: Int,
+    val contactPhone: String? = null,
+    val contactEmail: String? = null,
+    val dressCode: EventDressCodeApi
+)
+
+@Schema(name = "UpdateEventDetails")
+data class UpdateEventDetailsApi(
     val title: EventTitleApi,
     val description: EventDescriptionApi,
     val startTime: Instant,

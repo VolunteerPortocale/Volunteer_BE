@@ -10,6 +10,8 @@ import com.portocale.volunteer.event.toEntity
 import com.portocale.volunteer.event.toEventApi
 import com.portocale.volunteer.storage.service.StorageService
 import org.springframework.stereotype.Service
+import com.portocale.volunteer.event.UpdateEventApi
+import com.portocale.volunteer.event.toUpdatedEntity
 
 @Service
 class EventServiceImpl(
@@ -27,6 +29,13 @@ class EventServiceImpl(
         return eventRepository.findById(id)
             .orElseThrow { EventNotFoundException("Event not found: $id") }
             .toEventApi(language)
+    }
+
+    override fun update(id: String, event: UpdateEventApi, language: LanguageApi, modifiedBy: String): EventApi {
+        val existingEvent = eventRepository.findById(id)
+            .orElseThrow { EventNotFoundException("Event not found: $id") }
+        val updatedEvent = existingEvent.toUpdatedEntity(event, modifiedBy)
+        return eventRepository.save(updatedEvent).toEventApi(language)
     }
 
     @SuppressWarnings("TooGenericExceptionCaught")
@@ -50,5 +59,6 @@ class EventServiceImpl(
             eventRepository.delete(savedEvent)
             throw exception
         }
+
     }
 }
