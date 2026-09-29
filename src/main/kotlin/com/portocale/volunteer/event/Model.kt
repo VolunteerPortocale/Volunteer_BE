@@ -8,7 +8,7 @@ data class EventApi(
     val id: String,
     val details: EventDetailsApi,
     val category: EventCategoryApi,
-    val storageFolderId: String,
+    val storageFolderId: String? = null,
     val status: EventStatusApi,
     val createdAt: Instant? = null,
     val createdBy: String,
