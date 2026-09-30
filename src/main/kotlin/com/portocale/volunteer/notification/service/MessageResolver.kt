@@ -10,4 +10,7 @@ class MessageResolver(
 ) {
     fun get(key: String, locale: Locale): String =
         messageSource.getMessage(key, null, locale)
+
+    fun get(key: String, locale: String): String =
+        get(key, Locale.forLanguageTag(locale))
 }

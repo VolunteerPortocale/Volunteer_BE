@@ -78,6 +78,36 @@ class EmailServiceImpl(
         )
     }
 
+    override fun sendEventReminder(
+        email: String,
+        eventTitle: String,
+        eventLocation: String,
+        eventStartTime: String,
+        enrollmentId: String,
+        language: LanguageApi
+    ) {
+        val templateName = TemplateName.EVENT_REMINDER.value
+        val qrBytes = qrService.generateVolunteerPresenceConfirmationQr(enrollmentId)
+
+        val content = renderContent(
+            templateName = templateName,
+            language = language,
+            model = mapOf(
+                TemplateKeys.EVENT_TITLE.value to eventTitle,
+                TemplateKeys.EVENT_LOCATION.value to eventLocation,
+                TemplateKeys.EVENT_START_TIME.value to eventStartTime
+            )
+        )
+
+        // Pure send without writing to the database
+        sendEmail(
+            to = email,
+            subject = EmailSubject.EVENT_REMINDER.value,
+            content = content,
+            inlineImages = mapOf(TemplateKeys.QR_CODE.value to qrBytes)
+        )
+    }
+
     private fun renderContent(templateName: String, model: Map<String, Any>? = null, language: LanguageApi): String {
         val templatePath = "templates/$templateName.vm"
 
@@ -93,6 +123,37 @@ class EmailServiceImpl(
         return writer.toString()
     }
 
+    private fun sendEmail(
+        to: String,
+        subject: String,
+        content: String,
+        inlineImages: Map<String, ByteArray> = emptyMap()
+    ) {
+        val message: MimeMessage = mailSender.createMimeMessage()
+        val helper = MimeMessageHelper(
+            message,
+            MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+            StandardCharsets.UTF_8.name()
+        )
+
+        helper.setFrom(defaultFromAddress)
+        helper.setTo(to)
+        helper.setSubject(subject)
+        helper.setText(content, true)
+
+        inlineImages.forEach { (contentId, bytes) ->
+            helper.addInline(contentId, ByteArrayResource(bytes), IMAGE_PNG_VALUE)
+        }
+
+        val logoResource = ClassPathResource(HEADER_LOGO_PATH)
+        if (logoResource.exists()) {
+            helper.addInline(TemplateKeys.APP_LOGO.value, logoResource, X_ICON_CONTENT_TYPE)
+        }
+
+        mailSender.send(message)
+        log.info("Email sent successfully to: {} with subject: '{}'", to, subject)
+    }
+
     private fun dispatchEmail(
         to: String,
         subject: String,
@@ -104,29 +165,7 @@ class EmailServiceImpl(
         var errorMessage: String? = null
 
         try {
-            val message: MimeMessage = mailSender.createMimeMessage()
-            val helper = MimeMessageHelper(
-                message,
-                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-                StandardCharsets.UTF_8.name()
-            )
-
-            helper.setFrom(defaultFromAddress)
-            helper.setTo(to)
-            helper.setSubject(subject)
-            helper.setText(content, true)
-
-            inlineImages.forEach { (contentId, bytes) ->
-                helper.addInline(contentId, ByteArrayResource(bytes), IMAGE_PNG_VALUE)
-            }
-
-            val logoResource = ClassPathResource(HEADER_LOGO_PATH)
-            if (logoResource.exists()) {
-                helper.addInline(TemplateKeys.APP_LOGO.value, logoResource, X_ICON_CONTENT_TYPE)
-            }
-
-            mailSender.send(message)
-            log.info("Email sent successfully to: {} with subject: '{}'", to, subject)
+            sendEmail(to, subject, content, inlineImages)
         } catch (ex: MessagingException) {
             status = EmailStatus.FAILED
             errorMessage = ex.message

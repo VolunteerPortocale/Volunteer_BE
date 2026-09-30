@@ -15,5 +15,14 @@ interface EmailService {
         otp: String,
         language: LanguageApi
     )
+
+    fun sendEventReminder(
+        email: String,
+        eventTitle: String,
+        eventLocation: String,
+        eventStartTime: String,
+        enrollmentId: String,
+        language: LanguageApi
+    )
 }
 

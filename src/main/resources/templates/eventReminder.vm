@@ -1,0 +1,32 @@
+#set($subject = $messages.get("email.event.reminder.title", $locale))
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8"/>
+    #parse("shared/styles.vm")
+</head>
+
+<body>
+
+    #parse("shared/header.vm")
+
+<div class="page">
+    <div class="content">
+        <h1 class="title">$messages.get("email.event.reminder.title", $locale)</h1>
+        <p class="content">$messages.get("email.event.reminder.content", $locale): <strong>$eventTitle</strong></p>
+
+        <p class="content">
+            $messages.get("email.event.reminder.time", $locale): <strong>$eventStartTime</strong><br/>
+            $messages.get("email.event.reminder.location", $locale): <strong>$eventLocation</strong>
+        </p>
+
+        <div style="margin: 32px 0;">
+            <img src="cid:qrCode" alt="QR Code" width="300" height="300" style="border: 1px solid #E0E0E0; border-radius: 8px; padding: 8px; background: #FFFFFF;" />
+        </div>
+
+        <p class="subtitle">$messages.get("email.event.reminder.instruction", $locale)</p>
+    </div>
+</div>
+
+</body>
+</html>
