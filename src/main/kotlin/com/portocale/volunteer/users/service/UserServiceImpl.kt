@@ -147,10 +147,10 @@ class UserServiceImpl(
         )
         userRepository.save(updatedUser)
 
-        emailService.sendRegistrationEmail(
+        emailService.sendPasswordResetEmail(
             to = user.email,
             firstName = user.firstName,
-            otp = tempPassword,
+            temporaryPassword = tempPassword,
             language = user.language
         )
     }

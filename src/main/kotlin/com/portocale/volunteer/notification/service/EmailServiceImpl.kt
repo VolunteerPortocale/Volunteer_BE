@@ -80,6 +80,29 @@ class EmailServiceImpl(
         )
     }
 
+    @Async
+    override fun sendPasswordResetEmail(
+        to: String,
+        firstName: String,
+        temporaryPassword: String,
+        language: LanguageApi
+    ) {
+        val templateName = TemplateName.PASSWORD_RESET.value
+
+        val content = renderContent(
+            templateName = templateName,
+            language = language,
+            model = mapOf(TemplateKeys.TEMPORARY_PASSWORD.value to temporaryPassword)
+        )
+
+        dispatchEmail(
+            to = to,
+            subject = EmailSubject.PASSWORD_RESET.value,
+            content = content,
+            templateName = templateName
+        )
+    }
+
     override fun sendEventReminder(
         email: String,
         eventTitle: String,
