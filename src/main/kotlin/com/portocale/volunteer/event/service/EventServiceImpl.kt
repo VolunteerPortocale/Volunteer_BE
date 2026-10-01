@@ -2,23 +2,44 @@ package com.portocale.volunteer.event.service
 
 import com.portocale.volunteer.config.LanguageApi
 import com.portocale.volunteer.config.StorageConfig
+import com.portocale.volunteer.enrollment.Enrollment
+import com.portocale.volunteer.enrollment.repository.EnrollmentRepository
 import com.portocale.volunteer.event.CreateEventApi
+import com.portocale.volunteer.event.Event
 import com.portocale.volunteer.event.EventApi
 import com.portocale.volunteer.event.EventNotFoundException
+import com.portocale.volunteer.event.UpdateEventApi
 import com.portocale.volunteer.event.repository.EventRepository
 import com.portocale.volunteer.event.toEntity
 import com.portocale.volunteer.event.toEventApi
-import com.portocale.volunteer.storage.service.StorageService
-import org.springframework.stereotype.Service
-import com.portocale.volunteer.event.UpdateEventApi
 import com.portocale.volunteer.event.toUpdatedEntity
+import com.portocale.volunteer.notification.service.EmailService
+import com.portocale.volunteer.storage.service.StorageService
+import com.portocale.volunteer.users.repository.UserRepository
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import org.slf4j.LoggerFactory
+import org.springframework.mail.MailException
+import org.springframework.stereotype.Service
 
 @Service
 class EventServiceImpl(
     private val eventRepository: EventRepository,
+    private val enrollmentRepository: EnrollmentRepository,
+    private val userRepository: UserRepository,
+    private val emailService: EmailService,
     private val storageService: StorageService,
     private val properties: StorageConfig
 ) : EventService {
+
+    private val log = LoggerFactory.getLogger(EventServiceImpl::class.java)
+
+    companion object {
+        private val FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+            .withZone(ZoneId.of("Europe/Chisinau"))
+    }
 
     override fun getAll(language: LanguageApi): List<EventApi> {
         return eventRepository.findAll()
@@ -59,6 +80,40 @@ class EventServiceImpl(
             eventRepository.delete(savedEvent)
             throw exception
         }
+    }
 
+    override fun sendUpcomingEventReminders() {
+        val windowStart = Instant.now().plus(24, ChronoUnit.HOURS)
+        val windowEnd = windowStart.plus(1, ChronoUnit.HOURS)
+
+        val eventsStartingTomorrow = eventRepository.findByStartTimeBetween(windowStart, windowEnd)
+
+        for (event in eventsStartingTomorrow) {
+            val eventId = event.id ?: continue
+            val enrollments = enrollmentRepository.findByEventId(eventId)
+
+            for (enrollment in enrollments) {
+                notifyVolunteer(event, enrollment)
+            }
+        }
+    }
+
+    private fun notifyVolunteer(event: Event, enrollment: Enrollment) {
+        val enrollmentId = enrollment.id ?: return
+        val user = userRepository.findById(enrollment.userId).orElse(null) ?: return
+
+        try {
+            emailService.sendEventReminder(
+                email = user.email,
+                eventTitle = event.details.title.translated(LanguageApi.RO),
+                eventLocation = event.details.location ?: "N/A",
+                eventStartTime = FORMATTER.format(event.details.startTime),
+                enrollmentId = enrollmentId,
+                language = LanguageApi.RO
+            )
+            log.info("Sent 24h reminder to {} for event {}", user.email, event.id)
+        } catch (e: MailException) {
+            log.error("Failed to send reminder to {}: {}", user.email, e.message)
+        }
     }
 }
