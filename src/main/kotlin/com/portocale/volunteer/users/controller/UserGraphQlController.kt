@@ -40,7 +40,9 @@ class UserGraphQlController(
         @Argument input: CreateUserInputGQL,
         locale: Locale
     ): UserGQL {
-        return userService.selfRegister(input.toCreateUserApi(), locale.toLanguageApi()).toUserGql()
+        val preferredLanguage = input.language ?: locale.toLanguageApi()
+        val createApi = input.toCreateUserApi().copy(language = preferredLanguage)
+        return userService.selfRegister(createApi, preferredLanguage).toUserGql()
     }
 
     @MutationMapping

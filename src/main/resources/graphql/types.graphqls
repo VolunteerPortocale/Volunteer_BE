@@ -1,3 +1,9 @@
+enum Language {
+    RO
+    EN
+    RU
+}
+
 type User {
     id: String!
     firstName: String!
@@ -10,6 +16,9 @@ type User {
     updatedAt: String
     eventCategoryPreferences: [EventCategory!]
     suspendedUntil: String
+    language: Language!
+    notificationsEnabled: Boolean!
+    passwordResetRequested: Boolean!
 }
 
 type GenericPayload {
@@ -129,6 +138,8 @@ input CreateUserInput {
     eventCategoryPreferences: [EventCategory]
     password: String!
     companyName: String
+    language: Language
+    notificationsEnabled: Boolean
 }
 
 input UpdateUserInput {
@@ -137,6 +148,8 @@ input UpdateUserInput {
     phoneNumber: String
     eventCategoryPreferences: [EventCategory!]
     companyName: String
+    language: Language
+    notificationsEnabled: Boolean
 }
 
 input CreateEventInput {

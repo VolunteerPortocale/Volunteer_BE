@@ -102,14 +102,17 @@ class EventServiceImpl(
     private fun notifyVolunteer(event: Event, enrollment: EnrollmentResponseApi) {
         val user = userRepository.findById(enrollment.userId).orElse(null) ?: return
 
+        if (!user.notificationsEnabled) return
+
+        val userLanguage = user.language
         try {
             emailService.sendEventReminder(
                 email = user.email,
-                eventTitle = event.details.title.translated(LanguageApi.RO),
+                eventTitle = event.details.title.translated(userLanguage),
                 eventLocation = event.details.location ?: "N/A",
                 eventStartTime = FORMATTER.format(event.details.startTime),
                 enrollmentId = enrollment.id,
-                language = LanguageApi.RO
+                language = userLanguage
             )
             log.info("Sent 24h reminder to {} for event {}", user.email, event.id)
         } catch (e: MailException) {

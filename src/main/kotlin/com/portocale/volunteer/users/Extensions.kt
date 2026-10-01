@@ -2,6 +2,7 @@
 
 package com.portocale.volunteer.users
 
+import com.portocale.volunteer.config.LanguageApi
 import com.portocale.volunteer.event.EventCategoryApi
 import com.portocale.volunteer.event.toEventCategory
 import com.portocale.volunteer.event.toEventCategoryApi
@@ -31,6 +32,9 @@ fun User.toUserApi(): UserApi {
         updatedAt = updatedAt,
         eventCategoryPreferences = eventCategoryPreferences?.map { it.toEventCategoryApi() },
         suspendedUntil = suspendedUntil,
+        language = language,
+        notificationsEnabled = notificationsEnabled,
+        passwordResetRequested = passwordResetRequested,
     )
 }
 
@@ -60,7 +64,9 @@ fun CreateUserInputGQL.toCreateUserApi(): CreateUserApi {
         role = role.toCreateUserRoleApi(),
         eventCategoryPreferences = eventCategoryPreferences?.map { it.toEventCategoryApi() },
         password = password,
-        companyName = companyName
+        companyName = companyName,
+        language = language ?: LanguageApi.RO,
+        notificationsEnabled = notificationsEnabled ?: true,
     )
 }
 
@@ -72,7 +78,9 @@ fun UpdateUserInputGQL.toUpdateUserApi(): UpdateUserApi {
         eventCategoryPreferences = eventCategoryPreferences?.map {
             it.toEventCategoryApi()
         },
-        companyName = companyName
+        companyName = companyName,
+        language = language,
+        notificationsEnabled = notificationsEnabled
     )
 }
 
@@ -173,6 +181,9 @@ fun CreateUserApi.toUser(
             },
         companyName = companyName,
         createdAt = now,
+        language = language,
+        notificationsEnabled = notificationsEnabled,
+        passwordResetRequested = false,
         passwordHash = passwordEncoder.encode(password) ?: error(IllegalStateException("Password is empty")),
         registrationOtpHash = if (isSelfRegistered) {
             passwordEncoder.encode(otp!!)
@@ -195,6 +206,9 @@ fun User.toUpdatedUser(input: UpdateUserApi): User {
         phoneNumber = input.phoneNumber ?: this.phoneNumber,
         eventCategoryPreferences =
             input.eventCategoryPreferences?.map { it.toEventCategory() } ?: this.eventCategoryPreferences,
+        companyName = input.companyName ?: this.companyName,
+        language = input.language ?: this.language,
+        notificationsEnabled = input.notificationsEnabled ?: this.notificationsEnabled,
         updatedAt = Instant.now(),
     )
 }
@@ -246,6 +260,9 @@ fun UserApi.toUserGql(): UserGQL {
         updatedAt?.toString(),
         eventCategoryPreferences?.map { it.toEventCategoryGql() },
         suspendedUntil?.toString(),
+        language,
+        notificationsEnabled,
+        passwordResetRequested
     )
 }
 
@@ -264,6 +281,22 @@ fun UserRoleApi.toUserRoleGql(): UserRoleGQL {
         UserRoleApi.NGO -> UserRoleGQL.NGO
         UserRoleApi.MODERATOR -> UserRoleGQL.MODERATOR
     }
+}
+
+fun User.toPasswordResetRequestedUser(temporaryPasswordHash: String): User {
+    return this.copy(
+        passwordHash = temporaryPasswordHash,
+        passwordResetRequested = true,
+        updatedAt = Instant.now()
+    )
+}
+
+fun User.toPasswordUpdatedUser(newPasswordHash: String): User {
+    return this.copy(
+        passwordHash = newPasswordHash,
+        passwordResetRequested = false,
+        updatedAt = Instant.now()
+    )
 }
 
 fun EventCategoryApi.toEventCategoryGql(): EventCategoryGQL {
