@@ -20,6 +20,7 @@ import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.ClassPathResource
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.util.MimeTypeUtils.IMAGE_PNG_VALUE
 
@@ -61,6 +62,7 @@ class EmailServiceImpl(
         )
     }
 
+    @Async
     override fun sendRegistrationEmail(to: String, firstName: String, otp: String, language: LanguageApi) {
         val templateName = TemplateName.REGISTRATION.value
 
