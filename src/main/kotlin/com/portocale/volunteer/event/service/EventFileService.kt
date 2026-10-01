@@ -14,4 +14,6 @@ interface EventFileService {
         file: MultipartFile,
         language: LanguageApi
     ): EventFile
+    fun getAllByEventId(eventId: String): List<EventFile>
 }
+

@@ -24,6 +24,10 @@ class EventFileServiceImpl(
             }
     }
 
+    override fun getAllByEventId(eventId: String): List<EventFile> {
+        return eventFileRepository.findAllByEventId(eventId)
+    }
+
     @SuppressWarnings("TooGenericExceptionCaught")
     override fun upload(
         eventId: String,

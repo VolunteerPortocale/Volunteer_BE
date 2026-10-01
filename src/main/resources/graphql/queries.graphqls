@@ -4,4 +4,5 @@ type Query {
     getAllEvents: [Event!]!
     getEventById(id: String!): Event!
     isEmailRegistered(email: String!): Boolean!
+    getEventFiles(eventId: String!): [EventFile!]!
 }

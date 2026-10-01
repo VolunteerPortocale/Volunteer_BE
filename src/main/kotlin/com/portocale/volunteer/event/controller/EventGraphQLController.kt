@@ -14,10 +14,15 @@ import java.security.Principal
 import java.util.Locale
 import com.portocale.volunteer.event.toUpdateEventApi
 import com.portocale.volunteer.graphql.model.UpdateEventInputGQL
+import com.portocale.volunteer.event.service.EventFileService
+import com.portocale.volunteer.event.toEventFileGql
+import com.portocale.volunteer.event.toEventFileResponseApi
+import com.portocale.volunteer.graphql.model.EventFileGQL
 
 @Controller
 class EventGraphQLController(
-    private val eventService: EventService
+    private val eventService: EventService,
+    private val eventFileService: EventFileService
 ) {
     @QueryMapping
     fun getAllEvents(locale: Locale): List<EventGQL> {
@@ -27,6 +32,12 @@ class EventGraphQLController(
     @QueryMapping
     fun getEventById(@Argument id: String, locale: Locale): EventGQL {
         return eventService.getById(id, locale.toLanguageApi()).toEventGql()
+    }
+
+    @QueryMapping
+    fun getEventFiles(@Argument eventId: String): List<EventFileGQL> {
+        return eventFileService.getAllByEventId(eventId)
+            .map { it.toEventFileResponseApi().toEventFileGql() }
     }
 
     @MutationMapping
