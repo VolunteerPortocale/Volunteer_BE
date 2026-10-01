@@ -6,9 +6,11 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 import org.springframework.boot.web.server.context.WebServerApplicationContext
 import org.springframework.core.env.getProperty
+import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
+@EnableScheduling
 class Application
 
 private val log = LoggerFactory.getLogger(Application::class.java)

@@ -12,5 +12,7 @@ interface EnrollmentService {
     fun enroll(request: CreateEnrollmentApi, language: LanguageApi): EnrollmentResponseApi
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO')")
     fun confirmEnrollment(enrollmentId: String): GenericStatusApi
+    fun getByEventId(eventId: String): List<EnrollmentResponseApi>
 }
+
 

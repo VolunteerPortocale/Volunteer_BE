@@ -10,4 +10,6 @@ interface EventService {
     fun create(event: CreateEventApi, language: LanguageApi): EventApi
     fun getAll(language: LanguageApi): List<EventApi>
     fun update(id: String, event: UpdateEventApi, language: LanguageApi, modifiedBy: String): EventApi
+    fun sendUpcomingEventReminders()
 }
+
