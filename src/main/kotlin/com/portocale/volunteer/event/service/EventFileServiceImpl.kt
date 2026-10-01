@@ -1,6 +1,7 @@
 package com.portocale.volunteer.event.service
 
 import com.portocale.volunteer.config.LanguageApi
+import com.portocale.volunteer.event.EventConflictException
 import com.portocale.volunteer.event.EventFile
 import com.portocale.volunteer.event.EventFileType
 import com.portocale.volunteer.event.repository.EventFileRepository
@@ -16,6 +17,12 @@ class EventFileServiceImpl(
     private val storageService: StorageService,
     private val eventService: EventService
 ) : EventFileService {
+
+    companion object {
+        private const val MAX_COVER_COUNT = 1
+        private const val MAX_GALLERY_COUNT = 3
+        private const val MAX_ATTACHMENT_COUNT = 2
+    }
 
     override fun getById(id: String): EventFile {
         return eventFileRepository.findById(id)
@@ -38,6 +45,7 @@ class EventFileServiceImpl(
     ): EventFile {
 
         val event = eventService.getById(eventId, language)
+        validateFileLimit(eventId, type)
 
         val folderId = event.storageFolderId
             ?: throw StorageNotFoundException("Storage folder not found for event: $eventId")
@@ -63,5 +71,19 @@ class EventFileServiceImpl(
             throw exception
         }
     }
-}
 
+    private fun validateFileLimit(eventId: String, type: EventFileType) {
+        val maxAllowed = when (type) {
+            EventFileType.COVER -> MAX_COVER_COUNT
+            EventFileType.GALLERY -> MAX_GALLERY_COUNT
+            EventFileType.ATTACHMENT -> MAX_ATTACHMENT_COUNT
+        }
+
+        val currentCount = eventFileRepository.countByEventIdAndType(eventId, type)
+        if (currentCount >= maxAllowed) {
+            throw EventConflictException(
+                "Maximum limit of $maxAllowed file(s) reached for type $type"
+            )
+        }
+    }
+}
