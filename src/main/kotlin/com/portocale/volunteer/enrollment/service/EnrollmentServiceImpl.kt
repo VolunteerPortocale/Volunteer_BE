@@ -52,8 +52,14 @@ class EnrollmentServiceImpl(
         return GenericStatusApi.OK
     }
 
+    override fun getByEventId(eventId: String): List<EnrollmentResponseApi> {
+        return enrollmentRepository.findByEventId(eventId)
+            .map { it.toEnrollmentResponseApi() }
+    }
+
     private fun throwingGetById(enrollmentId: String): Enrollment {
         return enrollmentRepository.findById(enrollmentId)
             .orElseThrow { EnrollmentNotFoundException() }
     }
 }
+

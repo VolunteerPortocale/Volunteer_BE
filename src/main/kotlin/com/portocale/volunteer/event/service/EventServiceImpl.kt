@@ -2,8 +2,8 @@ package com.portocale.volunteer.event.service
 
 import com.portocale.volunteer.config.LanguageApi
 import com.portocale.volunteer.config.StorageConfig
-import com.portocale.volunteer.enrollment.Enrollment
-import com.portocale.volunteer.enrollment.repository.EnrollmentRepository
+import com.portocale.volunteer.enrollment.EnrollmentResponseApi
+import com.portocale.volunteer.enrollment.service.EnrollmentService
 import com.portocale.volunteer.event.CreateEventApi
 import com.portocale.volunteer.event.Event
 import com.portocale.volunteer.event.EventApi
@@ -21,13 +21,14 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import org.slf4j.LoggerFactory
+import org.springframework.context.annotation.Lazy
 import org.springframework.mail.MailException
 import org.springframework.stereotype.Service
 
 @Service
 class EventServiceImpl(
     private val eventRepository: EventRepository,
-    private val enrollmentRepository: EnrollmentRepository,
+    @Lazy private val enrollmentService: EnrollmentService,
     private val userRepository: UserRepository,
     private val emailService: EmailService,
     private val storageService: StorageService,
@@ -90,7 +91,7 @@ class EventServiceImpl(
 
         for (event in eventsStartingTomorrow) {
             val eventId = event.id ?: continue
-            val enrollments = enrollmentRepository.findByEventId(eventId)
+            val enrollments = enrollmentService.getByEventId(eventId)
 
             for (enrollment in enrollments) {
                 notifyVolunteer(event, enrollment)
@@ -98,8 +99,7 @@ class EventServiceImpl(
         }
     }
 
-    private fun notifyVolunteer(event: Event, enrollment: Enrollment) {
-        val enrollmentId = enrollment.id ?: return
+    private fun notifyVolunteer(event: Event, enrollment: EnrollmentResponseApi) {
         val user = userRepository.findById(enrollment.userId).orElse(null) ?: return
 
         try {
@@ -108,7 +108,7 @@ class EventServiceImpl(
                 eventTitle = event.details.title.translated(LanguageApi.RO),
                 eventLocation = event.details.location ?: "N/A",
                 eventStartTime = FORMATTER.format(event.details.startTime),
-                enrollmentId = enrollmentId,
+                enrollmentId = enrollment.id,
                 language = LanguageApi.RO
             )
             log.info("Sent 24h reminder to {} for event {}", user.email, event.id)
