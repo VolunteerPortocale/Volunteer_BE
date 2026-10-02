@@ -219,3 +219,21 @@ input CreateEnrollmentInput {
 input ConfirmEnrollmentInput {
     enrollmentId: String!
 }
+
+type EventFile {
+    id: String!
+    eventId: String!
+    type: EventFileType!
+    storageFileId: String!
+    originalName: String!
+    contentType: String!
+    size: Int!
+    index: Int!
+    createdAt: String!
+}
+
+enum EventFileType {
+    COVER
+    GALLERY
+    ATTACHMENT
+}

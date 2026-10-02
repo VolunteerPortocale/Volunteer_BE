@@ -16,6 +16,8 @@ import com.portocale.volunteer.users.toEventCategoryApi
 import com.portocale.volunteer.users.toEventCategoryGql
 import com.portocale.volunteer.graphql.model.UpdateEventDetailsInputGQL
 import com.portocale.volunteer.graphql.model.UpdateEventInputGQL
+import com.portocale.volunteer.graphql.model.EventFileGQL
+import com.portocale.volunteer.graphql.model.EventFileTypeGQL
 
 
 fun Event.toEventApi(language: LanguageApi): EventApi {
@@ -257,11 +259,33 @@ fun EventFile.toEventFileResponseApi(): EventFileApi {
     )
 }
 
+fun EventFileApi.toEventFileGql(): EventFileGQL {
+    return EventFileGQL(
+        id,
+        eventId,
+        type.toEventFileTypeGql(),
+        storageFileId,
+        originalName,
+        contentType,
+        size.toInt(),
+        index,
+        createdAt.toString()
+    )
+}
+
 fun EventFileType.toEventFileTypeApi(): EventFileTypeApi {
     return when (this) {
         EventFileType.ATTACHMENT -> EventFileTypeApi.ATTACHMENT
         EventFileType.COVER -> EventFileTypeApi.COVER
         EventFileType.GALLERY -> EventFileTypeApi.GALLERY
+    }
+}
+
+fun EventFileTypeApi.toEventFileTypeGql(): EventFileTypeGQL {
+    return when (this) {
+        EventFileTypeApi.COVER -> EventFileTypeGQL.COVER
+        EventFileTypeApi.GALLERY -> EventFileTypeGQL.GALLERY
+        EventFileTypeApi.ATTACHMENT -> EventFileTypeGQL.ATTACHMENT
     }
 }
 
