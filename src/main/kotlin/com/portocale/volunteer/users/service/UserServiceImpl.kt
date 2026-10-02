@@ -156,7 +156,7 @@ class UserServiceImpl(
     }
 
     override fun updatePassword(input: UpdatePasswordApi): UserApi {
-        val user = getUserByEmail(input.email)
+        val user = getUserById(input.userId)
 
         if (!passwordEncoder.matches(input.currentPassword, user.passwordHash)) {
             throw UserInvalidCredentialsException("Invalid password")

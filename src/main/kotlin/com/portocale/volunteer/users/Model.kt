@@ -105,7 +105,7 @@ data class ResetPasswordApi(
 data class UpdatePasswordApi(
     @field:Email
     @field:NotBlank
-    val email: String,
+    val userId: String,
     @field:NotBlank
     val currentPassword: String,
     @field:NotBlank
