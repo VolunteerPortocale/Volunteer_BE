@@ -28,7 +28,7 @@ data class User(
     @Indexed(expireAfter = "0s")
     val registrationExpiresAt: Instant? = null,
     val registrationOtpAttempts: Int = 0,
-    val passwordResetRequested: Boolean = false,
+    val forceResetPassword: Boolean = false,
     val language: LanguageApi = LanguageApi.RO,
     val notificationsEnabled: Boolean = true
 )

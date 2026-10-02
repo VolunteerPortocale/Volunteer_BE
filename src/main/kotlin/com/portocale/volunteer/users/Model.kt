@@ -23,7 +23,7 @@ data class UserApi(
     val suspendedUntil: Instant? = null,
     val language: LanguageApi = LanguageApi.RO,
     val notificationsEnabled: Boolean = true,
-    val passwordResetRequested: Boolean = false
+    val forceResetPassword: Boolean = false
 )
 
 @Schema(name = "UserRole", enumAsRef = true)

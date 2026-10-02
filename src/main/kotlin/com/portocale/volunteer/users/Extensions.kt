@@ -34,7 +34,7 @@ fun User.toUserApi(): UserApi {
         suspendedUntil = suspendedUntil,
         language = language,
         notificationsEnabled = notificationsEnabled,
-        passwordResetRequested = passwordResetRequested,
+        forceResetPassword = forceResetPassword,
     )
 }
 
@@ -183,7 +183,7 @@ fun CreateUserApi.toUser(
         createdAt = now,
         language = language,
         notificationsEnabled = notificationsEnabled,
-        passwordResetRequested = false,
+        forceResetPassword = false,
         passwordHash = passwordEncoder.encode(password) ?: error(IllegalStateException("Password is empty")),
         registrationOtpHash = if (isSelfRegistered) {
             passwordEncoder.encode(otp!!)
@@ -262,7 +262,7 @@ fun UserApi.toUserGql(): UserGQL {
         suspendedUntil?.toString(),
         language,
         notificationsEnabled,
-        passwordResetRequested
+        forceResetPassword
     )
 }
 
@@ -286,7 +286,7 @@ fun UserRoleApi.toUserRoleGql(): UserRoleGQL {
 fun User.toPasswordResetRequestedUser(temporaryPasswordHash: String): User {
     return this.copy(
         passwordHash = temporaryPasswordHash,
-        passwordResetRequested = true,
+        forceResetPassword = true,
         updatedAt = Instant.now()
     )
 }
@@ -294,7 +294,7 @@ fun User.toPasswordResetRequestedUser(temporaryPasswordHash: String): User {
 fun User.toPasswordUpdatedUser(newPasswordHash: String): User {
     return this.copy(
         passwordHash = newPasswordHash,
-        passwordResetRequested = false,
+        forceResetPassword = false,
         updatedAt = Instant.now()
     )
 }

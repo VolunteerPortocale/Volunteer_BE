@@ -18,7 +18,7 @@ type User {
     suspendedUntil: String
     language: Language!
     notificationsEnabled: Boolean!
-    passwordResetRequested: Boolean!
+    forceResetPassword: Boolean!
 }
 
 type GenericPayload {
