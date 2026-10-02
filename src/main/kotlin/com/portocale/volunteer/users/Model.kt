@@ -103,7 +103,6 @@ data class ResetPasswordApi(
 )
 @Schema(name = "UpdatePassword")
 data class UpdatePasswordApi(
-    @field:Email
     @field:NotBlank
     val userId: String,
     @field:NotBlank
