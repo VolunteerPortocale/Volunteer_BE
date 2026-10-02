@@ -8,6 +8,7 @@ tasks.named("graphqlCodegen") {
     modelNameSuffix = "GQL"
     generateApis = false
     modelValidationAnnotation = "@jakarta.validation.constraints.NotNull"
+
 }
 
 sourceSets {

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import java.time.Instant
+import com.portocale.volunteer.config.LanguageApi
 
 @Schema(name = "User")
 data class UserApi(
@@ -20,6 +21,9 @@ data class UserApi(
     val updatedAt: Instant? = null,
     val eventCategoryPreferences: List<EventCategoryApi>? = null,
     val suspendedUntil: Instant? = null,
+    val language: LanguageApi = LanguageApi.RO,
+    val notificationsEnabled: Boolean = true,
+    val forceResetPassword: Boolean = false
 )
 
 @Schema(name = "UserRole", enumAsRef = true)
@@ -59,7 +63,9 @@ data class CreateUserApi(
     val phoneNumber: String,
     val role: CreateUserRoleApi,
     val eventCategoryPreferences: List<EventCategoryApi>? = null,
-    val companyName: String? = null
+    val companyName: String? = null,
+    val language: LanguageApi = LanguageApi.RO,
+    val notificationsEnabled: Boolean = true
 )
 
 @Schema(name = "LoginUser")
@@ -78,11 +84,31 @@ data class UpdateUserApi(
     val lastName: String? = null,
     val phoneNumber: String? = null,
     val eventCategoryPreferences: List<EventCategoryApi>? = null,
-    val companyName: String? = null
+    val companyName: String? = null,
+    val language: LanguageApi? = null,
+    val notificationsEnabled: Boolean? = null
 )
 
 @Schema(name = "ValidateRegistrationOtp")
 data class ValidateRegistrationOtpApi(
     val email: String,
     val otp: String
+)
+
+@Schema(name = "ResetPassword")
+data class ResetPasswordApi(
+    @field:Email
+    @field:NotBlank
+    val email: String
+)
+@Schema(name = "UpdatePassword")
+data class UpdatePasswordApi(
+    @field:Email
+    @field:NotBlank
+    val email: String,
+    @field:NotBlank
+    val currentPassword: String,
+    @field:NotBlank
+    @field:Size(min = 8, message = "Password must be at least 8 characters")
+    val newPassword: String
 )

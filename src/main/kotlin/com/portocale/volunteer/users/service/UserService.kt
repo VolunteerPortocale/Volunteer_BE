@@ -3,6 +3,7 @@ package com.portocale.volunteer.users.service
 import com.portocale.volunteer.config.LanguageApi
 import com.portocale.volunteer.users.CreateUserApi
 import com.portocale.volunteer.users.LoginUserApi
+import com.portocale.volunteer.users.UpdatePasswordApi
 import com.portocale.volunteer.users.UpdateUserApi
 import com.portocale.volunteer.users.UserApi
 import java.time.Instant
@@ -62,4 +63,7 @@ interface UserService {
 
     fun isEmailRegistered(email: String): Boolean
 
+    fun requestPasswordReset(email: String)
+
+    fun updatePassword(input: UpdatePasswordApi): UserApi
 }

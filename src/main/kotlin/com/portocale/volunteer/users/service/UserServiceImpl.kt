@@ -7,6 +7,7 @@ import com.portocale.volunteer.notification.service.OtpGenerator
 import com.portocale.volunteer.users.CreateUserApi
 import com.portocale.volunteer.users.LoginUserApi
 import com.portocale.volunteer.users.TooManyOtpAttemptsException
+import com.portocale.volunteer.users.UpdatePasswordApi
 import com.portocale.volunteer.users.UpdateUserApi
 import com.portocale.volunteer.users.User
 import com.portocale.volunteer.users.UserApi
@@ -16,10 +17,13 @@ import com.portocale.volunteer.users.UserInvalidOtpStateException
 import com.portocale.volunteer.users.UserNotFoundException
 import com.portocale.volunteer.users.UserStatus
 import com.portocale.volunteer.users.repository.UserRepository
+import com.portocale.volunteer.users.toPasswordResetRequestedUser
+import com.portocale.volunteer.users.toPasswordUpdatedUser
 import com.portocale.volunteer.users.toSuspendedUser
 import com.portocale.volunteer.users.toUpdatedUser
 import com.portocale.volunteer.users.toUser
 import com.portocale.volunteer.users.toUserApi
+import java.security.SecureRandom
 import java.time.Duration
 import java.time.Instant
 import org.springframework.security.core.context.SecurityContextHolder
@@ -38,6 +42,8 @@ class UserServiceImpl(
     companion object {
         private val REGISTRATION_VALIDITY = Duration.ofDays(1)
         private const val MAX_OTP_ATTEMPTS = 5
+        private const val TEMP_PASSWORD_LENGTH = 10
+        private val CHAR_POOL: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
     }
 
     override fun getAll(): List<UserApi> {
@@ -129,6 +135,45 @@ class UserServiceImpl(
             otp = otp,
             language = language
         )
+    }
+
+    override fun requestPasswordReset(email: String) {
+        val user = getUserByEmail(email)
+        val tempPassword = generateTemporaryPassword()
+
+        val updatedUser = user.toPasswordResetRequestedUser(
+            temporaryPasswordHash = passwordEncoder.encode(tempPassword)
+                ?: error(IllegalStateException("Failed to encode password"))
+        )
+        userRepository.save(updatedUser)
+
+        emailService.sendPasswordResetEmail(
+            to = user.email,
+            firstName = user.firstName,
+            temporaryPassword = tempPassword,
+            language = user.language
+        )
+    }
+
+    override fun updatePassword(input: UpdatePasswordApi): UserApi {
+        val user = getUserByEmail(input.email)
+
+        if (!passwordEncoder.matches(input.currentPassword, user.passwordHash)) {
+            throw UserInvalidCredentialsException("Invalid password")
+        }
+
+        val updatedUser = user.toPasswordUpdatedUser(
+            newPasswordHash = passwordEncoder.encode(input.newPassword)
+                ?: error(IllegalStateException("Failed to encode password"))
+        )
+        return userRepository.save(updatedUser).toUserApi()
+    }
+
+    private fun generateTemporaryPassword(): String {
+        val random = SecureRandom()
+        return (1..TEMP_PASSWORD_LENGTH)
+            .map { CHAR_POOL[random.nextInt(CHAR_POOL.size)] }
+            .joinToString("")
     }
 
     override fun update(

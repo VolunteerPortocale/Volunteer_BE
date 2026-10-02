@@ -5,6 +5,7 @@ import java.time.Instant
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
+import com.portocale.volunteer.config.LanguageApi
 
 @Document("users")
 data class User(
@@ -23,11 +24,13 @@ data class User(
     val eventCategoryPreferences: List<EventCategory>? = null,
     val companyName: String? = null,
     val suspendedUntil: Instant? = null,
-
     val registrationOtpHash: String? = null,
     @Indexed(expireAfter = "0s")
     val registrationExpiresAt: Instant? = null,
-    val registrationOtpAttempts: Int = 0
+    val registrationOtpAttempts: Int = 0,
+    val forceResetPassword: Boolean = false,
+    val language: LanguageApi = LanguageApi.RO,
+    val notificationsEnabled: Boolean = true
 )
 
 enum class UserRole {

@@ -1,8 +1,9 @@
 package com.portocale.volunteer.users.controller
 
-import org.springframework.web.bind.annotation.RequestParam
 import com.portocale.volunteer.users.CreateUserApi
 import com.portocale.volunteer.users.LoginUserApi
+import com.portocale.volunteer.users.ResetPasswordApi
+import com.portocale.volunteer.users.UpdatePasswordApi
 import com.portocale.volunteer.users.UserApi
 import com.portocale.volunteer.users.service.UserService
 import io.swagger.v3.oas.annotations.Operation
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
@@ -77,4 +79,41 @@ class UserController(
     ): UserApi {
         return userService.login(input)
     }
-}
+
+    @PostMapping("/password/reset")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Request password reset")
+    @ApiResponses(
+        value = [
+            ApiResponse(description = "Reset request accepted and temporary password dispatched", responseCode = "200"),
+            ApiResponse(description = "User not found", responseCode = "404")
+        ]
+    )
+    fun requestPasswordReset(
+        @Valid
+        @RequestBody input: ResetPasswordApi
+    ) {
+        userService.requestPasswordReset(input.email)
+    }
+
+    @PostMapping("/password/update")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Update password using temporary password and clear the reset flag")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                description = "Password updated successfully",
+                responseCode = "200",
+                content = [Content(schema = Schema(implementation = UserApi::class))]
+            ),
+            ApiResponse(description = "Invalid password", responseCode = "400"),
+            ApiResponse(description = "User not found", responseCode = "404")
+        ]
+    )
+    fun updatePassword(
+        @Valid
+        @RequestBody input: UpdatePasswordApi
+    ): UserApi {
+        return userService.updatePassword(input)
+    }
+}

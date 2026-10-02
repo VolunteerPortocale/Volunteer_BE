@@ -16,6 +16,13 @@ interface EmailService {
         language: LanguageApi
     )
 
+    fun sendPasswordResetEmail(
+        to: String,
+        firstName: String,
+        temporaryPassword: String,
+        language: LanguageApi
+    )
+
     fun sendEventReminder(
         email: String,
         eventTitle: String,
