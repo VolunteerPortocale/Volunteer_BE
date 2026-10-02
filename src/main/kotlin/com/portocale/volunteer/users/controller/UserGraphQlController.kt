@@ -6,6 +6,7 @@ import com.portocale.volunteer.graphql.model.UpdateUserInputGQL
 import com.portocale.volunteer.graphql.model.UserGQL
 import com.portocale.volunteer.users.service.UserService
 import com.portocale.volunteer.users.toCreateUserApi
+import com.portocale.volunteer.users.toLanguageApi
 import com.portocale.volunteer.users.toUpdateUserApi
 import com.portocale.volunteer.users.toUserGql
 import java.time.Instant
@@ -40,7 +41,7 @@ class UserGraphQlController(
         @Argument input: CreateUserInputGQL,
         locale: Locale
     ): UserGQL {
-        val preferredLanguage = input.language ?: locale.toLanguageApi()
+        val preferredLanguage = input.language?.toLanguageApi() ?: locale.toLanguageApi()
         val createApi = input.toCreateUserApi().copy(language = preferredLanguage)
         return userService.selfRegister(createApi, preferredLanguage).toUserGql()
     }

@@ -9,6 +9,7 @@ import com.portocale.volunteer.event.toEventCategoryApi
 import com.portocale.volunteer.graphql.model.CreateUserInputGQL
 import com.portocale.volunteer.graphql.model.CreateUserRoleGQL
 import com.portocale.volunteer.graphql.model.EventCategoryGQL
+import com.portocale.volunteer.graphql.model.LanguageGQL
 import com.portocale.volunteer.graphql.model.UpdateUserInputGQL
 import com.portocale.volunteer.graphql.model.UserGQL
 import com.portocale.volunteer.graphql.model.UserRoleGQL
@@ -65,7 +66,7 @@ fun CreateUserInputGQL.toCreateUserApi(): CreateUserApi {
         eventCategoryPreferences = eventCategoryPreferences?.map { it.toEventCategoryApi() },
         password = password,
         companyName = companyName,
-        language = language ?: LanguageApi.RO,
+        language = language?.toLanguageApi() ?: LanguageApi.RO,
         notificationsEnabled = notificationsEnabled ?: true,
     )
 }
@@ -79,9 +80,17 @@ fun UpdateUserInputGQL.toUpdateUserApi(): UpdateUserApi {
             it.toEventCategoryApi()
         },
         companyName = companyName,
-        language = language,
+        language = language?.toLanguageApi(),
         notificationsEnabled = notificationsEnabled
     )
+}
+
+fun LanguageGQL.toLanguageApi(): LanguageApi {
+    return when (this) {
+        LanguageGQL.RO -> LanguageApi.RO
+        LanguageGQL.EN -> LanguageApi.EN
+        LanguageGQL.RU -> LanguageApi.RU
+    }
 }
 
 fun UserStatusGQL.toUserStatusApi(): UserStatusApi {
@@ -260,7 +269,7 @@ fun UserApi.toUserGql(): UserGQL {
         updatedAt?.toString(),
         eventCategoryPreferences?.map { it.toEventCategoryGql() },
         suspendedUntil?.toString(),
-        language,
+        language.toLanguageGql(),
         notificationsEnabled,
         forceResetPassword
     )
@@ -335,6 +344,14 @@ fun EventCategoryApi.toEventCategoryGql(): EventCategoryGQL {
         EventCategoryApi.PEACE -> EventCategoryGQL.PEACE
         EventCategoryApi.ADDICTION_RECOVERY -> EventCategoryGQL.ADDICTION_RECOVERY
         EventCategoryApi.OTHER -> EventCategoryGQL.OTHER
+    }
+}
+
+fun LanguageApi.toLanguageGql(): LanguageGQL {
+    return when (this) {
+        LanguageApi.RO -> LanguageGQL.RO
+        LanguageApi.EN -> LanguageGQL.EN
+        LanguageApi.RU -> LanguageGQL.RU
     }
 }
 

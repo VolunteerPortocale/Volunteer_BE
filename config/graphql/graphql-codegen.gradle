@@ -9,9 +9,6 @@ tasks.named("graphqlCodegen") {
     generateApis = false
     modelValidationAnnotation = "@jakarta.validation.constraints.NotNull"
 
-    customTypesMapping = [
-            "Language": "com.portocale.volunteer.config.LanguageApi"
-    ]
 }
 
 sourceSets {
