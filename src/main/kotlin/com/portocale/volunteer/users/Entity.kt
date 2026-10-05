@@ -33,7 +33,6 @@ data class User(
     val notificationsEnabled: Boolean = true,
     val twoFactorEnabled: Boolean = false,
     val twoFactorOtpHash: String? = null,
-    @Indexed(expireAfter = "0s")
     val twoFactorExpiresAt: Instant? = null,
     val twoFactorOtpAttempts: Int = 0,
 )
