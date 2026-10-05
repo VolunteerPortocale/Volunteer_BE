@@ -1,11 +1,15 @@
 package com.portocale.volunteer.users.service
 
 import com.portocale.volunteer.config.LanguageApi
+import com.portocale.volunteer.users.ConfirmTwoFactorApi
 import com.portocale.volunteer.users.CreateUserApi
+import com.portocale.volunteer.users.DisableTwoFactorApi
+import com.portocale.volunteer.users.LoginResponseApi
 import com.portocale.volunteer.users.LoginUserApi
 import com.portocale.volunteer.users.UpdatePasswordApi
 import com.portocale.volunteer.users.UpdateUserApi
 import com.portocale.volunteer.users.UserApi
+import com.portocale.volunteer.users.VerifyTwoFactorLoginApi
 import java.time.Instant
 import java.util.Locale
 import org.springframework.security.access.prepost.PreAuthorize
@@ -59,11 +63,22 @@ interface UserService {
         language: LanguageApi
     )
 
-    fun login(input: LoginUserApi): UserApi
+    fun login(input: LoginUserApi): LoginResponseApi
 
     fun isEmailRegistered(email: String): Boolean
 
     fun requestPasswordReset(email: String)
 
     fun updatePassword(input: UpdatePasswordApi): UserApi
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO', 'VOLUNTEER')")
+    fun initiateTwoFactorActivation(): Boolean
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO', 'VOLUNTEER')")
+    fun confirmTwoFactorActivation(input: ConfirmTwoFactorApi): UserApi
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO', 'VOLUNTEER')")
+    fun disableTwoFactor(input: DisableTwoFactorApi): UserApi
+
+    fun verifyTwoFactorLogin(input: VerifyTwoFactorLoginApi): UserApi
 }

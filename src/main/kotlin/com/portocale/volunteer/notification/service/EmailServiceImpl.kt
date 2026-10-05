@@ -103,6 +103,34 @@ class EmailServiceImpl(
         )
     }
 
+    @Async
+    override fun sendTwoFactorAuth(
+        to: String,
+        firstName: String,
+        otp: String,
+        language: LanguageApi
+    ) {
+        val templateName = TemplateName.TWO_FACTOR_AUTH.value
+
+        val content = renderContent(
+            templateName = templateName,
+            language = language,
+            model = mapOf(
+                TemplateKeys.OTP.value to otp,
+                "firstName" to firstName
+            )
+        )
+
+        val subject = messageResolver.get("two.factor.auth.subject", language.value)
+
+        dispatchEmail(
+            to = to,
+            subject = subject,
+            content = content,
+            templateName = templateName
+        )
+    }
+
     override fun sendEventReminder(
         email: String,
         eventTitle: String,

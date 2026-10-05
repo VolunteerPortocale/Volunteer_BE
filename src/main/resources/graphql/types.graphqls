@@ -19,6 +19,7 @@ type User {
     language: Language!
     notificationsEnabled: Boolean!
     forceResetPassword: Boolean!
+    twoFactorEnabled: Boolean!
 }
 
 type GenericPayload {
@@ -140,6 +141,7 @@ input CreateUserInput {
     companyName: String
     language: Language
     notificationsEnabled: Boolean
+    twoFactorEnabled: Boolean
 }
 
 input UpdateUserInput {

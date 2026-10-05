@@ -36,6 +36,7 @@ fun User.toUserApi(): UserApi {
         language = language,
         notificationsEnabled = notificationsEnabled,
         forceResetPassword = forceResetPassword,
+        twoFactorEnabled = twoFactorEnabled
     )
 }
 
@@ -68,6 +69,7 @@ fun CreateUserInputGQL.toCreateUserApi(): CreateUserApi {
         companyName = companyName,
         language = language?.toLanguageApi() ?: LanguageApi.RO,
         notificationsEnabled = notificationsEnabled ?: true,
+        twoFactorEnabled = twoFactorEnabled ?: false
     )
 }
 
@@ -204,7 +206,11 @@ fun CreateUserApi.toUser(
         } else {
             null
         },
-        registrationOtpAttempts = 0
+        registrationOtpAttempts = 0,
+        twoFactorEnabled = twoFactorEnabled,
+        twoFactorOtpHash = null,
+        twoFactorExpiresAt = null,
+        twoFactorOtpAttempts = 0
     )
 }
 
@@ -271,7 +277,8 @@ fun UserApi.toUserGql(): UserGQL {
         suspendedUntil?.toString(),
         language.toLanguageGql(),
         notificationsEnabled,
-        forceResetPassword
+        forceResetPassword,
+        twoFactorEnabled
     )
 }
 
@@ -355,4 +362,44 @@ fun LanguageApi.toLanguageGql(): LanguageGQL {
     }
 }
 
+fun User.toTwoFactorInitiatedUser(otpHash: String, expiresAt: Instant): User {
+    return this.copy(
+        twoFactorOtpHash = otpHash,
+        twoFactorExpiresAt = expiresAt,
+        twoFactorOtpAttempts = 0,
+        updatedAt = Instant.now()
+    )
+}
+fun User.toTwoFactorConfirmedUser(): User {
+    return this.copy(
+        twoFactorEnabled = true,
+        twoFactorOtpHash = null,
+        twoFactorExpiresAt = null,
+        twoFactorOtpAttempts = 0,
+        updatedAt = Instant.now()
+    )
+}
+fun User.toTwoFactorDisabledUser(): User {
+    return this.copy(
+        twoFactorEnabled = false,
+        twoFactorOtpHash = null,
+        twoFactorExpiresAt = null,
+        twoFactorOtpAttempts = 0,
+        updatedAt = Instant.now()
+    )
+}
+fun User.toTwoFactorFailedOtpUser(): User {
+    return this.copy(
+        twoFactorOtpAttempts = this.twoFactorOtpAttempts + 1,
+        updatedAt = Instant.now()
+    )
+}
+fun User.toTwoFactorResetOtpUser(): User {
+    return this.copy(
+        twoFactorOtpHash = null,
+        twoFactorExpiresAt = null,
+        twoFactorOtpAttempts = 0,
+        updatedAt = Instant.now()
+    )
+}
 

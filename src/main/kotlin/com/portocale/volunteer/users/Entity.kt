@@ -30,7 +30,12 @@ data class User(
     val registrationOtpAttempts: Int = 0,
     val forceResetPassword: Boolean = false,
     val language: LanguageApi = LanguageApi.RO,
-    val notificationsEnabled: Boolean = true
+    val notificationsEnabled: Boolean = true,
+    val twoFactorEnabled: Boolean = false,
+    val twoFactorOtpHash: String? = null,
+    @Indexed(expireAfter = "0s")
+    val twoFactorExpiresAt: Instant? = null,
+    val twoFactorOtpAttempts: Int = 0,
 )
 
 enum class UserRole {

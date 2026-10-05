@@ -31,5 +31,11 @@ interface EmailService {
         enrollmentId: String,
         language: LanguageApi
     )
-}
 
+    fun sendTwoFactorAuth(
+        to: String,
+        firstName: String,
+        otp: String,
+        language: LanguageApi
+    )
+}

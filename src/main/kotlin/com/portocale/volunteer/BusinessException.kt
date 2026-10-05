@@ -22,14 +22,16 @@ enum class ErrorCode(val value: String) {
     E400_001("400-001"),    // InvalidCredentials
     E400_002("400-002"),    // InvalidOtpState
     E400_003("400-003"),    // TooManyOtpAttempts
+    E400_004("400-004"),    // TwoFactorAlreadyEnabled
+    E400_005("400-005"),    // TwoFactorNotEnabled
     E404_001("404-001"),    // UserNotFound
     E404_002("404-002"),    // EventNotFound
     E404_003("404-003"),    // FolderNotFound
     E404_004("404-004"),    // EmailNotFound
-    E404_005("404-005"),    // EnrollmentlNotFound
+    E404_005("404-005"),    // EnrollmentNotFound
     E409_001("409-001"),    // UserConflict
     E409_002("409-002"),    // StorageConflict
     E409_003("409-003"),    // EventConflict
     E409_004("409-004"),    // EnrollmentConflict
-    E500_001("500-001"),    // UserClassCastException
+    E500_001("500-001")     // UserClassCastException
 }

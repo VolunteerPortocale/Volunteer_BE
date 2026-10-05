@@ -5,6 +5,7 @@ enum class TemplateName(val value: String) {
     REGISTRATION("registration"),
     EVENT_REMINDER("eventReminder"),
     PASSWORD_RESET("passwordReset"),
+    TWO_FACTOR_AUTH("twoFactorAuth")
 }
 
 enum class TemplateKeys(val value: String) {
@@ -25,4 +26,6 @@ enum class EmailSubject(val value: String) {
     REGISTRATION("Confirm your email"),
     EVENT_REMINDER("Event reminder"),
     PASSWORD_RESET("Password reset"),
+    TWO_FACTOR_AUTH("Two-Factor Authentication Code")
 }
+
