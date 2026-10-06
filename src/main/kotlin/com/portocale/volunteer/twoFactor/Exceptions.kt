@@ -1,4 +1,4 @@
-package com.portocale.volunteer.twofactor
+package com.portocale.volunteer.twoFactor
 
 import com.portocale.volunteer.BusinessException
 import com.portocale.volunteer.ErrorCode
@@ -29,13 +29,4 @@ class TwoFactorInvalidOtpStateException(
     message = message,
     status = status,
     errorCode = ErrorCode.E400_002.value
-)
-
-class TwoFactorTooManyOtpAttemptsException(
-    message: String = "Too many attempts",
-    status: HttpStatus = HttpStatus.BAD_REQUEST
-) : BusinessException(
-    message = message,
-    status = status,
-    errorCode = ErrorCode.E400_003.value
 )

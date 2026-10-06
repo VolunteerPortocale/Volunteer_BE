@@ -306,10 +306,6 @@ class UserServiceImpl(
         if (!passwordEncoder.matches(input.password, user.passwordHash)) {
             throw UserInvalidCredentialsException()
         }
-        if (user.twoFactorEnabled) {
-            eventPublisher.publishEvent(UserLoginTwoFactorEvent(user = user.toUserApi()))
-            return LoginResponseApi(requires2Fa = true, email = user.email)
-        }
         return LoginResponseApi(requires2Fa = false, email = user.email, user = user.toUserApi())
     }
 

@@ -37,8 +37,11 @@ class SecurityConfig {
                         "/swagger-ui.html",
                         "/actuator/**"
                     ).permitAll()
+                    .requestMatchers("/graphql/public")
+                    .permitAll()
 
                     // Secure endpoints by role or allow any authenticated user
+                    .requestMatchers("/graphql").authenticated()
                     .requestMatchers("/api/v1/**").authenticated()
 
                     .anyRequest().authenticated()

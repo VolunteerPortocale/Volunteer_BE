@@ -1,4 +1,4 @@
-package com.portocale.volunteer.twofactor
+package com.portocale.volunteer.twoFactor
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Email
@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size
 @Schema(name = "ConfirmTwoFactor")
 data class ConfirmTwoFactorApi(
     @field:NotBlank
-    @field:Size(min = 6, max = 6, message = "2FA code must be 6 digits")
     val otp: String
 )
 
