@@ -14,6 +14,13 @@ interface EventFileService {
         file: MultipartFile,
         language: LanguageApi
     ): EventFile
+    fun uploadBatch(
+        eventId: String,
+        type: EventFileType,
+        files: List<MultipartFile>,
+        language: LanguageApi
+    ): List<EventFile>
     fun getAllByEventId(eventId: String): List<EventFile>
+    fun delete(eventId: String, fileId: String)
+    fun deleteBatch(eventId: String, fileIds: List<String>)
 }
-
