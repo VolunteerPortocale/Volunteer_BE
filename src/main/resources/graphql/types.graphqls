@@ -141,7 +141,6 @@ input CreateUserInput {
     companyName: String
     language: Language
     notificationsEnabled: Boolean
-    twoFactorEnabled: Boolean
 }
 
 input UpdateUserInput {

@@ -68,8 +68,7 @@ fun CreateUserInputGQL.toCreateUserApi(): CreateUserApi {
         password = password,
         companyName = companyName,
         language = language?.toLanguageApi() ?: LanguageApi.RO,
-        notificationsEnabled = notificationsEnabled ?: true,
-        twoFactorEnabled = twoFactorEnabled ?: false
+        notificationsEnabled = notificationsEnabled ?: true
     )
 }
 
@@ -207,7 +206,7 @@ fun CreateUserApi.toUser(
             null
         },
         registrationOtpAttempts = 0,
-        twoFactorEnabled = twoFactorEnabled,
+        twoFactorEnabled = false,
         twoFactorOtpHash = null,
         twoFactorExpiresAt = null,
         twoFactorOtpAttempts = 0

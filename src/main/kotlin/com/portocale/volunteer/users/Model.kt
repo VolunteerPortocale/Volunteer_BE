@@ -67,7 +67,6 @@ data class CreateUserApi(
     val companyName: String? = null,
     val language: LanguageApi = LanguageApi.RO,
     val notificationsEnabled: Boolean = true,
-    val twoFactorEnabled: Boolean = false
 )
 
 @Schema(name = "LoginUser")
