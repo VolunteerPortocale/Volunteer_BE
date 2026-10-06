@@ -1,6 +1,7 @@
 package com.portocale.volunteer.users.controller
 
 import com.portocale.volunteer.users.CreateUserApi
+import com.portocale.volunteer.users.LoginResponseApi
 import com.portocale.volunteer.users.LoginUserApi
 import com.portocale.volunteer.users.ResetPasswordApi
 import com.portocale.volunteer.users.UpdatePasswordApi
@@ -71,14 +72,6 @@ class UserController(
         return userService.create(input)
     }
 
-    @PostMapping("/login")
-    @Operation(summary = "Login user")
-    fun login(
-        @Valid
-        @RequestBody input: LoginUserApi
-    ): UserApi {
-        return userService.login(input)
-    }
 
     @PostMapping("/password/reset")
     @ResponseStatus(HttpStatus.OK)
@@ -116,4 +109,12 @@ class UserController(
     ): UserApi {
         return userService.updatePassword(input)
     }
-}
+
+    @PostMapping("/login")
+    @Operation(summary = "Login user normally and checks ia 2FA is enabled")
+    fun login(@Valid @RequestBody input: LoginUserApi): LoginResponseApi {
+        return userService.login(input)
+    }
+}
+
+

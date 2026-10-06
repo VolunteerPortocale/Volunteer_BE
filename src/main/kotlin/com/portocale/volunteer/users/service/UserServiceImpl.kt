@@ -5,6 +5,7 @@ import com.portocale.volunteer.config.jwt.Principal
 import com.portocale.volunteer.notification.service.EmailService
 import com.portocale.volunteer.notification.service.OtpGenerator
 import com.portocale.volunteer.users.CreateUserApi
+import com.portocale.volunteer.users.LoginResponseApi
 import com.portocale.volunteer.users.LoginUserApi
 import com.portocale.volunteer.users.TooManyOtpAttemptsException
 import com.portocale.volunteer.users.UpdatePasswordApi
@@ -14,6 +15,7 @@ import com.portocale.volunteer.users.UserApi
 import com.portocale.volunteer.users.UserConflictException
 import com.portocale.volunteer.users.UserInvalidCredentialsException
 import com.portocale.volunteer.users.UserInvalidOtpStateException
+import com.portocale.volunteer.users.UserLoginTwoFactorEvent
 import com.portocale.volunteer.users.UserNotFoundException
 import com.portocale.volunteer.users.UserStatus
 import com.portocale.volunteer.users.repository.UserRepository
@@ -26,6 +28,7 @@ import com.portocale.volunteer.users.toUserApi
 import java.security.SecureRandom
 import java.time.Duration
 import java.time.Instant
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -36,7 +39,8 @@ class UserServiceImpl(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val otpGenerator: OtpGenerator,
-    private val emailService: EmailService
+    private val emailService: EmailService,
+    private val eventPublisher: ApplicationEventPublisher
 ) : UserService {
 
     companion object {
@@ -214,14 +218,6 @@ class UserServiceImpl(
         return true
     }
 
-    override fun login(input: LoginUserApi): UserApi {
-        val user = getUserByEmail(input.email)
-        if (!passwordEncoder.matches(input.password, user.passwordHash)) {
-            throw UserInvalidCredentialsException()
-        }
-
-        return user.toUserApi()
-    }
 
     override fun isEmailRegistered(email: String): Boolean {
         return userRepository.existsByEmail(email.trim().lowercase())
@@ -303,5 +299,31 @@ class UserServiceImpl(
 
         return userRepository.save(activatedUser)
             .toUserApi()
+    }
+
+    override fun login(input: LoginUserApi): LoginResponseApi {
+        val user = getUserByEmail(input.email)
+        if (!passwordEncoder.matches(input.password, user.passwordHash)) {
+            throw UserInvalidCredentialsException()
+        }
+        return LoginResponseApi(requires2Fa = false, email = user.email, user = user.toUserApi())
+    }
+
+    override fun getByEmailForAuth(email: String): UserApi {
+        return getUserByEmail(email).toUserApi()
+    }
+
+    override fun verifyPassword(userId: String, rawPassword: String): Boolean {
+        val user = getUserById(userId)
+        return passwordEncoder.matches(rawPassword, user.passwordHash)
+    }
+
+    override fun setTwoFactorEnabled(userId: String, enabled: Boolean): UserApi {
+        val user = getUserById(userId)
+        val updatedUser = user.copy(
+            twoFactorEnabled = enabled,
+            updatedAt = Instant.now()
+        )
+        return userRepository.save(updatedUser).toUserApi()
     }
 }

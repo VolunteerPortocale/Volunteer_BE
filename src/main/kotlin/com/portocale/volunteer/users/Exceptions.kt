@@ -58,3 +58,4 @@ class TooManyOtpAttemptsException(
     status = status,
     errorCode = ErrorCode.E400_003.value
 )
+

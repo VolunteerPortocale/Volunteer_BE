@@ -2,6 +2,7 @@ package com.portocale.volunteer.users.service
 
 import com.portocale.volunteer.config.LanguageApi
 import com.portocale.volunteer.users.CreateUserApi
+import com.portocale.volunteer.users.LoginResponseApi
 import com.portocale.volunteer.users.LoginUserApi
 import com.portocale.volunteer.users.UpdatePasswordApi
 import com.portocale.volunteer.users.UpdateUserApi
@@ -59,11 +60,17 @@ interface UserService {
         language: LanguageApi
     )
 
-    fun login(input: LoginUserApi): UserApi
+    fun login(input: LoginUserApi): LoginResponseApi
 
     fun isEmailRegistered(email: String): Boolean
 
     fun requestPasswordReset(email: String)
 
     fun updatePassword(input: UpdatePasswordApi): UserApi
+
+    fun getByEmailForAuth(email: String): UserApi
+
+    fun verifyPassword(userId: String, rawPassword: String): Boolean
+
+    fun setTwoFactorEnabled(userId: String, enabled: Boolean): UserApi
 }

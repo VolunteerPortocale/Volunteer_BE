@@ -19,6 +19,7 @@ type User {
     language: Language!
     notificationsEnabled: Boolean!
     forceResetPassword: Boolean!
+    twoFactorEnabled: Boolean!
 }
 
 type GenericPayload {

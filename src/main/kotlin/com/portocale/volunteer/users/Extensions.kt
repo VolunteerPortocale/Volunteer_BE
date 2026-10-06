@@ -36,6 +36,7 @@ fun User.toUserApi(): UserApi {
         language = language,
         notificationsEnabled = notificationsEnabled,
         forceResetPassword = forceResetPassword,
+        twoFactorEnabled = twoFactorEnabled
     )
 }
 
@@ -67,7 +68,7 @@ fun CreateUserInputGQL.toCreateUserApi(): CreateUserApi {
         password = password,
         companyName = companyName,
         language = language?.toLanguageApi() ?: LanguageApi.RO,
-        notificationsEnabled = notificationsEnabled ?: true,
+        notificationsEnabled = notificationsEnabled ?: true
     )
 }
 
@@ -204,7 +205,8 @@ fun CreateUserApi.toUser(
         } else {
             null
         },
-        registrationOtpAttempts = 0
+        registrationOtpAttempts = 0,
+        twoFactorEnabled = false
     )
 }
 
@@ -271,7 +273,8 @@ fun UserApi.toUserGql(): UserGQL {
         suspendedUntil?.toString(),
         language.toLanguageGql(),
         notificationsEnabled,
-        forceResetPassword
+        forceResetPassword,
+        twoFactorEnabled
     )
 }
 

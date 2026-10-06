@@ -23,7 +23,8 @@ data class UserApi(
     val suspendedUntil: Instant? = null,
     val language: LanguageApi = LanguageApi.RO,
     val notificationsEnabled: Boolean = true,
-    val forceResetPassword: Boolean = false
+    val forceResetPassword: Boolean = false,
+    val twoFactorEnabled: Boolean = false
 )
 
 @Schema(name = "UserRole", enumAsRef = true)
@@ -65,7 +66,7 @@ data class CreateUserApi(
     val eventCategoryPreferences: List<EventCategoryApi>? = null,
     val companyName: String? = null,
     val language: LanguageApi = LanguageApi.RO,
-    val notificationsEnabled: Boolean = true
+    val notificationsEnabled: Boolean = true,
 )
 
 @Schema(name = "LoginUser")
@@ -111,3 +112,16 @@ data class UpdatePasswordApi(
     @field:Size(min = 8, message = "Password must be at least 8 characters")
     val newPassword: String
 )
+
+@Schema(name = "LoginResponse")
+data class LoginResponseApi(
+    val requires2Fa: Boolean,
+    val email: String,
+    val user: UserApi? = null
+)
+
+data class UserLoginTwoFactorEvent(
+    val user: UserApi
+)
+
+

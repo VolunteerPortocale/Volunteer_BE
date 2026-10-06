@@ -1,7 +1,4 @@
 type Mutation {
-    createUser(input: CreateUserInput!): User!
-    validateRegistrationOtp(email: String!, otp: String!): User!
-    resendRegistrationOtp(email: String!): Boolean!
     updateUser(input: UpdateUserInput!): User!
     suspendUser(id: String!, suspendedUntil: String!): User!
     deleteUser(id: String!): Boolean!
@@ -9,4 +6,7 @@ type Mutation {
     updateEvent(id: String!, input: UpdateEventInput!): Event!
     enroll(input: CreateEnrollmentInput!): Enrollment!
     confirmEnrollment(input: ConfirmEnrollmentInput!): GenericPayload!
+    initiateTwoFactor: Boolean!
+    confirmTwoFactor(otp: String!): User!
+    verifyTwoFactorLogin(email: String!, otp: String!): User!
 }

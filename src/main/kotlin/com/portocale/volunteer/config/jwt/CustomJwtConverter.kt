@@ -36,7 +36,7 @@ class CustomJwtConverter : Converter<Jwt, Principal> {
         // ── Custom realm roles claim ───────────────────────────────
         val customRealmRoles: List<String> =
             (jwt.getClaimAsStringList("new_keycloak_realm_access_roles") ?: emptyList())
-                .mapNotNull { it?.toString() }
+                .mapNotNull { it }
 
         authorities += customRealmRoles.map { SimpleGrantedAuthority("ROLE_${it.uppercase()}") }
 
