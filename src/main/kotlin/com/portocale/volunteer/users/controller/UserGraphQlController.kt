@@ -4,6 +4,9 @@ import com.portocale.volunteer.config.toLanguageApi
 import com.portocale.volunteer.graphql.model.CreateUserInputGQL
 import com.portocale.volunteer.graphql.model.UpdateUserInputGQL
 import com.portocale.volunteer.graphql.model.UserGQL
+import com.portocale.volunteer.users.ConfirmTwoFactorApi
+import com.portocale.volunteer.users.DisableTwoFactorApi
+import com.portocale.volunteer.users.VerifyTwoFactorLoginApi
 import com.portocale.volunteer.users.service.UserService
 import com.portocale.volunteer.users.toCreateUserApi
 import com.portocale.volunteer.users.toLanguageApi
@@ -16,6 +19,7 @@ import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
 
+@Suppress("TooManyFunctions")
 @Controller
 class UserGraphQlController(
     private val userService: UserService
@@ -94,6 +98,33 @@ class UserGraphQlController(
     ): Boolean {
         return userService.delete(id)
     }
+
+    @MutationMapping
+    fun initiateTwoFactor(): Boolean {
+        return userService.initiateTwoFactorActivation()
+    }
+
+    @MutationMapping
+    fun confirmTwoFactor(@Argument otp: String): UserGQL {
+        return userService
+            .confirmTwoFactorActivation(ConfirmTwoFactorApi(otp = otp))
+            .toUserGql()
+    }
+
+    @MutationMapping
+    fun disableTwoFactor(@Argument password: String): UserGQL {
+        return userService
+            .disableTwoFactor(DisableTwoFactorApi(password = password))
+            .toUserGql()
+    }
+
+    @MutationMapping
+    fun verifyTwoFactorLogin(
+        @Argument email: String,
+        @Argument otp: String
+    ): UserGQL {
+        return userService
+            .verifyTwoFactorLogin(VerifyTwoFactorLoginApi(email = email, otp = otp))
+            .toUserGql()
+    }
 }
-
-

@@ -9,4 +9,8 @@ type Mutation {
     updateEvent(id: String!, input: UpdateEventInput!): Event!
     enroll(input: CreateEnrollmentInput!): Enrollment!
     confirmEnrollment(input: ConfirmEnrollmentInput!): GenericPayload!
+    initiateTwoFactor: Boolean!
+    confirmTwoFactor(otp: String!): User!
+    disableTwoFactor(password: String!): User!
+    verifyTwoFactorLogin(email: String!, otp: String!): User!
 }

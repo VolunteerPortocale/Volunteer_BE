@@ -2,13 +2,11 @@ package com.portocale.volunteer.users.controller
 
 import com.portocale.volunteer.users.ConfirmTwoFactorApi
 import com.portocale.volunteer.users.CreateUserApi
-import com.portocale.volunteer.users.DisableTwoFactorApi
 import com.portocale.volunteer.users.LoginResponseApi
 import com.portocale.volunteer.users.LoginUserApi
 import com.portocale.volunteer.users.ResetPasswordApi
 import com.portocale.volunteer.users.UpdatePasswordApi
 import com.portocale.volunteer.users.UserApi
-import com.portocale.volunteer.users.VerifyTwoFactorLoginApi
 import com.portocale.volunteer.users.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -119,12 +117,6 @@ class UserController(
         return userService.login(input)
     }
 
-    @PostMapping("/login/2fa")
-    @Operation(summary = "Login with 2FA")
-    fun verifyTwoFactorLogin(@Valid @RequestBody input: VerifyTwoFactorLoginApi): UserApi {
-        return userService.verifyTwoFactorLogin(input)
-    }
-
     @PostMapping("/2fa/initiate")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Initiate 2FA activation handshake")
@@ -136,12 +128,6 @@ class UserController(
     @Operation(summary = "Confirm 2FA activation with OTP")
     fun confirmTwoFactor(@Valid @RequestBody input: ConfirmTwoFactorApi): UserApi {
         return userService.confirmTwoFactorActivation(input)
-    }
-
-    @PostMapping("/2fa/disable")
-    @Operation(summary = "Disable 2FA with password re-authentication")
-    fun disableTwoFactor(@Valid @RequestBody input: DisableTwoFactorApi): UserApi {
-        return userService.disableTwoFactor(input)
     }
 }
 
