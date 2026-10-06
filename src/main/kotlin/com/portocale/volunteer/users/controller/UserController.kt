@@ -1,6 +1,5 @@
 package com.portocale.volunteer.users.controller
 
-import com.portocale.volunteer.users.ConfirmTwoFactorApi
 import com.portocale.volunteer.users.CreateUserApi
 import com.portocale.volunteer.users.LoginResponseApi
 import com.portocale.volunteer.users.LoginUserApi
@@ -116,18 +115,6 @@ class UserController(
     fun login(@Valid @RequestBody input: LoginUserApi): LoginResponseApi {
         return userService.login(input)
     }
-
-    @PostMapping("/2fa/initiate")
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Initiate 2FA activation handshake")
-    fun initiateTwoFactor(): Boolean {
-        return userService.initiateTwoFactorActivation()
-    }
-
-    @PostMapping("/2fa/confirm")
-    @Operation(summary = "Confirm 2FA activation with OTP")
-    fun confirmTwoFactor(@Valid @RequestBody input: ConfirmTwoFactorApi): UserApi {
-        return userService.confirmTwoFactorActivation(input)
-    }
 }
+
 

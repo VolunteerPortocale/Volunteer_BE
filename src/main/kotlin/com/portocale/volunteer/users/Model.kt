@@ -113,26 +113,15 @@ data class UpdatePasswordApi(
     val newPassword: String
 )
 
-@Schema(name = "ConfirmTwoFactor")
-data class ConfirmTwoFactorApi(
-    @field:NotBlank
-    @field:Size(min = 6, max = 6, message = "2FA code must be 6 digits")
-    val otp: String
-)
-@Schema(name = "DisableTwoFactor")
-data class DisableTwoFactorApi(
-    @field:NotBlank
-    val password: String
-)
 @Schema(name = "LoginResponse")
 data class LoginResponseApi(
     val requires2Fa: Boolean,
     val email: String,
     val user: UserApi? = null
 )
-@Schema(name = "VerifyTwoFactorLogin")
-data class VerifyTwoFactorLoginApi(
-    @field:Email @field:NotBlank val email: String,
-    @field:NotBlank @field:Size(min = 6, max = 6) val otp: String
+
+data class UserLoginTwoFactorEvent(
+    val user: UserApi
 )
+
 

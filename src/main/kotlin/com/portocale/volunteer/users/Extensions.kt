@@ -206,10 +206,7 @@ fun CreateUserApi.toUser(
             null
         },
         registrationOtpAttempts = 0,
-        twoFactorEnabled = false,
-        twoFactorOtpHash = null,
-        twoFactorExpiresAt = null,
-        twoFactorOtpAttempts = 0
+        twoFactorEnabled = false
     )
 }
 
@@ -361,44 +358,4 @@ fun LanguageApi.toLanguageGql(): LanguageGQL {
     }
 }
 
-fun User.toTwoFactorInitiatedUser(otpHash: String, expiresAt: Instant): User {
-    return this.copy(
-        twoFactorOtpHash = otpHash,
-        twoFactorExpiresAt = expiresAt,
-        twoFactorOtpAttempts = 0,
-        updatedAt = Instant.now()
-    )
-}
-fun User.toTwoFactorConfirmedUser(): User {
-    return this.copy(
-        twoFactorEnabled = true,
-        twoFactorOtpHash = null,
-        twoFactorExpiresAt = null,
-        twoFactorOtpAttempts = 0,
-        updatedAt = Instant.now()
-    )
-}
-fun User.toTwoFactorDisabledUser(): User {
-    return this.copy(
-        twoFactorEnabled = false,
-        twoFactorOtpHash = null,
-        twoFactorExpiresAt = null,
-        twoFactorOtpAttempts = 0,
-        updatedAt = Instant.now()
-    )
-}
-fun User.toTwoFactorFailedOtpUser(): User {
-    return this.copy(
-        twoFactorOtpAttempts = this.twoFactorOtpAttempts + 1,
-        updatedAt = Instant.now()
-    )
-}
-fun User.toTwoFactorResetOtpUser(): User {
-    return this.copy(
-        twoFactorOtpHash = null,
-        twoFactorExpiresAt = null,
-        twoFactorOtpAttempts = 0,
-        updatedAt = Instant.now()
-    )
-}
 

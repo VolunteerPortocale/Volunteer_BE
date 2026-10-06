@@ -59,19 +59,3 @@ class TooManyOtpAttemptsException(
     errorCode = ErrorCode.E400_003.value
 )
 
-class TwoFactorAlreadyEnabledException(
-    message: String = "Two-factor authentication is already enabled",
-    status: HttpStatus = HttpStatus.BAD_REQUEST
-) : BusinessException(
-    message = message,
-    status = status,
-    errorCode = ErrorCode.E400_004.value
-)
-class TwoFactorNotEnabledException(
-    message: String = "Two-factor authentication is not enabled",
-    status: HttpStatus = HttpStatus.BAD_REQUEST
-) : BusinessException(
-    message = message,
-    status = status,
-    errorCode = ErrorCode.E400_005.value
-)
