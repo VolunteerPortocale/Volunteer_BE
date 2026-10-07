@@ -3,6 +3,7 @@ package com.portocale.volunteer.config
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.io.IOException
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
@@ -19,7 +20,7 @@ class WakeServer {
         try {
             URI("$renderUrl/actuator/health").toURL().openStream().close()
             logger.info("Server Pinged")
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             logger.warn("Ping failed: ${e.message}")
         }
     }
