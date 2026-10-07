@@ -8,7 +8,6 @@ import org.springframework.security.access.prepost.PreAuthorize
 
 interface TwoFactorService {
 
-
     @PreAuthorize("hasRole('ADMIN')")
     fun initiateTwoFactorActivation(userId: String): Boolean
 

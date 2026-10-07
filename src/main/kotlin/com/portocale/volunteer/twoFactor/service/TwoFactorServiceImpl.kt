@@ -79,9 +79,6 @@ class TwoFactorServiceImpl(
 
     private fun initTwoFactory(userId: String): Boolean {
         val user = userService.getById(userId)
-        if (user.twoFactorEnabled) {
-            throw TwoFactorAlreadyEnabledException()
-        }
         dispatchTwoFactorOtp(user)
         return true
     }
