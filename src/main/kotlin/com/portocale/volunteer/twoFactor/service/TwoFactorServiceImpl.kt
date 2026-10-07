@@ -4,14 +4,10 @@ import com.portocale.volunteer.config.jwt.Principal
 import com.portocale.volunteer.notification.service.EmailService
 import com.portocale.volunteer.notification.service.OtpGenerator
 import com.portocale.volunteer.twoFactor.ConfirmTwoFactorApi
-import com.portocale.volunteer.twoFactor.DisableTwoFactorApi
 import com.portocale.volunteer.twoFactor.TwoFactor
-import com.portocale.volunteer.twoFactor.TwoFactorAlreadyEnabledException
 import com.portocale.volunteer.twoFactor.TwoFactorInvalidOtpStateException
-import com.portocale.volunteer.twoFactor.TwoFactorNotEnabledException
 import com.portocale.volunteer.twoFactor.repository.TwoFactorRepository
 import com.portocale.volunteer.users.UserApi
-import com.portocale.volunteer.users.UserInvalidCredentialsException
 import com.portocale.volunteer.users.service.UserService
 import java.time.Duration
 import java.time.Instant
@@ -53,16 +49,17 @@ class TwoFactorServiceImpl(
     private fun dispatchTwoFactorOtp(user: UserApi) {
         val otp = otpGenerator.generate()
         val expiresAt = Instant.now().plus(TWO_FACTOR_VALIDITY)
-        val encodedOtp = passwordEncoder.encode(otp)
-        val existing = twoFactorRepository.findByUserId(user.id).orElseGet {
-            TwoFactor(userId = user.id)
-        }
+        val encodedOtp = passwordEncoder.encode(otp)!!
+
+//      Delete all existing TwoFactoryCodes for this userId
+        twoFactorRepository.deleteAllByUserId(user.id)
+
+//      Create and save the new otp
         twoFactorRepository.save(
-            existing.copy(
+            TwoFactor(
+                userId = user.id,
                 otpHash = encodedOtp,
                 expiresAt = expiresAt,
-                attempts = 0,
-                updatedAt = Instant.now()
             )
         )
         emailService.sendTwoFactorAuth(user.email, user.firstName, otp, user.language)
@@ -87,14 +84,14 @@ class TwoFactorServiceImpl(
         userId: String,
         input: ConfirmTwoFactorApi
     ): Boolean {
-        val twoFactor = this.getByUserId(userId)
+        val twoFactor = getByUserId(userId)
 
         val isStructureValid = twoFactor.isValid()
-        val isCodeValid = twoFactor.isValidateOtpCode(input.otp, passwordEncoder)
+        val isCodeValid = twoFactor.isOtpCodeValid(input.otp, passwordEncoder)
 
         if (isCodeValid.not()) handleInvalidTwoFactorOtp(twoFactor)
 
-        if (isStructureValid && isCodeValid) twoFactorRepository.save(twoFactor.clearOtp())
+        if (isStructureValid && isCodeValid) twoFactorRepository.deleteAllByUserId(userId)
 
         return isStructureValid && isCodeValid
     }

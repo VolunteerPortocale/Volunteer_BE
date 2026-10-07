@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface TwoFactorRepository : MongoRepository<TwoFactor, String> {
     fun findByUserId(userId: String): Optional<TwoFactor>
+    fun deleteAllByUserId(userId: String)
 }

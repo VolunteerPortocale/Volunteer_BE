@@ -14,27 +14,19 @@ data class TwoFactor(
     val id: String? = null,
     @Indexed(unique = true)
     val userId: String,
-    val otpHash: String? = null,
+    val otpHash: String,
     @Indexed(expireAfter = "0s")
-    val expiresAt: Instant? = null,
+    val expiresAt: Instant,
     val attempts: Int = 0,
     val updatedAt: Instant = Instant.now()
 ) {
     fun isValid(): Boolean {
-        return this.isExpired().not() && this.hasExceededAttempts().not() && !this.otpHash.isNullOrEmpty()
+        return this.isExpired().not() && this.hasExceededAttempts().not() && this.otpHash.isNotEmpty()
     }
 
-    fun isValidateOtpCode(rawOtp: String, encoder: PasswordEncoder): Boolean {
-        val otpHash = this.otpHash ?: return false
-        return encoder.matches(rawOtp, otpHash)
+    fun isOtpCodeValid(rawOtp: String, encoder: PasswordEncoder): Boolean {
+        return encoder.matches(rawOtp, this.otpHash)
     }
-
-    fun clearOtp(): TwoFactor = copy(
-        otpHash = null,
-        expiresAt = null,
-        attempts = 0,
-        updatedAt = Instant.now()
-    )
 
     fun incrementAttempts(): TwoFactor = copy(
         attempts = attempts + 1,
