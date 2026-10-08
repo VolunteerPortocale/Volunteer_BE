@@ -36,7 +36,8 @@ fun User.toUserApi(): UserApi {
         language = language,
         notificationsEnabled = notificationsEnabled,
         forceResetPassword = forceResetPassword,
-        twoFactorEnabled = twoFactorEnabled
+        twoFactorEnabled = twoFactorEnabled,
+        biography = biography
     )
 }
 
@@ -68,7 +69,8 @@ fun CreateUserInputGQL.toCreateUserApi(): CreateUserApi {
         password = password,
         companyName = companyName,
         language = language?.toLanguageApi() ?: LanguageApi.RO,
-        notificationsEnabled = notificationsEnabled ?: true
+        notificationsEnabled = notificationsEnabled ?: true,
+        biography = biography
     )
 }
 
@@ -82,7 +84,8 @@ fun UpdateUserInputGQL.toUpdateUserApi(): UpdateUserApi {
         },
         companyName = companyName,
         language = language?.toLanguageApi(),
-        notificationsEnabled = notificationsEnabled
+        notificationsEnabled = notificationsEnabled,
+        biography = biography
     )
 }
 
@@ -174,6 +177,12 @@ fun CreateUserApi.toUser(
         )
     }
 
+    if (biography != null && biography.length > MAX_BIOGRAPHY_LENGTH) {
+        throw UserInvalidBiographyException(
+            "Biography must not exceed $MAX_BIOGRAPHY_LENGTH characters"
+        )
+    }
+
     return User(
         firstName = firstName,
         lastName = lastName,
@@ -190,6 +199,7 @@ fun CreateUserApi.toUser(
                 it.toEventCategory()
             },
         companyName = companyName,
+        biography = biography,
         createdAt = now,
         language = language,
         notificationsEnabled = notificationsEnabled,
@@ -211,6 +221,12 @@ fun CreateUserApi.toUser(
 }
 
 fun User.toUpdatedUser(input: UpdateUserApi): User {
+    if (input.biography != null && input.biography.length > MAX_BIOGRAPHY_LENGTH) {
+        throw UserInvalidBiographyException(
+            "Biography must not exceed $MAX_BIOGRAPHY_LENGTH characters"
+        )
+    }
+
     return this.copy(
         firstName = input.firstName ?: this.firstName,
         lastName = input.lastName ?: this.lastName,
@@ -220,6 +236,7 @@ fun User.toUpdatedUser(input: UpdateUserApi): User {
         companyName = input.companyName ?: this.companyName,
         language = input.language ?: this.language,
         notificationsEnabled = input.notificationsEnabled ?: this.notificationsEnabled,
+        biography = input.biography ?: this.biography,
         updatedAt = Instant.now(),
     )
 }
@@ -274,7 +291,8 @@ fun UserApi.toUserGql(): UserGQL {
         language.toLanguageGql(),
         notificationsEnabled,
         forceResetPassword,
-        twoFactorEnabled
+        twoFactorEnabled,
+        biography
     )
 }
 

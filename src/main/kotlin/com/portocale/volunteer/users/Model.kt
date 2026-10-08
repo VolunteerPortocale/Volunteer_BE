@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Size
 import java.time.Instant
 import com.portocale.volunteer.config.LanguageApi
 
+const val MAX_BIOGRAPHY_LENGTH = 1000
+
 @Schema(name = "User")
 data class UserApi(
     val id: String,
@@ -24,7 +26,8 @@ data class UserApi(
     val language: LanguageApi = LanguageApi.RO,
     val notificationsEnabled: Boolean = true,
     val forceResetPassword: Boolean = false,
-    val twoFactorEnabled: Boolean = false
+    val twoFactorEnabled: Boolean = false,
+    val biography: String? = null
 )
 
 @Schema(name = "UserRole", enumAsRef = true)
@@ -67,6 +70,8 @@ data class CreateUserApi(
     val companyName: String? = null,
     val language: LanguageApi = LanguageApi.RO,
     val notificationsEnabled: Boolean = true,
+    @field:Size(max = MAX_BIOGRAPHY_LENGTH)
+    val biography: String? = null
 )
 
 @Schema(name = "LoginUser")
@@ -87,7 +92,9 @@ data class UpdateUserApi(
     val eventCategoryPreferences: List<EventCategoryApi>? = null,
     val companyName: String? = null,
     val language: LanguageApi? = null,
-    val notificationsEnabled: Boolean? = null
+    val notificationsEnabled: Boolean? = null,
+    @field:Size(max = MAX_BIOGRAPHY_LENGTH)
+    val biography: String? = null
 )
 
 @Schema(name = "ValidateRegistrationOtp")

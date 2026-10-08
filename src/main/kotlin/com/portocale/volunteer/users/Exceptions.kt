@@ -59,3 +59,11 @@ class TooManyOtpAttemptsException(
     errorCode = ErrorCode.E400_003.value
 )
 
+class UserInvalidBiographyException(
+    message: String = "Biography must not exceed 1000 characters",
+    status: HttpStatus = HttpStatus.BAD_REQUEST
+) : BusinessException(
+    message = message,
+    status = status,
+    errorCode = ErrorCode.E400_006.value
+)

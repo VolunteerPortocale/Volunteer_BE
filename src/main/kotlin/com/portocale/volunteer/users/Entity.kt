@@ -23,6 +23,7 @@ data class User(
     val updatedAt: Instant? = null,
     val eventCategoryPreferences: List<EventCategory>? = null,
     val companyName: String? = null,
+    val biography: String? = null,
     val suspendedUntil: Instant? = null,
     val registrationOtpHash: String? = null,
     @Indexed(expireAfter = "0s")
