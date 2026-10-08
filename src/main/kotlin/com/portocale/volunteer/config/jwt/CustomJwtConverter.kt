@@ -13,52 +13,23 @@ import org.springframework.security.oauth2.jwt.Jwt
  * - `email`                                  → email
  * - `given_name`                             → firstName
  * - `family_name`                            → lastName
- * - `realm_access.roles`                     → ROLE_* authorities
- * - `new_keycloak_realm_access_roles`        → ROLE_* authorities (custom claim)
- * - `resource_access.<clientId>.roles`       → ROLE_* authorities (if clientId set)
+ * - `roles`        → ROLE_* authorities (custom claim)
  */
 class CustomJwtConverter : Converter<Jwt, Principal> {
-
-    /** Keycloak client id to look for in `resource_access`. */
-    var resourceClientId: String? = null
 
     override fun convert(jwt: Jwt): Principal {
         val authorities = mutableListOf<GrantedAuthority>()
 
-        // ── Standard realm roles ────────────────────────────────────
-        val realmRoles: List<String> =
-            (jwt.getClaim<Map<String, Any>>("realm_access")?.get("roles") as? List<*>)
-                ?.mapNotNull { it?.toString() }
-                ?: emptyList()
 
-        authorities += realmRoles.map { SimpleGrantedAuthority("ROLE_${it.uppercase()}") }
-
-        // ── Custom realm roles claim ───────────────────────────────
-        val customRealmRoles: List<String> =
-            (jwt.getClaimAsStringList("new_keycloak_realm_access_roles") ?: emptyList())
+        val roles: List<String> =
+            (jwt.getClaimAsStringList("role") ?: emptyList())
                 .mapNotNull { it }
 
-        authorities += customRealmRoles.map { SimpleGrantedAuthority("ROLE_${it.uppercase()}") }
-
-        // ── Client roles ────────────────────────────────────────────
-        val clientId = resourceClientId
-        if (clientId != null) {
-            val resourceAccess = jwt.getClaim<Map<String, Any>>("resource_access")
-            val clientRoles: List<String> =
-                ((resourceAccess?.get(clientId) as? Map<*, *>)?.get("roles") as? List<*>)
-                    ?.mapNotNull { it?.toString() }
-                    ?: emptyList()
-
-            authorities += clientRoles.map { SimpleGrantedAuthority("ROLE_${clientId}_${it.uppercase()}") }
-        }
+        authorities += roles.map { SimpleGrantedAuthority("ROLE_${it.uppercase()}") }
 
         // ── Standard claims ────────────────────────────────────────
-        val rawSubject = jwt.subject ?: ""
-        val userId = if (rawSubject.startsWith("f:")) {
-            rawSubject.substringAfterLast(":")
-        } else {
-            rawSubject
-        }
+
+        val userId = jwt.getClaimAsString("external_id") ?: error(IllegalStateException("Missing id"))
         val email = jwt.getClaimAsString("email") ?: error(IllegalStateException("Missing email"))
         val firstName = jwt.getClaimAsString("given_name") ?: error(IllegalStateException("Missing given name"))
         val lastName = jwt.getClaimAsString("family_name") ?: error(IllegalStateException("Missing family name"))
