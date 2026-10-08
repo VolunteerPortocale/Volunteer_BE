@@ -85,7 +85,8 @@ fun UpdateUserInputGQL.toUpdateUserApi(): UpdateUserApi {
         companyName = companyName,
         language = language?.toLanguageApi(),
         notificationsEnabled = notificationsEnabled,
-        biography = biography
+        biography = biography,
+        twoFactorEnabled = twoFactorEnabled
     )
 }
 
@@ -237,6 +238,7 @@ fun User.toUpdatedUser(input: UpdateUserApi): User {
         language = input.language ?: this.language,
         notificationsEnabled = input.notificationsEnabled ?: this.notificationsEnabled,
         biography = input.biography ?: this.biography,
+        twoFactorEnabled = input.twoFactorEnabled ?: this.twoFactorEnabled,
         updatedAt = Instant.now(),
     )
 }

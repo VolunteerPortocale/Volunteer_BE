@@ -154,6 +154,7 @@ input UpdateUserInput {
     language: Language
     notificationsEnabled: Boolean
     biography: String
+    twoFactorEnabled: Boolean
 }
 
 input CreateEventInput {

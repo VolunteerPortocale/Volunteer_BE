@@ -1,7 +1,6 @@
 package com.portocale.volunteer.twoFactor.controller
 
 import com.portocale.volunteer.twoFactor.ConfirmTwoFactorApi
-import com.portocale.volunteer.twoFactor.DisableTwoFactorApi
 import com.portocale.volunteer.twoFactor.service.TwoFactorService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -37,13 +36,5 @@ class TwoFactorController(
         @Valid @RequestBody input: ConfirmTwoFactorApi
     ): Boolean {
         return twoFactorService.confirmTwoFactorActivation(userId, input)
-    }
-
-    @PostMapping("/disable")
-    @Operation(summary = "Disable 2FA for current user with password verification")
-    fun disableTwoFactor(
-        @Valid @RequestBody input: DisableTwoFactorApi
-    ): Boolean {
-        return twoFactorService.selfDisableTwoFactor(input)
     }
 }
