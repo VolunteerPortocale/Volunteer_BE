@@ -4,10 +4,13 @@ import com.portocale.volunteer.config.jwt.Principal
 import com.portocale.volunteer.notification.service.EmailService
 import com.portocale.volunteer.notification.service.OtpGenerator
 import com.portocale.volunteer.twoFactor.ConfirmTwoFactorApi
+import com.portocale.volunteer.twoFactor.DisableTwoFactorApi
 import com.portocale.volunteer.twoFactor.TwoFactor
 import com.portocale.volunteer.twoFactor.TwoFactorInvalidOtpStateException
+import com.portocale.volunteer.twoFactor.TwoFactorNotEnabledException
 import com.portocale.volunteer.twoFactor.repository.TwoFactorRepository
 import com.portocale.volunteer.users.UserApi
+import com.portocale.volunteer.users.UserInvalidCredentialsException
 import com.portocale.volunteer.users.service.UserService
 import java.time.Duration
 import java.time.Instant
@@ -44,6 +47,20 @@ class TwoFactorServiceImpl(
     override fun selfConfirmTwoFactorActivation(input: ConfirmTwoFactorApi): Boolean {
         val userId = currentUserId()
         return validateTwoFactory(userId, input)
+    }
+
+    override fun selfDisableTwoFactor(input: DisableTwoFactorApi): Boolean {
+        val userId = currentUserId()
+        val user = userService.getById(userId)
+        if (!user.twoFactorEnabled) throw TwoFactorNotEnabledException()
+
+        if (!userService.verifyPassword(userId, input.password)) {
+            throw UserInvalidCredentialsException("Invalid password")
+        }
+
+        userService.setTwoFactorEnabled(userId, false)
+        twoFactorRepository.deleteAllByUserId(userId)
+        return true
     }
 
     private fun dispatchTwoFactorOtp(user: UserApi) {

@@ -30,4 +30,11 @@ class TwoFactorGraphQlController(
         return twoFactorService
             .confirmTwoFactorActivation(principal.userId, ConfirmTwoFactorApi(otp = otp))
     }
+
+    @MutationMapping
+    fun disableTwoFactor(
+        @Argument password: String
+    ): Boolean {
+        return twoFactorService.selfDisableTwoFactor(DisableTwoFactorApi(password = password))
+    }
 }

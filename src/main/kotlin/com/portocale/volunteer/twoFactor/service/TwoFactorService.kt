@@ -19,4 +19,7 @@ interface TwoFactorService {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO', 'VOLUNTEER')")
     fun selfConfirmTwoFactorActivation(input: ConfirmTwoFactorApi): Boolean
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO', 'VOLUNTEER')")
+    fun selfDisableTwoFactor(input: DisableTwoFactorApi): Boolean
 }

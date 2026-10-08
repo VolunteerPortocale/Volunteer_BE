@@ -9,4 +9,5 @@ type Mutation {
     initiateTwoFactor: Boolean!
     confirmTwoFactor(otp: String!): User!
     verifyTwoFactorLogin(email: String!, otp: String!): User!
+    disableTwoFactor(password: String!): Boolean!
 }
