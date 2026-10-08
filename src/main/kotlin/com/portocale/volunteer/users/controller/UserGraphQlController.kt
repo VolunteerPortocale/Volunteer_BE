@@ -1,20 +1,28 @@
 package com.portocale.volunteer.users.controller
 
+import com.portocale.volunteer.config.jwt.Principal
 import com.portocale.volunteer.config.toLanguageApi
 import com.portocale.volunteer.graphql.model.CreateUserInputGQL
 import com.portocale.volunteer.graphql.model.UpdateUserInputGQL
 import com.portocale.volunteer.graphql.model.UserGQL
+import com.portocale.volunteer.users.UserApi
 import com.portocale.volunteer.users.service.UserService
 import com.portocale.volunteer.users.toCreateUserApi
 import com.portocale.volunteer.users.toLanguageApi
 import com.portocale.volunteer.users.toUpdateUserApi
 import com.portocale.volunteer.users.toUserGql
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import java.time.Instant
 import java.util.Locale
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
 class UserGraphQlController(
@@ -29,6 +37,11 @@ class UserGraphQlController(
     @QueryMapping
     fun getUserById(@Argument id: String): UserGQL {
         return userService.getById(id).toUserGql()
+    }
+
+    @QueryMapping
+    fun getCurrentUser(principal: Principal): UserApi {
+        return userService.getById(principal.userId)
     }
 
     @QueryMapping

@@ -1,5 +1,6 @@
 package com.portocale.volunteer.users.controller
 
+import com.portocale.volunteer.config.jwt.Principal
 import com.portocale.volunteer.users.CreateUserApi
 import com.portocale.volunteer.users.LoginResponseApi
 import com.portocale.volunteer.users.LoginUserApi
