@@ -142,7 +142,7 @@ input CreateUserInput {
     companyName: String
     language: Language
     notificationsEnabled: Boolean
-    biography: String!
+    biography: String
 }
 
 input UpdateUserInput {
