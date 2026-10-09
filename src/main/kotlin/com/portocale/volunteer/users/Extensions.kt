@@ -178,12 +178,13 @@ fun CreateUserApi.toUser(
 ): User {
     val now = Instant.now()
 
-    if (biography.isBlank()) {
-        throw UserInvalidBiographyException(
-            "Biography must not be blank"
+    if (isSelfRegistered && otp == null) {
+        throw InvalidAttributesException(
+            "OTP is required for self registration"
         )
     }
-    if (biography.length > MAX_BIOGRAPHY_LENGTH) {
+
+    if (biography != null && biography.length > MAX_BIOGRAPHY_LENGTH) {
         throw UserInvalidBiographyException(
             "Biography must not exceed $MAX_BIOGRAPHY_LENGTH characters"
         )
