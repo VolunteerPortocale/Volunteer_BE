@@ -11,6 +11,7 @@ import com.portocale.volunteer.graphql.model.CreateUserRoleGQL
 import com.portocale.volunteer.graphql.model.EventCategoryGQL
 import com.portocale.volunteer.graphql.model.LanguageGQL
 import com.portocale.volunteer.graphql.model.UpdateUserInputGQL
+import com.portocale.volunteer.graphql.model.UpdateUserPreferencesInputGQL
 import com.portocale.volunteer.graphql.model.UserGQL
 import com.portocale.volunteer.graphql.model.UserRoleGQL
 import com.portocale.volunteer.graphql.model.UserStatusGQL
@@ -79,13 +80,19 @@ fun UpdateUserInputGQL.toUpdateUserApi(): UpdateUserApi {
         firstName = firstName,
         lastName = lastName,
         phoneNumber = phoneNumber,
+        companyName = companyName,
+        biography = biography
+    )
+}
+
+fun UpdateUserPreferencesInputGQL.toUpdateUserApi(): UpdateUserApi {
+    return UpdateUserApi(
         eventCategoryPreferences = eventCategoryPreferences?.map {
             it.toEventCategoryApi()
         },
-        companyName = companyName,
         language = language?.toLanguageApi(),
         notificationsEnabled = notificationsEnabled,
-        biography = biography
+        twoFactorEnabled = twoFactorEnabled
     )
 }
 
@@ -237,6 +244,7 @@ fun User.toUpdatedUser(input: UpdateUserApi): User {
         language = input.language ?: this.language,
         notificationsEnabled = input.notificationsEnabled ?: this.notificationsEnabled,
         biography = input.biography ?: this.biography,
+        twoFactorEnabled = input.twoFactorEnabled ?: this.twoFactorEnabled,
         updatedAt = Instant.now(),
     )
 }
