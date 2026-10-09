@@ -94,7 +94,8 @@ data class UpdateUserApi(
     val language: LanguageApi? = null,
     val notificationsEnabled: Boolean? = null,
     @field:Size(max = MAX_BIOGRAPHY_LENGTH)
-    val biography: String? = null
+    val biography: String? = null,
+    val twoFactorEnabled: Boolean? = null
 )
 
 @Schema(name = "ValidateRegistrationOtp")
