@@ -8,6 +8,5 @@ type Mutation {
     enroll(input: CreateEnrollmentInput!): Enrollment!
     confirmEnrollment(input: ConfirmEnrollmentInput!): GenericPayload!
     initiateTwoFactor: Boolean!
-    confirmTwoFactor(otp: String!): User!
-    verifyTwoFactorLogin(email: String!, otp: String!): User!
+    confirmTwoFactor(otp: String!): Boolean!
 }
