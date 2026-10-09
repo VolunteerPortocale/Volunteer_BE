@@ -142,18 +142,21 @@ input CreateUserInput {
     companyName: String
     language: Language
     notificationsEnabled: Boolean
-    biography: String
+    biography: String!
 }
 
 input UpdateUserInput {
     firstName: String
     lastName: String
     phoneNumber: String
-    eventCategoryPreferences: [EventCategory!]
     companyName: String
+    biography: String
+}
+
+input UpdateUserPreferencesInput {
+    eventCategoryPreferences: [EventCategory!]
     language: Language
     notificationsEnabled: Boolean
-    biography: String
     twoFactorEnabled: Boolean
 }
 

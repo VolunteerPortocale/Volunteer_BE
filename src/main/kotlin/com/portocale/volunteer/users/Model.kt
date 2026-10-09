@@ -70,8 +70,9 @@ data class CreateUserApi(
     val companyName: String? = null,
     val language: LanguageApi = LanguageApi.RO,
     val notificationsEnabled: Boolean = true,
+    @field:NotBlank
     @field:Size(max = MAX_BIOGRAPHY_LENGTH)
-    val biography: String? = null
+    val biography: String
 )
 
 @Schema(name = "LoginUser")

@@ -3,6 +3,7 @@ package com.portocale.volunteer.users.controller
 import com.portocale.volunteer.config.toLanguageApi
 import com.portocale.volunteer.graphql.model.CreateUserInputGQL
 import com.portocale.volunteer.graphql.model.UpdateUserInputGQL
+import com.portocale.volunteer.graphql.model.UpdateUserPreferencesInputGQL
 import com.portocale.volunteer.graphql.model.UserGQL
 import com.portocale.volunteer.users.service.UserService
 import com.portocale.volunteer.users.toCreateUserApi
@@ -71,6 +72,15 @@ class UserGraphQlController(
     @MutationMapping
     fun updateUser(
         @Argument input: UpdateUserInputGQL
+    ): UserGQL {
+        return userService.update(
+            input = input.toUpdateUserApi()
+        ).toUserGql()
+    }
+
+    @MutationMapping
+    fun updateUserPreferences(
+        @Argument input: UpdateUserPreferencesInputGQL
     ): UserGQL {
         return userService.update(
             input = input.toUpdateUserApi()

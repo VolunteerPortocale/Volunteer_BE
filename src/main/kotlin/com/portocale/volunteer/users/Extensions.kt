@@ -11,6 +11,7 @@ import com.portocale.volunteer.graphql.model.CreateUserRoleGQL
 import com.portocale.volunteer.graphql.model.EventCategoryGQL
 import com.portocale.volunteer.graphql.model.LanguageGQL
 import com.portocale.volunteer.graphql.model.UpdateUserInputGQL
+import com.portocale.volunteer.graphql.model.UpdateUserPreferencesInputGQL
 import com.portocale.volunteer.graphql.model.UserGQL
 import com.portocale.volunteer.graphql.model.UserRoleGQL
 import com.portocale.volunteer.graphql.model.UserStatusGQL
@@ -79,13 +80,18 @@ fun UpdateUserInputGQL.toUpdateUserApi(): UpdateUserApi {
         firstName = firstName,
         lastName = lastName,
         phoneNumber = phoneNumber,
+        companyName = companyName,
+        biography = biography
+    )
+}
+
+fun UpdateUserPreferencesInputGQL.toUpdateUserApi(): UpdateUserApi {
+    return UpdateUserApi(
         eventCategoryPreferences = eventCategoryPreferences?.map {
             it.toEventCategoryApi()
         },
-        companyName = companyName,
         language = language?.toLanguageApi(),
         notificationsEnabled = notificationsEnabled,
-        biography = biography,
         twoFactorEnabled = twoFactorEnabled
     )
 }
@@ -172,13 +178,12 @@ fun CreateUserApi.toUser(
 ): User {
     val now = Instant.now()
 
-    if (isSelfRegistered && otp == null) {
-        throw InvalidAttributesException(
-            "OTP is required for self registration"
+    if (biography.isBlank()) {
+        throw UserInvalidBiographyException(
+            "Biography must not be blank"
         )
     }
-
-    if (biography != null && biography.length > MAX_BIOGRAPHY_LENGTH) {
+    if (biography.length > MAX_BIOGRAPHY_LENGTH) {
         throw UserInvalidBiographyException(
             "Biography must not exceed $MAX_BIOGRAPHY_LENGTH characters"
         )
