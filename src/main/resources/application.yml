@@ -80,7 +80,5 @@ google:
   drive:
     application-name: volunteer-platform
     #    root-folder-id: ${GOOGLE_DRIVE_ROOT_FOLDER_ID}
-#    credentials-path: ${GOOGLE_DRIVE_CREDENTIALS_PATH}
-    credentials-path: ./config/google/credentials.json
-#    tokens-path: ${GOOGLE_DRIVE_TOKENS_PATH}
-    tokens-path: ./config/google/tokens/
+    credentials-path: ${GOOGLE_DRIVE_CREDENTIALS_PATH}
+    tokens-path: ${GOOGLE_DRIVE_TOKENS_PATH}
