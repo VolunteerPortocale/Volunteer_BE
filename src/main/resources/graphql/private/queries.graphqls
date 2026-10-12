@@ -4,5 +4,4 @@ type Query {
     getCurrentUser: User!
     getAllEvents: [Event!]!
     getEventById(id: String!): Event!
-    getEventFiles(eventId: String!): [EventFile!]!
 }

@@ -31,12 +31,19 @@ class PublicGraphQlConfig(
         controllerConfigurer.setApplicationContext(applicationContext)
         controllerConfigurer.afterPropertiesSet()
 
-        val resources = PathMatchingResourcePatternResolver()
-            .getResources("classpath*:graphql/public/**/*.graphqls")
+        val resolver = PathMatchingResourcePatternResolver()
+
+        val sharedTypes = resolver.getResources(
+            "classpath*:graphql/types.graphqls"
+        )
+
+        val publicSchemas = resolver.getResources(
+            "classpath*:graphql/public/**/*.graphqls"
+        )
 
         return GraphQlSource
             .schemaResourceBuilder()
-            .schemaResources(*resources)
+            .schemaResources(*(sharedTypes + publicSchemas))
             .configureRuntimeWiring(controllerConfigurer)
             .build()
     }

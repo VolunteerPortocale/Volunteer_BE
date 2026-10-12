@@ -1,13 +1,13 @@
 package com.portocale.volunteer.event.service
 
 import com.portocale.volunteer.config.LanguageApi
-import com.portocale.volunteer.config.StorageConfig
 import com.portocale.volunteer.enrollment.EnrollmentResponseApi
 import com.portocale.volunteer.enrollment.service.EnrollmentService
 import com.portocale.volunteer.event.CreateEventApi
 import com.portocale.volunteer.event.Event
 import com.portocale.volunteer.event.EventApi
 import com.portocale.volunteer.event.EventNotFoundException
+import com.portocale.volunteer.event.EventStatus
 import com.portocale.volunteer.event.UpdateEventApi
 import com.portocale.volunteer.event.repository.EventRepository
 import com.portocale.volunteer.event.toEntity
@@ -32,7 +32,6 @@ class EventServiceImpl(
     private val userRepository: UserRepository,
     private val emailService: EmailService,
     private val storageService: StorageService,
-    private val properties: StorageConfig
 ) : EventService {
 
     private val log = LoggerFactory.getLogger(EventServiceImpl::class.java)
@@ -44,6 +43,13 @@ class EventServiceImpl(
 
     override fun getAll(language: LanguageApi): List<EventApi> {
         return eventRepository.findAll()
+            .map { it.toEventApi(language) }
+    }
+
+    override fun getLastThreeActiveEvents(language: LanguageApi): List<EventApi> {
+        return eventRepository.findTop3ByStatusInOrderByCreatedAtDesc(
+            listOf(EventStatus.IN_PROGRESS, EventStatus.PUBLISHED, EventStatus.POSTPONED)
+        )
             .map { it.toEventApi(language) }
     }
 

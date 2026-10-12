@@ -18,6 +18,7 @@ import com.portocale.volunteer.event.service.EventFileService
 import com.portocale.volunteer.event.toEventFileGql
 import com.portocale.volunteer.event.toEventFileResponseApi
 import com.portocale.volunteer.graphql.model.EventFileGQL
+import org.springframework.graphql.data.method.annotation.SchemaMapping
 
 @Controller
 class EventGraphQLController(
@@ -30,6 +31,11 @@ class EventGraphQLController(
     }
 
     @QueryMapping
+    fun getLastThreeActiveEvents(locale: Locale): List<EventGQL> {
+        return eventService.getLastThreeActiveEvents(locale.toLanguageApi()).map { it.toEventGql() }
+    }
+
+    @QueryMapping
     fun getEventById(@Argument id: String, locale: Locale): EventGQL {
         return eventService.getById(id, locale.toLanguageApi()).toEventGql()
     }
@@ -37,6 +43,12 @@ class EventGraphQLController(
     @QueryMapping
     fun getEventFiles(@Argument eventId: String): List<EventFileGQL> {
         return eventFileService.getAllByEventId(eventId)
+            .map { it.toEventFileResponseApi().toEventFileGql() }
+    }
+
+    @SchemaMapping(typeName = "Event", field = "files")
+    fun files(event: EventGQL): List<EventFileGQL> {
+        return eventFileService.getAllByEventId(event.id)
             .map { it.toEventFileResponseApi().toEventFileGql() }
     }
 

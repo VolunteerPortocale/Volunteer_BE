@@ -31,12 +31,19 @@ class PrivateGraphQlConfig(
         controllerConfigurer.setApplicationContext(applicationContext)
         controllerConfigurer.afterPropertiesSet()
 
-        val resources = PathMatchingResourcePatternResolver()
-            .getResources("classpath*:graphql/private/**/*.graphqls")
+        val resolver = PathMatchingResourcePatternResolver()
+
+        val sharedTypes = resolver.getResources(
+            "classpath*:graphql/types.graphqls"
+        )
+
+        val privateSchemas = resolver.getResources(
+            "classpath*:graphql/private/**/*.graphqls"
+        )
 
         return GraphQlSource
             .schemaResourceBuilder()
-            .schemaResources(*resources)
+            .schemaResources(*(sharedTypes + privateSchemas))
             .configureRuntimeWiring(controllerConfigurer)
             .build()
     }

@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.bind.Binder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -39,6 +40,10 @@ class SecurityConfig {
                     ).permitAll()
                     .requestMatchers("/graphql/public")
                     .permitAll()
+                    .requestMatchers(
+                        HttpMethod.GET,
+                        "/api/v1/files/**"
+                    ).permitAll()
 
                     // Secure endpoints by role or allow any authenticated user
                     .requestMatchers("/graphql").authenticated()

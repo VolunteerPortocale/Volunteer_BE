@@ -42,6 +42,7 @@ type Event {
     createdBy: String
     lastModifiedAt: String!
     lastModifiedBy: String
+    files: [EventFile!]
 }
 
 type EventDetails {

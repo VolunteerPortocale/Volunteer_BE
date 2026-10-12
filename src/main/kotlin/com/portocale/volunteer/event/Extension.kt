@@ -341,7 +341,8 @@ fun EventApi.toEventGql(): EventGQL {
         createdAt?.toString(),
         createdBy,
         lastModifiedAt?.toString(),
-        lastModifiedBy
+        lastModifiedBy,
+        emptyList()
     )
 }
 fun EventDetailsApi.toEventDetailsGql(): EventDetailsGQL {
