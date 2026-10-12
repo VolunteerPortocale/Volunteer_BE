@@ -41,7 +41,6 @@ class StorageController(
             .contentType(
                 MediaType.parseMediaType(file.contentType)
             )
-            .contentLength(file.size)
             .header(
                 HttpHeaders.CONTENT_DISPOSITION,
                 ContentDisposition.inline()
