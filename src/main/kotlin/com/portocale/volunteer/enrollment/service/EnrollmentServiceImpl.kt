@@ -33,7 +33,8 @@ class EnrollmentServiceImpl(
 
         val user = userService.getById(authenticatedUser.userId)
 
-        if (enrollmentRepository.existsByEventIdAndUserId(event.id, user.id)) error(EnrollmentConflictException())
+        val enrolled = enrollmentRepository.findByEventIdAndUserId(event.id, user.id)
+        if (enrolled != null) return enrolled.toEnrollmentResponseApi()
 
         val enrollment = enrollmentRepository.save(request.toEntity(user.id)).toEnrollmentResponseApi()
 
