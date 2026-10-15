@@ -13,6 +13,8 @@ interface EnrollmentService {
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO')")
     fun confirmEnrollment(enrollmentId: String): GenericStatusApi
     fun getByEventId(eventId: String): List<EnrollmentResponseApi>
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO', 'VOLUNTEER')")
+    fun unenroll(eventId: String): GenericStatusApi
 }
 
 
