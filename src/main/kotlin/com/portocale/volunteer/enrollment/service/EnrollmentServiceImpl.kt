@@ -69,6 +69,14 @@ class EnrollmentServiceImpl(
             .map { it.toEnrollmentResponseApi() }
     }
 
+    override fun getCurrentUserEnrollments(userId: String): List<EnrollmentResponseApi> {
+        return enrollmentRepository.findByUserId(userId).map { it.toEnrollmentResponseApi() }
+    }
+
+    override fun getEventEnrollmentById(eventId: String, userId: String): EnrollmentResponseApi? {
+        return enrollmentRepository.findByEventIdAndUserId(eventId, userId)?.toEnrollmentResponseApi()
+    }
+
     private fun throwingGetById(enrollmentId: String): Enrollment {
         return enrollmentRepository.findById(enrollmentId)
             .orElseThrow { EnrollmentNotFoundException() }

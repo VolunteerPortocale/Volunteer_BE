@@ -9,5 +9,6 @@ interface EnrollmentRepository : MongoRepository<Enrollment, String> {
     fun findByEventIdAndUserId(eventId: String, userId: String): Enrollment?
     fun existsByEventIdAndUserId(eventId: String, userId: String): Boolean
     fun findByEventId(eventId: String): List<Enrollment>
+    fun findByUserId(eventId: String): List<Enrollment>
 }
 
