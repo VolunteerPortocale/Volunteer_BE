@@ -1,24 +1,24 @@
 package com.portocale.volunteer.event.controller
 
+import com.portocale.volunteer.config.jwt.Principal
 import com.portocale.volunteer.config.toLanguageApi
+import com.portocale.volunteer.event.service.EventFileService
 import com.portocale.volunteer.event.service.EventService
 import com.portocale.volunteer.event.toCreateEventApi
+import com.portocale.volunteer.event.toEventFileGql
+import com.portocale.volunteer.event.toEventFileResponseApi
 import com.portocale.volunteer.event.toEventGql
+import com.portocale.volunteer.event.toUpdateEventApi
 import com.portocale.volunteer.graphql.model.CreateEventInputGQL
+import com.portocale.volunteer.graphql.model.EventFileGQL
 import com.portocale.volunteer.graphql.model.EventGQL
+import com.portocale.volunteer.graphql.model.UpdateEventInputGQL
+import java.util.*
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
-import org.springframework.stereotype.Controller
-import java.security.Principal
-import java.util.Locale
-import com.portocale.volunteer.event.toUpdateEventApi
-import com.portocale.volunteer.graphql.model.UpdateEventInputGQL
-import com.portocale.volunteer.event.service.EventFileService
-import com.portocale.volunteer.event.toEventFileGql
-import com.portocale.volunteer.event.toEventFileResponseApi
-import com.portocale.volunteer.graphql.model.EventFileGQL
 import org.springframework.graphql.data.method.annotation.SchemaMapping
+import org.springframework.stereotype.Controller
 
 @Controller
 class EventGraphQLController(
@@ -52,6 +52,17 @@ class EventGraphQLController(
             .map { it.toEventFileResponseApi().toEventFileGql() }
     }
 
+    @QueryMapping
+    fun getCurrentUserEvents(
+        principal: Principal,
+        locale: Locale
+    ): List<EventGQL> {
+        return eventService.getCurrentUserEvents(
+            principal.userId,
+            locale.toLanguageApi()
+        ).map { it.toEventGql() }
+    }
+
     @MutationMapping
     fun createEvent(
         @Argument input: CreateEventInputGQL,
@@ -63,6 +74,7 @@ class EventGraphQLController(
             locale.toLanguageApi()
         ).toEventGql()
     }
+
     @MutationMapping
     fun updateEvent(
         @Argument id: String,

@@ -77,7 +77,6 @@ class EventServiceImpl(
         val updatedEvent = existingEvent.toUpdatedEntity(event, modifiedBy)
         return eventRepository.save(updatedEvent).toEventApi(language)
     }
-
     override fun approve(id: String, language: LanguageApi, modifiedBy: String): EventApi {
         val existingEvent = eventRepository.findById(id)
             .orElseThrow { EventNotFoundException("Event not found: $id") }
@@ -163,6 +162,12 @@ class EventServiceImpl(
         return authentication.authorities.any {
             it.authority == "ROLE_ADMIN" || it.authority == "ROLE_MODERATOR"
         }
+    }
+
+    override fun getCurrentUserEvents(userId: String, language: LanguageApi): List<EventApi> {
+        val eventIds = enrollmentService.getCurrentUserEnrollments(userId)
+            .map { it.eventId }
+        return eventRepository.findAllById(eventIds).map { it.toEventApi(language) }
     }
 
     @SuppressWarnings("TooGenericExceptionCaught")

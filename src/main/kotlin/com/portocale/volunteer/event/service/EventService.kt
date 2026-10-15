@@ -12,12 +12,12 @@ interface EventService {
     fun getAll(language: LanguageApi): List<EventApi>
     fun getLastThreeActiveEvents(language: LanguageApi): List<EventApi>
     fun update(id: String, event: UpdateEventApi, language: LanguageApi, modifiedBy: String): EventApi
-
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     fun approve(id: String, language: LanguageApi, modifiedBy: String): EventApi
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     fun reject(id: String, language: LanguageApi, modifiedBy: String): EventApi
 
+    fun getCurrentUserEvents(userId: String, language: LanguageApi): List<EventApi>
     fun sendUpcomingEventReminders()
 }
 

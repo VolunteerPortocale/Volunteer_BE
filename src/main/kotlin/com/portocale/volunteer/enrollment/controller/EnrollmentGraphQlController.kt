@@ -1,5 +1,6 @@
 package com.portocale.volunteer.enrollment.controller
 
+import com.portocale.volunteer.config.jwt.Principal
 import com.portocale.volunteer.config.toLanguageApi
 import com.portocale.volunteer.enrollment.service.EnrollmentService
 import com.portocale.volunteer.enrollment.toCreateEnrollmentApi
@@ -8,11 +9,12 @@ import com.portocale.volunteer.enrollment.toGenericPayloadGQL
 import com.portocale.volunteer.graphql.model.ConfirmEnrollmentInputGQL
 import com.portocale.volunteer.graphql.model.CreateEnrollmentInputGQL
 import com.portocale.volunteer.graphql.model.EnrollmentGQL
-import com.portocale.volunteer.graphql.model.UnenrollInputGQL
 import com.portocale.volunteer.graphql.model.GenericPayloadGQL
-import java.util.Locale
+import com.portocale.volunteer.graphql.model.UnenrollInputGQL
+import java.util.*
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
+import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
 
 @Controller
@@ -33,7 +35,7 @@ class EnrollmentGraphQlController(
     @MutationMapping
     fun confirmEnrollment(
         @Argument input: ConfirmEnrollmentInputGQL
-    ) : GenericPayloadGQL {
+    ): GenericPayloadGQL {
         return enrollmentService.confirmEnrollment(input.enrollmentId).toGenericPayloadGQL()
     }
 
@@ -42,5 +44,19 @@ class EnrollmentGraphQlController(
         @Argument input: UnenrollInputGQL
     ): GenericPayloadGQL {
         return enrollmentService.unenroll(input.eventId).toGenericPayloadGQL()
+    }
+
+    @QueryMapping
+    fun getCurrentUserEnrollments(principal: Principal): List<EnrollmentGQL> {
+        return enrollmentService.getCurrentUserEnrollments(principal.name)
+            .map { it.toEnrollmentGql() }
+    }
+
+    @QueryMapping
+    fun getEventEnrollmentById(
+        @Argument id: String,
+        principal: Principal
+    ): EnrollmentGQL? {
+        return enrollmentService.getEventEnrollmentById(id, principal.name)?.toEnrollmentGql()
     }
 }
