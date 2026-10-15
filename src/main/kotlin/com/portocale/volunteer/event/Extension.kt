@@ -49,11 +49,19 @@ fun EventDetails.toEventDetailsApi(language: LanguageApi): EventDetailsApi {
 }
 
 fun CreateEventApi.toEntity(): Event {
+    val initialStatus = status.toEventStatus()
     return Event(
         details = details.toEventDetails(),
         category = category.toEventCategory(),
         storageFolderId = storageFolderId,
-        status = status.toEventStatus(),
+        status = initialStatus,
+        statusHistory = listOf(
+            EventStatusHistory(
+                status = initialStatus,
+                occurredAt = Instant.now(),
+                actor = createdBy
+            )
+        ),
         createdBy = createdBy,
         lastModifiedBy = createdBy
     )
@@ -110,10 +118,21 @@ fun UpdateEventDetailsApi.toEventDetails(): EventDetails {
 }
 
 fun Event.toUpdatedEntity(input: UpdateEventApi, modifiedBy: String): Event {
+    val newStatus = input.status.toEventStatus()
+    val updatedHistory = if (newStatus != this.status) {
+        (this.statusHistory ?: emptyList()) + EventStatusHistory(
+            status = newStatus,
+            occurredAt = Instant.now(),
+            actor = modifiedBy
+        )
+    } else {
+        this.statusHistory
+    }
     return this.copy(
         details = input.details.toEventDetails(),
         category = input.category.toEventCategory(),
-        status = input.status.toEventStatus(),
+        status = newStatus,
+        statusHistory = updatedHistory,
         lastModifiedAt = Instant.now(),
         lastModifiedBy = modifiedBy
     )

@@ -10,4 +10,6 @@ type Mutation {
     unenroll(input: UnenrollInput!): GenericPayload!
     initiateTwoFactor: Boolean!
     confirmTwoFactor(otp: String!): Boolean!
+    approveEvent(id: String!): Event!
+    rejectEvent(id: String!): Event!
 }

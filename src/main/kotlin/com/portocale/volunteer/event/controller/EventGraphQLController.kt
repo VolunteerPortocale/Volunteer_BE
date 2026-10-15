@@ -77,6 +77,31 @@ class EventGraphQLController(
             modifiedBy = principal.name
         ).toEventGql()
     }
+
+    @MutationMapping
+    fun approveEvent(
+        @Argument id: String,
+        principal: Principal,
+        locale: Locale
+    ): EventGQL {
+        return eventService.approve(
+            id = id,
+            language = locale.toLanguageApi(),
+            modifiedBy = principal.name
+        ).toEventGql()
+    }
+    @MutationMapping
+    fun rejectEvent(
+        @Argument id: String,
+        principal: Principal,
+        locale: Locale
+    ): EventGQL {
+        return eventService.reject(
+            id = id,
+            language = locale.toLanguageApi(),
+            modifiedBy = principal.name
+        ).toEventGql()
+    }
 }
 
 

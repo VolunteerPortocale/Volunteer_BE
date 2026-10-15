@@ -24,8 +24,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Lazy
 import org.springframework.mail.MailException
 import org.springframework.stereotype.Service
+import com.portocale.volunteer.event.EventConflictException
+import com.portocale.volunteer.event.EventStatusHistory
+import org.springframework.security.core.context.SecurityContextHolder
+import com.portocale.volunteer.event.toEventStatus
 
 @Service
+@Suppress("TooManyFunctions")
 class EventServiceImpl(
     private val eventRepository: EventRepository,
     @Lazy private val enrollmentService: EnrollmentService,
@@ -62,8 +67,102 @@ class EventServiceImpl(
     override fun update(id: String, event: UpdateEventApi, language: LanguageApi, modifiedBy: String): EventApi {
         val existingEvent = eventRepository.findById(id)
             .orElseThrow { EventNotFoundException("Event not found: $id") }
+
+        validateEditPermission(existingEvent, modifiedBy)
+        validateStatusTransition(
+            currentStatus = existingEvent.status,
+            targetStatus = event.status.toEventStatus()
+        )
+
         val updatedEvent = existingEvent.toUpdatedEntity(event, modifiedBy)
         return eventRepository.save(updatedEvent).toEventApi(language)
+    }
+
+    override fun approve(id: String, language: LanguageApi, modifiedBy: String): EventApi {
+        val existingEvent = eventRepository.findById(id)
+            .orElseThrow { EventNotFoundException("Event not found: $id") }
+
+        if (existingEvent.status == EventStatus.PUBLISHED) {
+            throw EventConflictException("Event is already published")
+        }
+
+        val updatedHistory = (existingEvent.statusHistory ?: emptyList()) + EventStatusHistory(
+            status = EventStatus.PUBLISHED,
+            occurredAt = Instant.now(),
+            actor = modifiedBy
+        )
+
+        val updatedEvent = existingEvent.copy(
+            status = EventStatus.PUBLISHED,
+            statusHistory = updatedHistory,
+            lastModifiedAt = Instant.now(),
+            lastModifiedBy = modifiedBy
+        )
+
+        return eventRepository.save(updatedEvent).toEventApi(language)
+    }
+
+    override fun reject(id: String, language: LanguageApi, modifiedBy: String): EventApi {
+        val existingEvent = eventRepository.findById(id)
+            .orElseThrow { EventNotFoundException("Event not found: $id") }
+
+        if (existingEvent.status == EventStatus.REJECTED) {
+            throw EventConflictException("Event is already rejected")
+        }
+
+        val updatedHistory = (existingEvent.statusHistory ?: emptyList()) + EventStatusHistory(
+            status = EventStatus.REJECTED,
+            occurredAt = Instant.now(),
+            actor = modifiedBy
+        )
+
+        val updatedEvent = existingEvent.copy(
+            status = EventStatus.REJECTED,
+            statusHistory = updatedHistory,
+            lastModifiedAt = Instant.now(),
+            lastModifiedBy = modifiedBy
+        )
+
+        return eventRepository.save(updatedEvent).toEventApi(language)
+    }
+
+    private fun validateEditPermission(existingEvent: Event, modifiedBy: String) {
+        if (isPrivilegedUser()) return
+
+        val auth = SecurityContextHolder.getContext().authentication
+        val isVolunteer = auth?.authorities?.any { it.authority == "ROLE_VOLUNTEER" } ?: false
+        if (isVolunteer) {
+            throw EventConflictException("Volunteers are not allowed to edit events")
+        }
+
+        if (existingEvent.createdBy != modifiedBy) {
+            throw EventConflictException("You can only edit events that you created")
+        }
+    }
+
+    private fun validateStatusTransition(currentStatus: EventStatus, targetStatus: EventStatus) {
+        if (currentStatus == targetStatus) return
+
+        if (isPrivilegedUser()) return
+
+        val isAllowed = when (currentStatus) {
+            EventStatus.DRAFT, EventStatus.REJECTED -> targetStatus == EventStatus.PENDING_APPROVAL
+            EventStatus.PENDING_APPROVAL -> targetStatus == EventStatus.DRAFT
+            else -> false
+        }
+
+        if (!isAllowed) {
+            throw EventConflictException(
+                "Cannot transition event status from $currentStatus to $targetStatus."
+            )
+        }
+    }
+
+    private fun isPrivilegedUser(): Boolean {
+        val authentication = SecurityContextHolder.getContext().authentication ?: return false
+        return authentication.authorities.any {
+            it.authority == "ROLE_ADMIN" || it.authority == "ROLE_MODERATOR"
+        }
     }
 
     @SuppressWarnings("TooGenericExceptionCaught")
