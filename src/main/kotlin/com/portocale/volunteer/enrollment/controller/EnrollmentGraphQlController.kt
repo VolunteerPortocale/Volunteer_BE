@@ -1,6 +1,8 @@
 package com.portocale.volunteer.enrollment.controller
 
+import com.portocale.volunteer.config.jwt.Principal
 import com.portocale.volunteer.config.toLanguageApi
+import com.portocale.volunteer.enrollment.repository.EnrollmentRepository
 import com.portocale.volunteer.enrollment.service.EnrollmentService
 import com.portocale.volunteer.enrollment.toCreateEnrollmentApi
 import com.portocale.volunteer.enrollment.toEnrollmentGql
@@ -8,17 +10,26 @@ import com.portocale.volunteer.enrollment.toGenericPayloadGQL
 import com.portocale.volunteer.graphql.model.ConfirmEnrollmentInputGQL
 import com.portocale.volunteer.graphql.model.CreateEnrollmentInputGQL
 import com.portocale.volunteer.graphql.model.EnrollmentGQL
-import com.portocale.volunteer.graphql.model.UnenrollInputGQL
 import com.portocale.volunteer.graphql.model.GenericPayloadGQL
+import com.portocale.volunteer.graphql.model.UnenrollInputGQL
 import java.util.Locale
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
+import org.springframework.graphql.data.method.annotation.QueryMapping
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 
 @Controller
 class EnrollmentGraphQlController(
-    private val enrollmentService: EnrollmentService
+    private val enrollmentService: EnrollmentService,
+    private val enrollmentRepository: EnrollmentRepository
 ) {
+    @QueryMapping
+    fun isEnrolledInEvent(@Argument eventId: String): Boolean {
+        val principal = SecurityContextHolder.getContext().authentication as Principal
+        return enrollmentRepository.existsByEventIdAndUserId(eventId, principal.userId)
+    }
+
     @MutationMapping
     fun enroll(
         @Argument input: CreateEnrollmentInputGQL,

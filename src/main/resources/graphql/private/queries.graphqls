@@ -4,4 +4,5 @@ type Query {
     getCurrentUser: User!
     getAllEvents: [Event!]!
     getEventById(id: String!): Event!
+    isEnrolledInEvent(eventId: String!): Boolean!
 }
