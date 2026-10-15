@@ -52,6 +52,18 @@ class EnrollmentServiceImpl(
         return GenericStatusApi.OK
     }
 
+    override fun unenroll(eventId: String): GenericStatusApi {
+        val authenticatedUser = SecurityContextHolder.getContext().authentication as Principal
+        val enrollment = enrollmentRepository.findByEventIdAndUserId(eventId, authenticatedUser.userId)
+            ?: throw EnrollmentNotFoundException()
+
+        if (enrollment.status != EnrollmentStatus.ENROLLED) {
+            throw EnrollmentConflictException("Cannot unenroll after event confirmation")
+        }
+        enrollmentRepository.delete(enrollment)
+        return GenericStatusApi.OK
+    }
+
     override fun getByEventId(eventId: String): List<EnrollmentResponseApi> {
         return enrollmentRepository.findByEventId(eventId)
             .map { it.toEnrollmentResponseApi() }

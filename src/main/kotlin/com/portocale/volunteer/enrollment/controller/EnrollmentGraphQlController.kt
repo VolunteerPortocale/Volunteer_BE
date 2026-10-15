@@ -8,6 +8,7 @@ import com.portocale.volunteer.enrollment.toGenericPayloadGQL
 import com.portocale.volunteer.graphql.model.ConfirmEnrollmentInputGQL
 import com.portocale.volunteer.graphql.model.CreateEnrollmentInputGQL
 import com.portocale.volunteer.graphql.model.EnrollmentGQL
+import com.portocale.volunteer.graphql.model.UnenrollInputGQL
 import com.portocale.volunteer.graphql.model.GenericPayloadGQL
 import java.util.Locale
 import org.springframework.graphql.data.method.annotation.Argument
@@ -34,5 +35,12 @@ class EnrollmentGraphQlController(
         @Argument input: ConfirmEnrollmentInputGQL
     ) : GenericPayloadGQL {
         return enrollmentService.confirmEnrollment(input.enrollmentId).toGenericPayloadGQL()
+    }
+
+    @MutationMapping
+    fun unenroll(
+        @Argument input: UnenrollInputGQL
+    ): GenericPayloadGQL {
+        return enrollmentService.unenroll(input.eventId).toGenericPayloadGQL()
     }
 }
