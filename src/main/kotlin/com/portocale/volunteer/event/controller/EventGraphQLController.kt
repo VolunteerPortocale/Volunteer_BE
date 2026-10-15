@@ -63,6 +63,15 @@ class EventGraphQLController(
         ).map { it.toEventGql() }
     }
 
+    @QueryMapping
+    fun getEventsCreatedByCurrentUser(
+        principal: Principal,
+        locale: Locale
+    ): List<EventGQL> {
+        return eventService.getEventsCreatedBy(principal.userId, locale.toLanguageApi())
+            .map { it.toEventGql() }
+    }
+
     @MutationMapping
     fun createEvent(
         @Argument input: CreateEventInputGQL,

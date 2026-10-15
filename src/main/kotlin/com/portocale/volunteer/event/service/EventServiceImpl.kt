@@ -137,6 +137,10 @@ class EventServiceImpl(
         return eventRepository.findAllById(eventIds).map { it.toEventApi(language) }
     }
 
+    override fun getEventsCreatedBy(userId: String, language: LanguageApi): List<EventApi> {
+        return eventRepository.findAllByCreatedBy(userId).map { it.toEventApi(language) }
+    }
+
     @SuppressWarnings("TooGenericExceptionCaught")
     override fun create(event: CreateEventApi, language: LanguageApi): EventApi {
         val savedEvent = eventRepository.save(event.toEntity())

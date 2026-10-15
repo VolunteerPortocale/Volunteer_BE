@@ -25,6 +25,7 @@ interface EventService {
     fun reject(id: String, language: LanguageApi, modifiedBy: String): EventApi
 
     fun getCurrentUserEvents(userId: String, language: LanguageApi): List<EventApi>
+    fun getEventsCreatedBy(userId: String, language: LanguageApi): List<EventApi>
     fun sendUpcomingEventReminders()
 }
 
