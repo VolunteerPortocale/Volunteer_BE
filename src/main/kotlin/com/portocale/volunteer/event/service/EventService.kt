@@ -12,6 +12,7 @@ interface EventService {
     fun getLastThreeActiveEvents(language: LanguageApi): List<EventApi>
     fun update(id: String, event: UpdateEventApi, language: LanguageApi, modifiedBy: String): EventApi
     fun getCurrentUserEvents(userId: String, language: LanguageApi): List<EventApi>
+    fun getEventsCreatedBy(userId: String, language: LanguageApi): List<EventApi>
     fun sendUpcomingEventReminders()
 }
 
