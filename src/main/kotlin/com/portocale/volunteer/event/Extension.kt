@@ -90,8 +90,8 @@ fun EventFilterInputGQL.toEventFilterApi(): EventFilterApi {
     return EventFilterApi(
         page = page,
         size = size,
-        statuses = statuses.map { it.toEventStatusApi() },
-        categories = categories.map { it.toEventCategoryApi() }
+        statuses = statuses?.map { it.toEventStatusApi() } ?: emptyList(),
+        categories = categories?.map { it.toEventCategoryApi() } ?: emptyList()
     )
 }
 
@@ -530,11 +530,11 @@ fun EventRepositoryCustomImpl.EventAggregationResult.toPagedEventDataApi(
     size: Int,
     page: Int,
     language: LanguageApi
-): PagedEventDataApi{
+): PagedEventDataApi {
     return PagedEventDataApi(
         events = events.map { it.toEventApi(language) },
-        page= page,
-        size= size,
-        total= total,
+        page = page,
+        size = size,
+        total = total,
     )
 }

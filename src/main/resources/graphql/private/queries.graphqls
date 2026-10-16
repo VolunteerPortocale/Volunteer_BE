@@ -7,7 +7,7 @@ type Query {
     getCurrentUserEvents: [Event!]!
     getEventsCreatedByCurrentUser: [Event!]!
     getAllEvents: [Event!]!
-    getFilteredEvents(input: EventFilterInput): [Event!]!
+    getFilteredEvents(input: EventFilterInput): PagedEventData!
 
     getCurrentUserEnrollments: [Enrollment!]!
     getEventEnrollmentById(id: String!): Enrollment
