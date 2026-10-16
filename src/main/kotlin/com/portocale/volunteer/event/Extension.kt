@@ -3,8 +3,11 @@
 package com.portocale.volunteer.event
 
 import com.portocale.volunteer.config.LanguageApi
+import com.portocale.volunteer.event.repository.EventRepositoryCustomImpl
 import com.portocale.volunteer.graphql.model.CreateEventDetailsInputGQL
 import com.portocale.volunteer.graphql.model.CreateEventInputGQL
+import com.portocale.volunteer.graphql.model.CreateEventStatusGQL
+import com.portocale.volunteer.graphql.model.EventCategoryGQL
 import com.portocale.volunteer.graphql.model.EventDescriptionInputGQL
 import com.portocale.volunteer.graphql.model.EventDetailsGQL
 import com.portocale.volunteer.graphql.model.EventDressCodeGQL
@@ -12,12 +15,14 @@ import com.portocale.volunteer.graphql.model.EventGQL
 import com.portocale.volunteer.graphql.model.EventStatusGQL
 import com.portocale.volunteer.graphql.model.EventTitleInputGQL
 import java.time.Instant
-import com.portocale.volunteer.users.toEventCategoryApi
-import com.portocale.volunteer.users.toEventCategoryGql
 import com.portocale.volunteer.graphql.model.UpdateEventDetailsInputGQL
 import com.portocale.volunteer.graphql.model.UpdateEventInputGQL
 import com.portocale.volunteer.graphql.model.EventFileGQL
 import com.portocale.volunteer.graphql.model.EventFileTypeGQL
+import com.portocale.volunteer.graphql.model.EventFilterInputGQL
+import com.portocale.volunteer.graphql.model.PagedEventDataGQL
+import com.portocale.volunteer.graphql.model.UpdateEventStatusGQL
+import kotlin.Int
 
 
 fun Event.toEventApi(language: LanguageApi): EventApi {
@@ -78,6 +83,24 @@ fun UpdateEventInputGQL.toUpdateEventApi(): UpdateEventApi {
         details = details.toUpdateEventDetailsApi(),
         category = category.toEventCategoryApi(),
         status = status.toEventStatusApi()
+    )
+}
+
+fun EventFilterInputGQL.toEventFilterApi(): EventFilterApi {
+    return EventFilterApi(
+        page = page,
+        size = size,
+        statuses = statuses.map { it.toEventStatusApi() },
+        categories = categories.map { it.toEventCategoryApi() }
+    )
+}
+
+fun PagedEventDataApi.toPageEventDataGql(): PagedEventDataGQL {
+    return PagedEventDataGQL(
+        page,
+        size,
+        total,
+        events.map { it.toEventGql() }
     )
 }
 
@@ -296,6 +319,7 @@ fun EventDressCode.toEventDressCodeApi(): EventDressCodeApi {
         EventDressCode.COSTUME -> EventDressCodeApi.COSTUME
     }
 }
+
 fun EventDressCodeApi.toEventDressCode(): EventDressCode {
     return when (this) {
         EventDressCodeApi.CASUAL -> EventDressCode.CASUAL
@@ -312,6 +336,7 @@ fun CreateEventInputGQL.toCreateEventApi(createdBy: String): CreateEventApi {
         createdBy = createdBy,
     )
 }
+
 fun CreateEventDetailsInputGQL.toCreateEventDetailsApi(): CreateEventDetailsApi {
     return CreateEventDetailsApi(
         title = title.toEventTitleApi(),
@@ -325,6 +350,7 @@ fun CreateEventDetailsInputGQL.toCreateEventDetailsApi(): CreateEventDetailsApi 
         dressCode = dressCode.toEventDressCodeApi()
     )
 }
+
 fun EventTitleInputGQL.toEventTitleApi(): EventTitleApi =
     EventTitleApi(ro = ro, en = en, ru = ru)
 
@@ -345,6 +371,7 @@ fun EventApi.toEventGql(): EventGQL {
         emptyList()
     )
 }
+
 fun EventDetailsApi.toEventDetailsGql(): EventDetailsGQL {
     return EventDetailsGQL(
         title,
@@ -358,6 +385,7 @@ fun EventDetailsApi.toEventDetailsGql(): EventDetailsGQL {
         dressCode.toEventDressCodeGql()
     )
 }
+
 fun EventDressCodeGQL.toEventDressCodeApi(): EventDressCodeApi {
     return when (this) {
         EventDressCodeGQL.CASUAL -> EventDressCodeApi.CASUAL
@@ -365,6 +393,7 @@ fun EventDressCodeGQL.toEventDressCodeApi(): EventDressCodeApi {
         EventDressCodeGQL.COSTUME -> EventDressCodeApi.COSTUME
     }
 }
+
 fun EventDressCodeApi.toEventDressCodeGql(): EventDressCodeGQL {
     return when (this) {
         EventDressCodeApi.CASUAL -> EventDressCodeGQL.CASUAL
@@ -387,6 +416,21 @@ fun EventStatusGQL.toEventStatusApi(): EventStatusApi {
         EventStatusGQL.REJECTED -> EventStatusApi.REJECTED
     }
 }
+
+fun CreateEventStatusGQL.toEventStatusApi(): EventStatusApi {
+    return when (this) {
+        CreateEventStatusGQL.PENDING_APPROVAL -> EventStatusApi.PENDING_APPROVAL
+        CreateEventStatusGQL.DRAFT -> EventStatusApi.DRAFT
+    }
+}
+
+fun UpdateEventStatusGQL.toEventStatusApi(): EventStatusApi {
+    return when (this) {
+        UpdateEventStatusGQL.PENDING_APPROVAL -> EventStatusApi.PENDING_APPROVAL
+        UpdateEventStatusGQL.DRAFT -> EventStatusApi.DRAFT
+    }
+}
+
 fun EventStatusApi.toEventStatusGql(): EventStatusGQL {
     return when (this) {
         EventStatusApi.DRAFT -> EventStatusGQL.DRAFT
@@ -400,4 +444,97 @@ fun EventStatusApi.toEventStatusGql(): EventStatusGQL {
         EventStatusApi.POSTPONED -> EventStatusGQL.POSTPONED
         EventStatusApi.REJECTED -> EventStatusGQL.REJECTED
     }
+}
+
+@SuppressWarnings("CyclomaticComplexMethod")
+fun EventCategoryApi.toEventCategoryGql(): EventCategoryGQL {
+    return when (this) {
+        EventCategoryApi.SOCIAL -> EventCategoryGQL.SOCIAL
+        EventCategoryApi.ANIMAL_CARE -> EventCategoryGQL.ANIMAL_CARE
+        EventCategoryApi.CHILDREN_AND_YOUTH -> EventCategoryGQL.CHILDREN_AND_YOUTH
+        EventCategoryApi.EDUCATION -> EventCategoryGQL.EDUCATION
+        EventCategoryApi.ENVIRONMENT -> EventCategoryGQL.ENVIRONMENT
+        EventCategoryApi.HEALTH -> EventCategoryGQL.HEALTH
+        EventCategoryApi.DISABILITY_SUPPORT -> EventCategoryGQL.DISABILITY_SUPPORT
+        EventCategoryApi.ELDERLY_CARE -> EventCategoryGQL.ELDERLY_CARE
+        EventCategoryApi.DISASTER -> EventCategoryGQL.DISASTER
+        EventCategoryApi.POVERTY -> EventCategoryGQL.POVERTY
+        EventCategoryApi.CULTURE -> EventCategoryGQL.CULTURE
+        EventCategoryApi.SPORT -> EventCategoryGQL.SPORT
+        EventCategoryApi.FESTIVALS -> EventCategoryGQL.FESTIVALS
+        EventCategoryApi.TECHNOLOGY -> EventCategoryGQL.TECHNOLOGY
+        EventCategoryApi.BUSINESS -> EventCategoryGQL.BUSINESS
+        EventCategoryApi.EMPLOYMENT -> EventCategoryGQL.EMPLOYMENT
+        EventCategoryApi.SCIENCE -> EventCategoryGQL.SCIENCE
+        EventCategoryApi.AGRICULTURE -> EventCategoryGQL.AGRICULTURE
+        EventCategoryApi.CONSTRUCTION -> EventCategoryGQL.CONSTRUCTION
+        EventCategoryApi.RELIGION -> EventCategoryGQL.RELIGION
+        EventCategoryApi.HUMAN_RIGHTS -> EventCategoryGQL.HUMAN_RIGHTS
+        EventCategoryApi.LEGAL -> EventCategoryGQL.LEGAL
+        EventCategoryApi.SAFETY -> EventCategoryGQL.SAFETY
+        EventCategoryApi.FAMILY -> EventCategoryGQL.FAMILY
+        EventCategoryApi.LGBTQ_PLUS -> EventCategoryGQL.LGBTQ_PLUS
+        EventCategoryApi.REFUGEE_SUPPORT -> EventCategoryGQL.REFUGEE_SUPPORT
+        EventCategoryApi.INTERNATIONAL_VOLUNTEERING -> EventCategoryGQL.INTERNATIONAL_VOLUNTEERING
+        EventCategoryApi.TOURISM -> EventCategoryGQL.TOURISM
+        EventCategoryApi.HERITAGE -> EventCategoryGQL.HERITAGE
+        EventCategoryApi.MEDIA -> EventCategoryGQL.MEDIA
+        EventCategoryApi.GARDENING -> EventCategoryGQL.GARDENING
+        EventCategoryApi.PEACE -> EventCategoryGQL.PEACE
+        EventCategoryApi.ADDICTION_RECOVERY -> EventCategoryGQL.ADDICTION_RECOVERY
+        EventCategoryApi.OTHER -> EventCategoryGQL.OTHER
+    }
+}
+
+@SuppressWarnings("CyclomaticComplexMethod")
+fun EventCategoryGQL.toEventCategoryApi(): EventCategoryApi {
+    return when (this) {
+        EventCategoryGQL.SOCIAL -> EventCategoryApi.SOCIAL
+        EventCategoryGQL.ANIMAL_CARE -> EventCategoryApi.ANIMAL_CARE
+        EventCategoryGQL.CHILDREN_AND_YOUTH -> EventCategoryApi.CHILDREN_AND_YOUTH
+        EventCategoryGQL.EDUCATION -> EventCategoryApi.EDUCATION
+        EventCategoryGQL.ENVIRONMENT -> EventCategoryApi.ENVIRONMENT
+        EventCategoryGQL.HEALTH -> EventCategoryApi.HEALTH
+        EventCategoryGQL.DISABILITY_SUPPORT -> EventCategoryApi.DISABILITY_SUPPORT
+        EventCategoryGQL.ELDERLY_CARE -> EventCategoryApi.ELDERLY_CARE
+        EventCategoryGQL.DISASTER -> EventCategoryApi.DISASTER
+        EventCategoryGQL.POVERTY -> EventCategoryApi.POVERTY
+        EventCategoryGQL.CULTURE -> EventCategoryApi.CULTURE
+        EventCategoryGQL.SPORT -> EventCategoryApi.SPORT
+        EventCategoryGQL.FESTIVALS -> EventCategoryApi.FESTIVALS
+        EventCategoryGQL.TECHNOLOGY -> EventCategoryApi.TECHNOLOGY
+        EventCategoryGQL.BUSINESS -> EventCategoryApi.BUSINESS
+        EventCategoryGQL.EMPLOYMENT -> EventCategoryApi.EMPLOYMENT
+        EventCategoryGQL.SCIENCE -> EventCategoryApi.SCIENCE
+        EventCategoryGQL.AGRICULTURE -> EventCategoryApi.AGRICULTURE
+        EventCategoryGQL.CONSTRUCTION -> EventCategoryApi.CONSTRUCTION
+        EventCategoryGQL.RELIGION -> EventCategoryApi.RELIGION
+        EventCategoryGQL.HUMAN_RIGHTS -> EventCategoryApi.HUMAN_RIGHTS
+        EventCategoryGQL.LEGAL -> EventCategoryApi.LEGAL
+        EventCategoryGQL.SAFETY -> EventCategoryApi.SAFETY
+        EventCategoryGQL.FAMILY -> EventCategoryApi.FAMILY
+        EventCategoryGQL.LGBTQ_PLUS -> EventCategoryApi.LGBTQ_PLUS
+        EventCategoryGQL.REFUGEE_SUPPORT -> EventCategoryApi.REFUGEE_SUPPORT
+        EventCategoryGQL.INTERNATIONAL_VOLUNTEERING -> EventCategoryApi.INTERNATIONAL_VOLUNTEERING
+        EventCategoryGQL.TOURISM -> EventCategoryApi.TOURISM
+        EventCategoryGQL.HERITAGE -> EventCategoryApi.HERITAGE
+        EventCategoryGQL.MEDIA -> EventCategoryApi.MEDIA
+        EventCategoryGQL.GARDENING -> EventCategoryApi.GARDENING
+        EventCategoryGQL.PEACE -> EventCategoryApi.PEACE
+        EventCategoryGQL.ADDICTION_RECOVERY -> EventCategoryApi.ADDICTION_RECOVERY
+        EventCategoryGQL.OTHER -> EventCategoryApi.OTHER
+    }
+}
+
+fun EventRepositoryCustomImpl.EventAggregationResult.toPagedEventDataApi(
+    size: Int,
+    page: Int,
+    language: LanguageApi
+): PagedEventDataApi{
+    return PagedEventDataApi(
+        events = events.map { it.toEventApi(language) },
+        page= page,
+        size= size,
+        total= total,
+    )
 }

@@ -7,11 +7,15 @@ import com.portocale.volunteer.event.service.EventService
 import com.portocale.volunteer.event.toCreateEventApi
 import com.portocale.volunteer.event.toEventFileGql
 import com.portocale.volunteer.event.toEventFileResponseApi
+import com.portocale.volunteer.event.toEventFilterApi
 import com.portocale.volunteer.event.toEventGql
+import com.portocale.volunteer.event.toPageEventDataGql
 import com.portocale.volunteer.event.toUpdateEventApi
 import com.portocale.volunteer.graphql.model.CreateEventInputGQL
 import com.portocale.volunteer.graphql.model.EventFileGQL
+import com.portocale.volunteer.graphql.model.EventFilterInputGQL
 import com.portocale.volunteer.graphql.model.EventGQL
+import com.portocale.volunteer.graphql.model.PagedEventDataGQL
 import com.portocale.volunteer.graphql.model.UpdateEventInputGQL
 import java.util.*
 import org.springframework.graphql.data.method.annotation.Argument
@@ -98,6 +102,15 @@ class EventGraphQLController(
             modifiedBy = principal.name
         ).toEventGql()
     }
+
+    @QueryMapping
+    fun getFilteredEvents(
+        @Argument input: EventFilterInputGQL,
+        locale: Locale
+    ): PagedEventDataGQL {
+        return eventService.getFilteredEvents(input.toEventFilterApi(), locale.toLanguageApi()).toPageEventDataGql()
+    }
+
 }
 
 

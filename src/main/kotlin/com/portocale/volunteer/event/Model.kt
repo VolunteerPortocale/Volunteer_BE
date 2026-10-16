@@ -33,6 +33,22 @@ data class UpdateEventApi(
     val category: EventCategoryApi,
 )
 
+@Schema(name = "EventFilter")
+data class EventFilterApi(
+    val page: Int = 0,
+    val size: Int = 10,
+    val statuses: List<EventStatusApi> = emptyList(),
+    val categories: List<EventCategoryApi> = emptyList()
+)
+
+@Schema(name = "PagedEventData")
+data class PagedEventDataApi(
+    val page: Int,
+    val size: Int,
+    val total: Int,
+    val events: List<EventApi>
+)
+
 @Schema(name = "EventDetails")
 data class EventDetailsApi(
     val title: String,

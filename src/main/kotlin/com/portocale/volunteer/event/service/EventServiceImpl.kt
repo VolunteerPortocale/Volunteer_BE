@@ -6,12 +6,15 @@ import com.portocale.volunteer.enrollment.service.EnrollmentService
 import com.portocale.volunteer.event.CreateEventApi
 import com.portocale.volunteer.event.Event
 import com.portocale.volunteer.event.EventApi
+import com.portocale.volunteer.event.EventFilterApi
 import com.portocale.volunteer.event.EventNotFoundException
 import com.portocale.volunteer.event.EventStatus
+import com.portocale.volunteer.event.PagedEventDataApi
 import com.portocale.volunteer.event.UpdateEventApi
 import com.portocale.volunteer.event.repository.EventRepository
 import com.portocale.volunteer.event.toEntity
 import com.portocale.volunteer.event.toEventApi
+import com.portocale.volunteer.event.toPagedEventDataApi
 import com.portocale.volunteer.event.toUpdatedEntity
 import com.portocale.volunteer.notification.service.EmailService
 import com.portocale.volunteer.storage.service.StorageService
@@ -74,6 +77,15 @@ class EventServiceImpl(
 
     override fun getEventsCreatedBy(userId: String, language: LanguageApi): List<EventApi> {
         return eventRepository.findAllByCreatedBy(userId).map { it.toEventApi(language) }
+    }
+
+    override fun getFilteredEvents(input: EventFilterApi, language: LanguageApi): PagedEventDataApi {
+        return eventRepository.findByFilter(input)
+            .toPagedEventDataApi(
+                input.size,
+                input.page,
+                language
+            )
     }
 
     @SuppressWarnings("TooGenericExceptionCaught")

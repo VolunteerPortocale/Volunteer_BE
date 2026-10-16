@@ -6,6 +6,7 @@ import com.portocale.volunteer.config.LanguageApi
 import com.portocale.volunteer.event.EventCategoryApi
 import com.portocale.volunteer.event.toEventCategory
 import com.portocale.volunteer.event.toEventCategoryApi
+import com.portocale.volunteer.event.toEventCategoryGql
 import com.portocale.volunteer.graphql.model.CreateUserInputGQL
 import com.portocale.volunteer.graphql.model.CreateUserRoleGQL
 import com.portocale.volunteer.graphql.model.EventCategoryGQL
@@ -126,45 +127,6 @@ fun CreateUserRoleGQL.toCreateUserRoleApi(): CreateUserRoleApi {
         CreateUserRoleGQL.MODERATOR -> CreateUserRoleApi.MODERATOR
         CreateUserRoleGQL.NGO -> CreateUserRoleApi.NGO
         CreateUserRoleGQL.VOLUNTEER -> CreateUserRoleApi.VOLUNTEER
-    }
-}
-
-fun EventCategoryGQL.toEventCategoryApi(): EventCategoryApi {
-    return when (this) {
-        EventCategoryGQL.SOCIAL -> EventCategoryApi.SOCIAL
-        EventCategoryGQL.ANIMAL_CARE -> EventCategoryApi.ANIMAL_CARE
-        EventCategoryGQL.CHILDREN_AND_YOUTH -> EventCategoryApi.CHILDREN_AND_YOUTH
-        EventCategoryGQL.EDUCATION -> EventCategoryApi.EDUCATION
-        EventCategoryGQL.ENVIRONMENT -> EventCategoryApi.ENVIRONMENT
-        EventCategoryGQL.HEALTH -> EventCategoryApi.HEALTH
-        EventCategoryGQL.DISABILITY_SUPPORT -> EventCategoryApi.DISABILITY_SUPPORT
-        EventCategoryGQL.ELDERLY_CARE -> EventCategoryApi.ELDERLY_CARE
-        EventCategoryGQL.DISASTER -> EventCategoryApi.DISASTER
-        EventCategoryGQL.POVERTY -> EventCategoryApi.POVERTY
-        EventCategoryGQL.CULTURE -> EventCategoryApi.CULTURE
-        EventCategoryGQL.SPORT -> EventCategoryApi.SPORT
-        EventCategoryGQL.FESTIVALS -> EventCategoryApi.FESTIVALS
-        EventCategoryGQL.TECHNOLOGY -> EventCategoryApi.TECHNOLOGY
-        EventCategoryGQL.BUSINESS -> EventCategoryApi.BUSINESS
-        EventCategoryGQL.EMPLOYMENT -> EventCategoryApi.EMPLOYMENT
-        EventCategoryGQL.SCIENCE -> EventCategoryApi.SCIENCE
-        EventCategoryGQL.AGRICULTURE -> EventCategoryApi.AGRICULTURE
-        EventCategoryGQL.CONSTRUCTION -> EventCategoryApi.CONSTRUCTION
-        EventCategoryGQL.RELIGION -> EventCategoryApi.RELIGION
-        EventCategoryGQL.HUMAN_RIGHTS -> EventCategoryApi.HUMAN_RIGHTS
-        EventCategoryGQL.LEGAL -> EventCategoryApi.LEGAL
-        EventCategoryGQL.SAFETY -> EventCategoryApi.SAFETY
-        EventCategoryGQL.FAMILY -> EventCategoryApi.FAMILY
-        EventCategoryGQL.LGBTQ_PLUS -> EventCategoryApi.LGBTQ_PLUS
-        EventCategoryGQL.REFUGEE_SUPPORT -> EventCategoryApi.REFUGEE_SUPPORT
-        EventCategoryGQL.INTERNATIONAL_VOLUNTEERING -> EventCategoryApi.INTERNATIONAL_VOLUNTEERING
-        EventCategoryGQL.TOURISM -> EventCategoryApi.TOURISM
-        EventCategoryGQL.HERITAGE -> EventCategoryApi.HERITAGE
-        EventCategoryGQL.MEDIA -> EventCategoryApi.MEDIA
-        EventCategoryGQL.GARDENING -> EventCategoryApi.GARDENING
-        EventCategoryGQL.PEACE -> EventCategoryApi.PEACE
-        EventCategoryGQL.ADDICTION_RECOVERY -> EventCategoryApi.ADDICTION_RECOVERY
-        EventCategoryGQL.OTHER -> EventCategoryApi.OTHER
     }
 }
 
@@ -335,45 +297,6 @@ fun User.toPasswordUpdatedUser(newPasswordHash: String): User {
         forceResetPassword = false,
         updatedAt = Instant.now()
     )
-}
-
-fun EventCategoryApi.toEventCategoryGql(): EventCategoryGQL {
-    return when (this) {
-        EventCategoryApi.SOCIAL -> EventCategoryGQL.SOCIAL
-        EventCategoryApi.ANIMAL_CARE -> EventCategoryGQL.ANIMAL_CARE
-        EventCategoryApi.CHILDREN_AND_YOUTH -> EventCategoryGQL.CHILDREN_AND_YOUTH
-        EventCategoryApi.EDUCATION -> EventCategoryGQL.EDUCATION
-        EventCategoryApi.ENVIRONMENT -> EventCategoryGQL.ENVIRONMENT
-        EventCategoryApi.HEALTH -> EventCategoryGQL.HEALTH
-        EventCategoryApi.DISABILITY_SUPPORT -> EventCategoryGQL.DISABILITY_SUPPORT
-        EventCategoryApi.ELDERLY_CARE -> EventCategoryGQL.ELDERLY_CARE
-        EventCategoryApi.DISASTER -> EventCategoryGQL.DISASTER
-        EventCategoryApi.POVERTY -> EventCategoryGQL.POVERTY
-        EventCategoryApi.CULTURE -> EventCategoryGQL.CULTURE
-        EventCategoryApi.SPORT -> EventCategoryGQL.SPORT
-        EventCategoryApi.FESTIVALS -> EventCategoryGQL.FESTIVALS
-        EventCategoryApi.TECHNOLOGY -> EventCategoryGQL.TECHNOLOGY
-        EventCategoryApi.BUSINESS -> EventCategoryGQL.BUSINESS
-        EventCategoryApi.EMPLOYMENT -> EventCategoryGQL.EMPLOYMENT
-        EventCategoryApi.SCIENCE -> EventCategoryGQL.SCIENCE
-        EventCategoryApi.AGRICULTURE -> EventCategoryGQL.AGRICULTURE
-        EventCategoryApi.CONSTRUCTION -> EventCategoryGQL.CONSTRUCTION
-        EventCategoryApi.RELIGION -> EventCategoryGQL.RELIGION
-        EventCategoryApi.HUMAN_RIGHTS -> EventCategoryGQL.HUMAN_RIGHTS
-        EventCategoryApi.LEGAL -> EventCategoryGQL.LEGAL
-        EventCategoryApi.SAFETY -> EventCategoryGQL.SAFETY
-        EventCategoryApi.FAMILY -> EventCategoryGQL.FAMILY
-        EventCategoryApi.LGBTQ_PLUS -> EventCategoryGQL.LGBTQ_PLUS
-        EventCategoryApi.REFUGEE_SUPPORT -> EventCategoryGQL.REFUGEE_SUPPORT
-        EventCategoryApi.INTERNATIONAL_VOLUNTEERING -> EventCategoryGQL.INTERNATIONAL_VOLUNTEERING
-        EventCategoryApi.TOURISM -> EventCategoryGQL.TOURISM
-        EventCategoryApi.HERITAGE -> EventCategoryGQL.HERITAGE
-        EventCategoryApi.MEDIA -> EventCategoryGQL.MEDIA
-        EventCategoryApi.GARDENING -> EventCategoryGQL.GARDENING
-        EventCategoryApi.PEACE -> EventCategoryGQL.PEACE
-        EventCategoryApi.ADDICTION_RECOVERY -> EventCategoryGQL.ADDICTION_RECOVERY
-        EventCategoryApi.OTHER -> EventCategoryGQL.OTHER
-    }
 }
 
 fun LanguageApi.toLanguageGql(): LanguageGQL {

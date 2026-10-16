@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
-interface EventRepository : MongoRepository<Event, String> {
+interface EventRepository : MongoRepository<Event, String>, EventRepositoryCustom {
     @Query("{ 'details.startTime': { '\$gte': ?0, '\$lt': ?1 } }")
     fun findByStartTimeBetween(from: Instant, to: Instant): List<Event>
     fun findTop3ByStatusInOrderByCreatedAtDesc(status: List<EventStatus>): List<Event>
