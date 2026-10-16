@@ -20,7 +20,7 @@ interface EventService {
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO')")
     fun create(event: CreateEventApi, language: LanguageApi): EventApi
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO')")
-    fun update(id: String, event: UpdateEventApi, language: LanguageApi, modifiedBy: String): EventApi
+    fun update(id: String, event: UpdateEventApi, language: LanguageApi, userId: String): EventApi
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'NGO')")
     fun getEventsCreatedBy(userId: String, language: LanguageApi): List<EventApi>
 

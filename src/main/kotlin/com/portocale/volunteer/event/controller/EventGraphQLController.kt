@@ -83,7 +83,7 @@ class EventGraphQLController(
         locale: Locale
     ): EventGQL {
         return eventService.create(
-            input.toCreateEventApi(createdBy = principal.name),
+            input.toCreateEventApi(createdBy = principal.userId),
             locale.toLanguageApi()
         ).toEventGql()
     }
@@ -99,7 +99,7 @@ class EventGraphQLController(
             id = id,
             event = input.toUpdateEventApi(),
             language = locale.toLanguageApi(),
-            modifiedBy = principal.name
+            userId = principal.userId
         ).toEventGql()
     }
 

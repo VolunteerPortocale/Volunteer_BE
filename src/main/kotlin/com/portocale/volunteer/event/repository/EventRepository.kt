@@ -3,6 +3,7 @@ package com.portocale.volunteer.event.repository
 import com.portocale.volunteer.event.Event
 import com.portocale.volunteer.event.EventStatus
 import java.time.Instant
+import java.util.Optional
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
 import org.springframework.stereotype.Repository
@@ -13,4 +14,5 @@ interface EventRepository : MongoRepository<Event, String>, EventRepositoryCusto
     fun findByStartTimeBetween(from: Instant, to: Instant): List<Event>
     fun findTop3ByStatusInOrderByCreatedAtDesc(status: List<EventStatus>): List<Event>
     fun findAllByCreatedBy(userId: String): List<Event>
+    fun findByIdAndCreatedBy(id: String, userId: String): Optional<Event>
 }

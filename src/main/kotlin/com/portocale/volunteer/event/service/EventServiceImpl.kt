@@ -62,10 +62,10 @@ class EventServiceImpl(
             .toEventApi(language)
     }
 
-    override fun update(id: String, event: UpdateEventApi, language: LanguageApi, modifiedBy: String): EventApi {
-        val existingEvent = eventRepository.findById(id)
-            .orElseThrow { EventNotFoundException("Event not found: $id") }
-        val updatedEvent = existingEvent.toUpdatedEntity(event, modifiedBy)
+    override fun update(id: String, event: UpdateEventApi, language: LanguageApi, userId: String): EventApi {
+        val existingEvent = eventRepository.findByIdAndCreatedBy(id, userId)
+            .orElseThrow { EventNotFoundException("Event not found: $id or does not belong to the current user") }
+        val updatedEvent = existingEvent.toUpdatedEntity(event, userId)
         return eventRepository.save(updatedEvent).toEventApi(language)
     }
 
