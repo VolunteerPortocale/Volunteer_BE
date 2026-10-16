@@ -9,8 +9,8 @@ type Mutation {
 
     createEvent(input: CreateEventInput!): Event!
     updateEvent(id: String!, input: UpdateEventInput!): Event!
-    approveEvent(eventId: String!): Boolean!
-    rejectEvent(eventId: String!): Boolean!
+    approveEvent(eventId: String!): Event!
+    rejectEvent(eventId: String!): Event!
     enroll(input: CreateEnrollmentInput!): Enrollment!
     confirmEnrollment(input: ConfirmEnrollmentInput!): GenericPayload!
     unenroll(input: UnenrollInput!): GenericPayload!

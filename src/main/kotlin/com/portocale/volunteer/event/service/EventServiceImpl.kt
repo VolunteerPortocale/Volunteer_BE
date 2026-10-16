@@ -12,9 +12,11 @@ import com.portocale.volunteer.event.EventStatus
 import com.portocale.volunteer.event.PagedEventDataApi
 import com.portocale.volunteer.event.UpdateEventApi
 import com.portocale.volunteer.event.repository.EventRepository
+import com.portocale.volunteer.event.toApprovedEvent
 import com.portocale.volunteer.event.toEntity
 import com.portocale.volunteer.event.toEventApi
 import com.portocale.volunteer.event.toPagedEventDataApi
+import com.portocale.volunteer.event.toRejectedEvent
 import com.portocale.volunteer.event.toUpdatedEntity
 import com.portocale.volunteer.notification.service.EmailService
 import com.portocale.volunteer.storage.service.StorageService
@@ -28,6 +30,7 @@ import org.springframework.context.annotation.Lazy
 import org.springframework.mail.MailException
 import org.springframework.stereotype.Service
 
+@SuppressWarnings("TooManyFunctions")
 @Service
 class EventServiceImpl(
     private val eventRepository: EventRepository,
@@ -146,5 +149,19 @@ class EventServiceImpl(
         } catch (e: MailException) {
             log.error("Failed to send reminder to {}: {}", user.email, e.message)
         }
+    }
+
+    override fun approveEvent(id: String, userId: String, language: LanguageApi): EventApi {
+        val event = eventRepository.findById(id)
+            .orElseThrow { EventNotFoundException("Event not found: $id") }
+
+        return eventRepository.save(event.toApprovedEvent(userId)).toEventApi(language)
+    }
+
+    override fun rejectEvent(id: String, userId: String, language: LanguageApi): EventApi {
+        val event = eventRepository.findById(id)
+            .orElseThrow { EventNotFoundException("Event not found: $id") }
+
+       return eventRepository.save(event.toRejectedEvent(userId)).toEventApi(language)
     }
 }

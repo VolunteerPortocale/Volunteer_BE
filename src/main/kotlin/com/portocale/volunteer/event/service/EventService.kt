@@ -25,5 +25,10 @@ interface EventService {
     fun getEventsCreatedBy(userId: String, language: LanguageApi): List<EventApi>
 
     fun sendUpcomingEventReminders()
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+    fun approveEvent(id: String, userId: String, language: LanguageApi): EventApi
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+    fun rejectEvent(id: String, userId: String, language: LanguageApi): EventApi
 }
 

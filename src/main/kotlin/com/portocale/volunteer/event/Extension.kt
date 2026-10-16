@@ -142,6 +142,35 @@ fun Event.toUpdatedEntity(input: UpdateEventApi, modifiedBy: String): Event {
     )
 }
 
+fun Event.toApprovedEvent(userId: String): Event {
+    val  statusHistory = this.statusHistory ?: listOf()
+
+    return this.copy(
+        status = EventStatus.PUBLISHED,
+        lastModifiedBy = userId,
+        lastModifiedAt = Instant.now(),
+        statusHistory = statusHistory.plus(
+            EventStatusHistory(
+                status = this.status,
+                actor = userId
+            )
+        ))
+}
+
+fun Event.toRejectedEvent(userId: String): Event {
+    val  statusHistory = this.statusHistory ?: listOf()
+    return this.copy(
+        status = EventStatus.REJECTED,
+        lastModifiedBy = userId,
+        lastModifiedAt = Instant.now(),
+        statusHistory = statusHistory.plus(
+            EventStatusHistory(
+                status = this.status,
+                actor = userId
+            )
+        ))
+}
+
 fun EventTitleApi.toEventTitle(): EventTitle {
     return EventTitle(
         ro = ro,

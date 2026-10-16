@@ -24,6 +24,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 
+@SuppressWarnings("TooManyFunctions")
 @Controller
 class EventGraphQLController(
     private val eventService: EventService,
@@ -113,19 +114,23 @@ class EventGraphQLController(
 
     @MutationMapping
     fun approveEvent(
-        @Argument eventId: String
-    ): Boolean {
-        return eventService.approveEvent(eventId)
+        @Argument eventId: String,
+        principal: Principal,
+        locale: Locale,
+    ): EventGQL {
+        return eventService.approveEvent(eventId, principal.userId, locale.toLanguageApi()).toEventGql()
     }
 
     @MutationMapping
     fun rejectEvent(
-        @Argument eventId: String
-    ): Boolean {
-        return eventService.rejectEvent(eventId)
+        @Argument eventId: String,
+        principal: Principal,
+        locale: Locale,
+    ): EventGQL {
+        return eventService.rejectEvent(eventId, principal.userId, locale.toLanguageApi()).toEventGql()
     }
-
 }
+
 
 
 
