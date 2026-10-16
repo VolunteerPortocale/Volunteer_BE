@@ -111,6 +111,20 @@ class EventGraphQLController(
         return eventService.getFilteredEvents(input.toEventFilterApi(), locale.toLanguageApi()).toPageEventDataGql()
     }
 
+    @MutationMapping
+    fun approveEvent(
+        @Argument eventId: String
+    ): Boolean {
+        return eventService.approveEvent(eventId)
+    }
+
+    @MutationMapping
+    fun rejectEvent(
+        @Argument eventId: String
+    ): Boolean {
+        return eventService.rejectEvent(eventId)
+    }
+
 }
 
 
