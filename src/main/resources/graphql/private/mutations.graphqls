@@ -3,11 +3,15 @@ type Mutation {
     updateUserPreferences(input: UpdateUserPreferencesInput!): User!
     suspendUser(id: String!, suspendedUntil: String!): User!
     deleteUser(id: String!): Boolean!
+
+    initiateTwoFactor: Boolean!
+    confirmTwoFactor(otp: String!): Boolean!
+
     createEvent(input: CreateEventInput!): Event!
     updateEvent(id: String!, input: UpdateEventInput!): Event!
+    approveEvent(eventId: String!): Event!
+    rejectEvent(eventId: String!): Event!
     enroll(input: CreateEnrollmentInput!): Enrollment!
     confirmEnrollment(input: ConfirmEnrollmentInput!): GenericPayload!
     unenroll(input: UnenrollInput!): GenericPayload!
-    initiateTwoFactor: Boolean!
-    confirmTwoFactor(otp: String!): Boolean!
 }

@@ -24,6 +24,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.stereotype.Controller
 
+@SuppressWarnings("TooManyFunctions")
 @Controller
 class EventGraphQLController(
     private val eventService: EventService,
@@ -83,7 +84,7 @@ class EventGraphQLController(
         locale: Locale
     ): EventGQL {
         return eventService.create(
-            input.toCreateEventApi(createdBy = principal.name),
+            input.toCreateEventApi(createdBy = principal.userId),
             locale.toLanguageApi()
         ).toEventGql()
     }
@@ -99,7 +100,7 @@ class EventGraphQLController(
             id = id,
             event = input.toUpdateEventApi(),
             language = locale.toLanguageApi(),
-            modifiedBy = principal.name
+            userId = principal.userId
         ).toEventGql()
     }
 
@@ -111,7 +112,25 @@ class EventGraphQLController(
         return eventService.getFilteredEvents(input.toEventFilterApi(), locale.toLanguageApi()).toPageEventDataGql()
     }
 
+    @MutationMapping
+    fun approveEvent(
+        @Argument eventId: String,
+        principal: Principal,
+        locale: Locale,
+    ): EventGQL {
+        return eventService.approveEvent(eventId, principal.userId, locale.toLanguageApi()).toEventGql()
+    }
+
+    @MutationMapping
+    fun rejectEvent(
+        @Argument eventId: String,
+        principal: Principal,
+        locale: Locale,
+    ): EventGQL {
+        return eventService.rejectEvent(eventId, principal.userId, locale.toLanguageApi()).toEventGql()
+    }
 }
+
 
 
 
