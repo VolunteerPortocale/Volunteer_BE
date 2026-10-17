@@ -428,6 +428,8 @@ fun UpdateEventStatusGQL.toEventStatusApi(): EventStatusApi {
     return when (this) {
         UpdateEventStatusGQL.PENDING_APPROVAL -> EventStatusApi.PENDING_APPROVAL
         UpdateEventStatusGQL.DRAFT -> EventStatusApi.DRAFT
+        UpdateEventStatusGQL.PUBLISHED -> EventStatusApi.PUBLISHED
+        UpdateEventStatusGQL.REJECTED -> EventStatusApi.REJECTED
     }
 }
 
